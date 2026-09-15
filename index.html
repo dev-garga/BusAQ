@@ -155,6 +155,7 @@
 
   .empty { text-align: center; padding: 56px 20px; color: var(--muted); font-size: 13.5px; line-height: 1.6; }
   .empty strong { display: block; color: var(--text); font-size: 16px; font-weight: 650; margin-bottom: 5px; }
+  .empty.inline { padding: 34px 20px 24px; }
 
   .foot { padding: 0 var(--pad) 16px; text-align: center; font-size: 11px; color: var(--faint); line-height: 1.5; }
   .foot .draft { color: #f0b547; }
@@ -541,10 +542,12 @@ function render() {
   }
 
   const { past, future } = getTrips();
+  const finite = coda =>
+    '<div class="empty' + (coda ? ' inline' : '') + '"><strong>Nessun’altra corsa oggi</strong>' +
+    (coda || 'L’ultima da ' + label(origin) + ' a ' + label(dest) + ' è già passata.') + '</div>';
+
   if (!future.length && !past.length) {
-    cards.innerHTML = '<div class="empty"><strong>Nessun’altra corsa oggi</strong>' +
-      'L’ultima da ' + label(origin) + ' a ' + label(dest) + ' è già passata.</div>';
-    foot.innerHTML = metaLine(); return;
+    cards.innerHTML = finite(''); foot.innerHTML = metaLine(); return;
   }
 
   future.forEach(t => { delete t.fastest; delete t.sameDep; });
@@ -562,6 +565,9 @@ function render() {
   const firstFuture = list.length;
   list.push(...future.slice(0, count));
   html += list.map((t, i) => cardHTML(t, i === firstFuture && t.diff >= -2, t.diff < -2)).join('');
+
+  if (!future.length)
+    html += finite('L’ultima è partita alle ' + past[past.length - 1].dep + '.');
 
   const left = future.length - count;
   if (left > 0) {
