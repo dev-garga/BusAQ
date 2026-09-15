@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Genera schedule.json dai PDF orari AMA, secondo la mappatura in lines.json.
+"""Genera schedule.json dai PDF orari AMA secondo la mappatura in lines.json.
 
     tools/.venv/bin/python tools/extract_schedule.py            # scrive schedule.json
     tools/.venv/bin/python tools/extract_schedule.py --dry-run  # stampa solo il report
+    tools/.venv/bin/python tools/extract_schedule.py --download # riscarica i PDF
 
-I PDF vengono presi da tools/pdfcache/; --download li riscarica dagli URL in lines.json.
-
-Perche' questo script esiste: l'estrazione del 2025 fu fatta a mano e andata persa,
-costringendo a rifare da zero tutto il lavoro di interpretazione dei PDF. Qui la
-conoscenza dei PDF sta in lines.json e il codice resta generico.
+Modello: una voce per DIREZIONE (un senso di marcia su un pannello di PDF) con l'elenco
+ordinato delle fermate, e una riga per CORSA con gli orari allineati a quell'elenco.
+Le coppie origine->destinazione le ricava l'app dall'ordine, quindi aggiungere una
+fermata costa una colonna invece di N rotte.
 """
 import argparse
 import json
@@ -24,198 +24,231 @@ import pdfplumber
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / "pdfcache"
 
-TIME_RE = re.compile(r"\b(\d{1,2})[.:](\d{2})\b")
+# Gli orari AMA usano punto, due punti o virgola: la linea 15 scrive "7,05".
+TIME_RE = re.compile(r"\b(\d{1,2})[.:,](\d{2})\b")
 
 
 def unrotate(cell):
-    """Le intestazioni verticali dei PDF AMA tornano col testo rovesciato.
-
-    pdfplumber legge 'terminalbus' come 'sublanimret'. Si raddrizza ogni riga.
-    """
+    """Le intestazioni verticali tornano col testo rovesciato ('sublanimret')."""
     if not cell:
         return ""
     return " ".join(p[::-1] for p in cell.split("\n") if p.strip()).strip()
 
 
 def parse_time(cell):
-    """Estrae HH:MM da una cella, ma solo se la cella contiene *soltanto* un orario.
+    """Estrae HH:MM solo se la cella contiene *soltanto* un orario.
 
-    Le celle non contengono solo orari: '-' indica fermata non servita, mentre
-    diciture come 'stazione (7.35)' o 'via fani' segnalano che quella corsa devia
-    e non transita dalla fermata della colonna. Accettarle come partenze darebbe
-    corse inesistenti, quindi si scartano.
+    Diciture come 'da via Ficara (12.15)' o 'stazione (7.35)' segnalano corse che
+    partono altrove: accettarle darebbe partenze da fermate mai servite.
     """
     if not cell:
         return None
     txt = cell.replace("\n", " ").strip()
+    if any(ch.isalpha() for ch in txt):
+        return None
     m = TIME_RE.search(txt)
     if not m:
         return None
-    if any(ch.isalpha() for ch in txt):
+    h, mi = int(m.group(1)), int(m.group(2))
+    return f"{h:02d}:{mi:02d}" if h < 24 and mi < 60 else None
+
+
+def norm_time(text):
+    m = TIME_RE.search(text or "")
+    if not m:
         return None
     h, mi = int(m.group(1)), int(m.group(2))
-    if h > 23 or mi > 59:
-        return None
-    return f"{h:02d}:{mi:02d}"
+    return f"{h:02d}:{mi:02d}" if h < 24 and mi < 60 else None
 
 
-def header_row_index(table):
-    """Riga di intestazione: fra le prime, quella con piu' celle piene."""
+def header_row(table):
     upto = min(8, len(table))
     return max(range(upto), key=lambda i: sum(1 for c in table[i] if c and c.strip()))
 
 
-def has_note_column(table, hdr_i):
-    """Le pagine con varianti di corsa hanno una colonna 'note' in posizione 0."""
-    first = unrotate(table[hdr_i][0]).lower()
-    return "note" in first
-
-
-def has_line_column(table, hdr_i):
-    """Dove c'e' la colonna note, la 1 riporta la variante (1T, 1G, 4L, 13X…)."""
-    if len(table[hdr_i]) < 2:
+def is_grey(color):
+    """Grigio ~0.749 usato da AMA per le corse del solo lunedi'-venerdi'."""
+    if not isinstance(color, (list, tuple)):
         return False
-    return "linea" in unrotate(table[hdr_i][1]).lower()
+    if len(color) == 1:
+        return 0.70 < color[0] < 0.80
+    if len(color) >= 3:
+        r, g, b = color[0], color[1], color[2]
+        return max(r, g, b) - min(r, g, b) < 0.04 and 0.70 < (r + g + b) / 3 < 0.80
+    return False
+
+
+def grey_bands(page):
+    """Insiemi di orari coperti da ciascuna fascia grigia.
+
+    Si usa la geometria delle parole e non le righe di find_tables(), che sono
+    disallineate rispetto ai rettangoli.
+    """
+    rects = [r for r in page.rects
+             if is_grey(r.get("non_stroking_color")) and (r["x1"] - r["x0"]) > 0.40 * page.width]
+    if not rects:
+        return []
+    words = [w for w in page.extract_words() if TIME_RE.fullmatch(w["text"].strip())]
+    bands = []
+    for r in rects:
+        times = {norm_time(w["text"]) for w in words
+                 if r["top"] - 1 <= w["top"] <= r["bottom"] + 1}
+        times.discard(None)
+        if times:
+            bands.append(times)
+    return bands
+
+
+def read_codes(row, note_col):
+    """Lettere isolate nella colonna note; 'BS' vale B e S insieme."""
+    if note_col is None or note_col >= len(row) or not row[note_col]:
+        return ""
+    raw = row[note_col].replace("\n", " ").strip()
+    if len(raw) > 4:
+        return ""                      # intestazione o testo, non un codice
+    return "".join(ch for ch in raw if ch.isalpha() and ch.isupper())
 
 
 def apply_codes(codes, legend, default_days):
-    """Traduce le lettere della colonna note in calendario e flag della corsa.
-
-    Le lettere vanno lette una per una: 'BS' significa B e S insieme.
-    """
-    days = list(default_days)
-    scolastica = False
-    explicit = None
+    """Traduce le lettere in calendario, segnalando quelle fuori legenda."""
+    days, scolastica, explicit, unknown = list(default_days), None, None, []
     for ch in codes:
         rule = legend.get(ch)
         if rule is None:
+            # Convenzione rispettata da ogni legenda AMA vista: S scolastica,
+            # N non scolastica, ogni altra lettera e' variante di percorso.
+            if ch == "S":
+                scolastica = True
+            elif ch == "N":
+                scolastica = False
+            else:
+                unknown.append(ch)
             continue
-        if rule.get("scolastica"):
-            scolastica = True
+        if "scolastica" in rule:
+            scolastica = rule["scolastica"]
         if rule.get("no_saturday") and 6 in days:
             days.remove(6)
         if "days" in rule:
             explicit = rule["days"]
     if explicit is not None:
         days = list(explicit)
-    return sorted(days), scolastica
+    return sorted(days), bool(scolastica), "".join(unknown)
 
 
 def extract(cfg, download=False):
-    sources, legends = cfg["sources"], cfg.get("legends", {})
-    default_days = cfg["default_days"]
-
     if download:
         CACHE.mkdir(exist_ok=True)
-        for key, src in sources.items():
-            dest = CACHE / src["file"]
+        for src in cfg["sources"].values():
             print(f"  scarico {src['file']} …", file=sys.stderr)
-            urllib.request.urlretrieve(src["url"], dest)
+            urllib.request.urlretrieve(src["url"], CACHE / src["file"])
 
-    # una pagina serve piu' rotte: si apre una volta sola
-    pages = {}
-    for key, src in sources.items():
+    pdfs = {}
+    for key, src in cfg["sources"].items():
         path = CACHE / src["file"]
         if not path.exists():
             sys.exit(f"manca {path} — rilanciare con --download")
-        pages[key] = pdfplumber.open(path)
+        pdfs[key] = pdfplumber.open(path)
 
-    schedule, report = {}, []
-    for line_id, line in cfg["lines"].items():
-        schedule[line_id] = {}
-        for route, rc in line["routes"].items():
-            page = pages[rc["source"]].pages[rc["page"] - 1]
-            table = page.extract_table()
-            if not table:
-                report.append((line_id, route, 0, 0, "—", "—", "NESSUNA TABELLA"))
-                continue
+    default_days = cfg["default_days"]
+    out, report = [], []
 
-            hdr_i = header_row_index(table)
-            noted = has_note_column(table, hdr_i)
-            lined = has_line_column(table, hdr_i)
-            legend = legends.get(f"{rc['source']}:{rc['page']}", {})
+    for d in cfg["directions"]:
+        page = pdfs[d["source"]].pages[d["page"] - 1]
+        table = (page.extract_tables()[d["table_index"]]
+                 if "table_index" in d else page.extract_table())
+        if not table:
+            report.append((d["id"], 0, 0, 0, 0, 0, "—", "—")); continue
 
-            trips = []
-            for row in table[hdr_i + 1:]:
-                if rc["dep_col"] >= len(row) or rc["arr_col"] >= len(row):
-                    continue
-                dep = parse_time(row[rc["dep_col"]])
-                arr = parse_time(row[rc["arr_col"]])
-                if not dep or not arr:
-                    continue  # fermata non servita da questa corsa
+        hi = header_row(table)
+        bands = grey_bands(page) if d.get("grey") == "weekdays" else []
+        order, cols = d["order"], d["columns"]
+        legend = d.get("legend", {})
+        runs = []
 
-                codes = ""
-                if noted and row[0]:
-                    # solo lettere maiuscole isolate: il resto e' intestazione o rumore
-                    raw = row[0].replace("\n", " ").strip()
-                    if len(raw) <= 4:
-                        codes = "".join(ch for ch in raw if ch.isalpha() and ch.isupper())
+        for row in table[hi + 1:]:
+            times = [parse_time(row[cols[s]]) if cols[s] < len(row) else None for s in order]
+            if sum(t is not None for t in times) < 2:
+                continue                       # una corsa serve almeno due fermate
 
-                days, scolastica = apply_codes(codes, legend, default_days)
-                trip = {"dep": dep, "arr": arr, "days": days, "scolastica": scolastica}
+            days, scolastica, unknown = apply_codes(
+                read_codes(row, d.get("note_col")), legend, default_days)
 
-                # La tabella della linea unificata ospita anche corse di varianti
-                # (1T, 1G, 4L, 13X…): vanno mostrate, ma etichettate per quello che sono.
-                if lined and row[1]:
-                    variant = row[1].replace("\n", " ").strip().strip("/")
-                    if variant and variant.lower() != "linea":
-                        trip["variant"] = variant
+            # Fascia grigia: la corsa e' evidenziata se vi cadono almeno due dei suoi orari.
+            present = {t for t in times if t}
+            if any(len(present & band) >= 2 for band in bands) and 6 in days:
+                days.remove(6)
 
-                if rc.get("side"):
-                    trip["side"] = rc["side"]
-                if codes:
-                    trip["note"] = codes
-                trips.append(trip)
+            run = {"t": times}
+            if days != default_days:
+                run["days"] = days
+            if scolastica:
+                run["scolastica"] = True
+            if unknown:
+                run["nota_ignota"] = unknown
+            lc = d.get("line_col")
+            if lc is not None and lc < len(row) and row[lc]:
+                variant = row[lc].replace("\n", " ").strip().strip("/")
+                if variant and variant.lower() != "linea" and len(variant) <= 6:
+                    run["variant"] = variant
+            runs.append(run)
 
-            trips.sort(key=lambda t: t["dep"])
-            schedule[line_id][route] = trips
-            no_sat = sum(1 for t in trips if 6 not in t["days"])
-            scol = sum(1 for t in trips if t["scolastica"])
-            report.append((line_id, route, len(trips), no_sat, scol,
-                           trips[0]["dep"] if trips else "—",
-                           trips[-1]["dep"] if trips else "—"))
+        runs.sort(key=lambda r: next((x for x in r["t"] if x), "99:99"))
 
-    for p in pages.values():
+        entry = {"id": d["id"], "line": d["line"], "stops": order, "runs": runs}
+        if d.get("side"):
+            entry["side"] = d["side"]
+        if d.get("approx"):
+            entry["approx"] = d["approx"]
+        out.append(entry)
+
+        first = next((x for r in runs for x in r["t"] if x), "—")
+        last = max((x for r in runs for x in r["t"] if x), default="—")
+        report.append((d["id"], len(runs),
+                       sum(1 for r in runs if 6 not in r.get("days", default_days)),
+                       sum(1 for r in runs if r.get("scolastica")),
+                       sum(1 for r in runs if r.get("nota_ignota")),
+                       len(d.get("approx", {})), first, last))
+
+    for p in pdfs.values():
         p.close()
 
-    schedule["_meta"] = {
-        "generated": date.today().isoformat(),
-        "effective": cfg["effective"],
-        "draft": cfg.get("draft", False),
-        "stops": cfg["stops"],
-        "lines": {lid: {"num": l["num"], "sub": l["sub"], "descrizione": l["descrizione"]}
-                  for lid, l in cfg["lines"].items()},
+    schedule = {
+        "_meta": {
+            "generated": date.today().isoformat(),
+            "effective": cfg["effective"],
+            "draft": cfg.get("draft", False),
+            "default_days": default_days,
+            "stops": cfg["stops"],
+            "lines": cfg["lines"],
+        },
+        "directions": out,
     }
     return schedule, report
 
 
 def print_report(report, schedule):
-    print(f"\n{'linea':<10} {'rotta':<24} {'corse':>6} {'no-sab':>7} {'scolast':>8}  {'prima':>6} {'ultima':>7}")
-    print("-" * 76)
-    for line_id, route, n, no_sat, scol, first, last in report:
-        flag = "  ⚠" if n == 0 else ""
-        print(f"{line_id:<10} {route:<24} {n:>6} {no_sat:>7} {scol:>8}  {first:>6} {last:>7}{flag}")
+    print(f"\n{'direzione':<24} {'corse':>6} {'lun-ven':>8} {'scolast':>8} {'nota?':>6} {'appr':>5}  {'prima':>6} {'ultima':>7}")
+    print("-" * 82)
+    for row in report:
+        did, n, wk, sc, unk, ap, first, last = row
+        flag = "  ⚠ VUOTA" if n == 0 else ""
+        print(f"{did:<24} {n:>6} {wk:>8} {sc:>8} {unk:>6} {ap:>5}  {first:>6} {last:>7}{flag}")
+    print("-" * 82)
+    print(f"{'TOTALE':<24} {sum(r[1] for r in report):>6}")
 
-    total = sum(r[2] for r in report)
-    print("-" * 76)
-    print(f"{'TOTALE':<10} {'':<24} {total:>6}")
-
-    notes = Counter()
-    for line_id, routes in schedule.items():
-        if line_id.startswith("_"):
-            continue
-        for trips in routes.values():
-            for t in trips:
-                if t.get("note"):
-                    notes[t["note"]] += 1
-    if notes:
-        print("\ncodici nota incontrati:", dict(notes))
+    unknown = Counter()
+    for d in schedule["directions"]:
+        for r in d["runs"]:
+            if r.get("nota_ignota"):
+                unknown[r["nota_ignota"]] += 1
+    if unknown:
+        print("\ncodici fuori legenda (corse mostrate ma segnalate):", dict(unknown))
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dry-run", action="store_true", help="stampa il report senza scrivere")
-    ap.add_argument("--download", action="store_true", help="riscarica i PDF dagli URL")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--download", action="store_true")
     ap.add_argument("--out", default=str(ROOT.parent / "schedule.json"))
     args = ap.parse_args()
 
@@ -226,9 +259,10 @@ def main():
     if args.dry_run:
         print("\n(dry-run: schedule.json non e' stato scritto)")
         return
-    Path(args.out).write_text(
-        json.dumps(schedule, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"\nscritto {args.out}")
+    Path(args.out).write_text(json.dumps(schedule, ensure_ascii=False, separators=(",", ":")),
+                              encoding="utf-8")
+    kb = Path(args.out).stat().st_size / 1024
+    print(f"\nscritto {args.out}  ({kb:.0f} KB)")
 
 
 if __name__ == "__main__":
