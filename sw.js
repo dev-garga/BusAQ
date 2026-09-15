@@ -1,14 +1,16 @@
-// Bump della versione a ogni rilascio: senza, il browser continua a servire
-// dalla cache la versione precedente e l'aggiornamento non arriva mai.
-const CACHE = 'bus-aq-v4';
+// Percorsi RELATIVI di proposito: si risolvono rispetto alla posizione del
+// service worker, quindi l'app continua a funzionare se il repository (e con
+// esso l'URL di GitHub Pages) viene rinominato. Con percorsi assoluti una
+// rinomina fa fallire addAll e l'app perde del tutto la modalita' offline.
+const CACHE = 'bus-aq-v5';
 const FILES = [
-  '/bus-aquila/',
-  '/bus-aquila/index.html',
-  '/bus-aquila/schedule.json',
-  '/bus-aquila/manifest.json',
-  '/bus-aquila/icon-180.png',
-  '/bus-aquila/icon-192.png',
-  '/bus-aquila/icon-512.png',
+  './',
+  './index.html',
+  './schedule.json',
+  './manifest.json',
+  './icon-180.png',
+  './icon-192.png',
+  './icon-512.png',
 ];
 
 self.addEventListener('install', e =>
@@ -21,5 +23,5 @@ self.addEventListener('activate', e =>
 );
 self.addEventListener('fetch', e =>
   e.respondWith(caches.match(e.request).then(r =>
-    r || fetch(e.request).catch(() => caches.match('/bus-aquila/index.html'))))
+    r || fetch(e.request).catch(() => caches.match('./index.html'))))
 );
