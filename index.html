@@ -68,7 +68,8 @@
     width: 100%; min-height: 54px; padding: 8px 4px; text-align: left;
     display: flex; flex-direction: column; justify-content: center; gap: 2px;
   }
-  .field:active { background: rgba(255,255,255,.04); }
+  .field { transition: transform .14s ease, background .16s ease; }
+  .field:active { background: rgba(255,255,255,.04); transform: scale(.985); }
   .field .lab { font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); }
   .field .val { font-size: 15.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .route-sep { height: 1px; background: var(--line2); }
@@ -77,6 +78,7 @@
     border-left: 1px solid var(--line2); color: var(--muted);
   }
   .swap:active { background: rgba(255,255,255,.05); }
+  .swap svg { transition: transform .45s cubic-bezier(.34,1.3,.5,1); }
 
   /* ── Tratte recenti ── */
   /* Due sole tratte, impilate: con i nomi per esteso ci stanno in larghezza e non
@@ -88,7 +90,8 @@
     background: var(--surface); border: 1px solid var(--line);
     font-size: 13px; font-weight: 600; color: var(--muted);
   }
-  .recent:active { background: var(--surface2); }
+  .recent { transition: transform .14s ease, background .18s ease, border-color .18s ease, color .18s ease; }
+  .recent:active { background: var(--surface2); transform: scale(.985); }
   .recent.on { color: var(--text); border-color: rgba(110,168,254,.45); background: rgba(110,168,254,.10); }
   .recent i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
   .recent.on i { background: var(--accent); }
@@ -119,6 +122,23 @@
   }
   .card.next { border-color: rgba(110,168,254,.42); background: rgba(110,168,254,.07); }
   .card.past { opacity: .45; }
+  .card[data-in] { animation: schedaIn .32s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 45ms); }
+  @keyframes schedaIn { from { opacity: 0; transform: translateY(12px) scale(.99); } }
+
+  /* L'alone pulsa solo sulla prossima corsa entro cinque minuti: e' un'informazione
+     (sta per partire), non un ornamento, e sparisce da se'. Sta su uno pseudo-elemento
+     perche' la scheda usa gia' la sua animazione per l'entrata. */
+  .card.next.imminente::after {
+    content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+    border: 1px solid var(--accent); opacity: 0;
+    animation: respiro 2.4s ease-out infinite;
+  }
+  /* Solo opacita' e trasformazione: animare box-shadow farebbe ridipingere la scheda
+     a ogni fotogramma, all'infinito, per un alone. */
+  @keyframes respiro {
+    0%        { opacity: .45; transform: scale(1); }
+    70%, 100% { opacity: 0;   transform: scale(1.035); }
+  }
 
   .badge { grid-row: span 2; align-self: stretch; display: flex; flex-direction: column;
            align-items: center; justify-content: center; gap: 2px;
@@ -138,6 +158,9 @@
   .cd.now  { color: var(--green); }
   .cd.soon { color: #f0b547; }
   .cd.past { color: var(--faint); font-weight: 600; }
+  .cd { transition: color .3s ease; }
+  .cd.bump { animation: guizzo .34s cubic-bezier(.2,.8,.2,1); }
+  @keyframes guizzo { 40% { transform: scale(1.16); } }
 
   .hint { grid-column: 1 / -1; margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--line2);
           font-size: 11.5px; font-weight: 600; color: var(--green); }
@@ -156,14 +179,17 @@
   .empty { text-align: center; padding: 56px 20px; color: var(--muted); font-size: 13.5px; line-height: 1.6; }
   .empty strong { display: block; color: var(--text); font-size: 16px; font-weight: 650; margin-bottom: 5px; }
   .empty.inline { padding: 34px 20px 24px; }
+  .empty { animation: schedaIn .3s ease both; }
+  .banner { animation: schedaIn .3s ease both; }
 
   .foot { padding: 0 var(--pad) 16px; text-align: center; font-size: 11px; color: var(--faint); line-height: 1.5; }
   .foot .draft { color: #f0b547; }
 
   /* ── Selettore fermate ── */
-  .sheet-bg { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.55);
-              align-items: flex-end; justify-content: center; }
-  .sheet-bg.open { display: flex; }
+  .sheet-bg { display: flex; position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.55);
+              align-items: flex-end; justify-content: center;
+              opacity: 0; visibility: hidden; transition: opacity .24s ease, visibility .24s; }
+  .sheet-bg.open { opacity: 1; visibility: visible; }
   .sheet {
     width: 100%; max-width: 480px; background: var(--surface); border: 1px solid var(--line);
     border-bottom: none; border-radius: 20px 20px 0 0;
@@ -176,7 +202,9 @@
               color: var(--faint); padding: 0 8px 10px; }
   .opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px;
          padding: 10px 12px; border-radius: var(--r-md); text-align: left; }
+  .opt { animation: voceIn .26s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 26ms); }
   .opt:active { background: var(--surface2); }
+  @keyframes voceIn { from { opacity: 0; transform: translateY(8px); } }
   .opt.on { background: rgba(110,168,254,.12); }
   .opt i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex-shrink: 0; }
   .opt.on i { background: var(--accent); }
@@ -185,6 +213,13 @@
   .opt .sub { font-size: 11px; line-height: 1.35; color: var(--faint); margin-top: 3px; display: block; }
   .opt .ln { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--faint); white-space: nowrap; }
   .opt[disabled] { opacity: .35; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 1ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -385,7 +420,7 @@ function openPicker(which) {
   const fixed = which === 'origin' ? dest : origin;
   const current = which === 'origin' ? origin : dest;
   $('sheet-title').textContent = which === 'origin' ? 'Fermata di partenza' : 'Fermata di arrivo';
-  $('sheet-opts').innerHTML = stopIds.filter(s => s !== fixed).map(s => {
+  $('sheet-opts').innerHTML = stopIds.filter(s => s !== fixed).map((s, i) => {
     const [a, b] = which === 'origin' ? [s, fixed] : [fixed, s];
     const ok = served.has(key(a, b));
     const lines = ok ? linesFor(a, b) : [];
@@ -395,7 +430,8 @@ function openPicker(which) {
     const ln = !lines.length ? ''
       : lines.length > 4 ? lines.length + ' linee'
       : (lines.length > 1 ? 'linee ' : 'linea ') + lines.join(' &middot; ');
-    return '<button class="opt' + (s === current ? ' on' : '') + '" data-stop="' + s + '"' + (ok ? '' : ' disabled') + '>' +
+    return '<button class="opt' + (s === current ? ' on' : '') + '" data-stop="' + s + '"' +
+      ' style="--i:' + i + '"' + (ok ? '' : ' disabled') + '>' +
       '<i></i><span class="txt"><span class="nm">' + label(s) + '</span>' +
       (note ? '<span class="sub">' + note + '</span>' : '') + '</span>' +
       '<span class="ln">' + ln + '</span></button>';
@@ -407,7 +443,40 @@ const closePicker = () => $('sheet-bg').classList.remove('open');
 // ── Eventi ────────────────────────────────────
 $('f-origin').addEventListener('click', () => openPicker('origin'));
 $('f-dest').addEventListener('click', () => openPicker('dest'));
-$('swap').addEventListener('click', () => { if (served.has(key(dest, origin))) setRoute(dest, origin); });
+const pocoMoto = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let giroFreccia = 0;
+
+$('swap').addEventListener('click', () => {
+  if (!served.has(key(dest, origin))) return;
+  giroFreccia += 180;
+  const icona = $('swap').querySelector('svg');
+  if (icona) icona.style.transform = 'rotate(' + giroFreccia + 'deg)';
+
+  if (pocoMoto() || !$('v-origin').animate) { setRoute(dest, origin); return; }
+
+  const esce = (el, dy) => el.animate(
+    [{ transform: 'none', opacity: 1 }, { transform: 'translateY(' + dy + 'px)', opacity: 0 }],
+    { duration: 140, easing: 'ease-in', fill: 'forwards' });
+  const entra = (el, dy) => el.animate(
+    [{ transform: 'translateY(' + dy + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+    { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' });
+
+  const a = esce($('v-origin'), 20), b = esce($('v-dest'), -20);
+  // Il cambio di tratta e' scandito da un timer, non dalla fine dell'animazione: con
+  // la pagina in secondo piano le animazioni non avanzano e la promessa `finished`
+  // non si risolve mai, quindi lo scambio non avverrebbe affatto.
+  setTimeout(() => {
+    setRoute(dest, origin);
+    // Il fermo immagine dell'uscita va annullato, altrimenti riprende il sopravvento
+    // alla fine del rientro e i due nomi sparirebbero.
+    a.cancel(); b.cancel();
+    const c = entra($('v-origin'), -20), d = entra($('v-dest'), 20);
+    // Stessa ragione: se la pagina non sta disegnando, il rientro resta fermo sul
+    // primo fotogramma — cioe' invisibile. Il timer lo annulla comunque e i nomi
+    // tornano al loro stato naturale.
+    setTimeout(() => { c.cancel(); d.cancel(); }, 260);
+  }, 140);
+});
 $('recents').addEventListener('click', e => {
   const b = e.target.closest('.recent');
   if (b) setRoute(recents[b.dataset.i][0], recents[b.dataset.i][1], false);
@@ -493,7 +562,9 @@ function markFastest(future, count) {
 }
 
 // ── Rendering ─────────────────────────────────
-function cardHTML(t, isNext, isPast) {
+// `ord` e' la posizione fra le schede NUOVE: quelle gia' a schermo non rientrano,
+// altrimenti aggiungere tre corse in fondo farebbe ripartire l'intero elenco.
+function cardHTML(t, isNext, isPast, ord) {
   const ln = meta.lines[t.line] || { num: '?', sub: '' };
   const [cd, cdClass] = diffLabel(t.diff);
   const sub = ((t.variant && t.variant !== ln.num ? t.variant : ln.sub) || '').replace(/\s+/g, '');
@@ -510,7 +581,9 @@ function cardHTML(t, isNext, isPast) {
   else if (t.ignota)    tag = '<span class="tag bad">nota ' + t.ignota + '</span>';
   else if (t.scolastica) tag = '<span class="tag">scolastica</span>';
 
-  return '<div class="card' + (isNext ? ' next' : '') + (isPast ? ' past' : '') + '">' +
+  return '<div class="card' + (isNext ? ' next' : '') + (isPast ? ' past' : '') +
+      (isNext && imminente(t) ? ' imminente' : '') + '"' +
+      (ord >= 0 ? ' data-in style="--i:' + ord + '"' : '') + '>' +
     '<div class="badge"><span class="num">' + ln.num + '</span>' + (sub ? '<span class="sub">' + sub + '</span>' : '') + '</div>' +
     '<div class="times"><span class="dep">' + t.dep + '</span><span class="arr">' + t.arr + '</span></div>' +
     '<div class="cd ' + cdClass + '">' + cd + '</div>' +
@@ -518,6 +591,29 @@ function cardHTML(t, isNext, isPast) {
     (t.fastest ? '<div class="hint">' + (t.sameDep ? 'Stessa partenza' : 'Parte dopo') +
         ', ma arriva ' + t.fastest + ' min prima</div>' : '') +
     tag + '</div>';
+}
+
+const imminente = t => t.diff >= -2 && t.diff <= 5;
+
+// L'elenco si ricostruiva per intero ogni 30 secondi. Oltre a essere sprecato,
+// azzerava selezione e scorrimento e faceva ripartire ogni animazione: ora il
+// giro periodico tocca solo le attese, e si ridisegna quando cambia l'insieme
+// delle corse mostrate.
+let chiaviDom = [], firmaDom = '';
+
+function aggiornaAttese(list) {
+  const schede = $('cards').querySelectorAll('.card');
+  list.forEach((t, i) => {
+    const el = schede[i];
+    if (!el) return;
+    const [txt, cls] = diffLabel(t.diff);
+    const cd = el.querySelector('.cd');
+    const cambiato = cd.textContent !== txt;
+    cd.textContent = txt;
+    cd.className = 'cd ' + cls;
+    if (cambiato) { void cd.offsetWidth; cd.classList.add('bump'); }
+    el.classList.toggle('imminente', el.classList.contains('next') && imminente(t));
+  });
 }
 
 function render() {
@@ -536,8 +632,10 @@ function render() {
   } else banner.style.display = 'none';
 
   const cards = $('cards'), foot = $('foot');
+  const svuota = html => { cards.innerHTML = html; chiaviDom = []; firmaDom = ''; };
+
   if (today === 0) {
-    cards.innerHTML = '<div class="empty"><strong>Oggi è domenica</strong>AMA non effettua corse la domenica.</div>';
+    svuota('<div class="empty"><strong>Oggi è domenica</strong>AMA non effettua corse la domenica.</div>');
     foot.innerHTML = metaLine(); return;
   }
 
@@ -547,11 +645,27 @@ function render() {
     (coda || 'L’ultima da ' + label(origin) + ' a ' + label(dest) + ' è già passata.') + '</div>';
 
   if (!future.length && !past.length) {
-    cards.innerHTML = finite(''); foot.innerHTML = metaLine(); return;
+    svuota(finite('')); foot.innerHTML = metaLine(); return;
   }
 
   future.forEach(t => { delete t.fastest; delete t.sameDep; });
   const count = markFastest(future, visible);
+
+  const list = showPast ? past.slice(-3) : [];
+  const firstFuture = list.length;
+  list.push(...future.slice(0, count));
+  const left = future.length - count;
+
+  const last = future[future.length - 1];
+  const tail = !last ? ''
+    : left > 1   ? 'Altre ' + left + ' corse fino alle ' + last.dep
+    : left === 1 ? 'Un’altra corsa alle ' + last.dep
+    :              'Ultima corsa alle ' + last.dep;
+  foot.innerHTML = (tail ? tail + '<br>' : '') + metaLine();
+
+  const chiavi = list.map(t => t.line + t.dep + t.arr);
+  const firma = chiavi.join('|') + '#' + past.length + '#' + left + '#' + (showPast ? 1 : 0) + '#' + future.length;
+  if (firma === firmaDom) { aggiornaAttese(list); return; }
 
   let html = '';
   if (past.length) {
@@ -561,28 +675,22 @@ function render() {
                 : n === 1 ? 'Mostra la corsa precedente' : 'Mostra le ' + n + ' corse precedenti') + '</button>';
   }
 
-  const list = showPast ? past.slice(-3) : [];
-  const firstFuture = list.length;
-  list.push(...future.slice(0, count));
-  html += list.map((t, i) => cardHTML(t, i === firstFuture && t.diff >= -2, t.diff < -2)).join('');
+  let nuove = 0;
+  html += list.map((t, i) => {
+    const ord = chiaviDom.includes(chiavi[i]) ? -1 : nuove++;
+    return cardHTML(t, i === firstFuture && t.diff >= -2, t.diff < -2, ord);
+  }).join('');
 
   if (!future.length)
     html += finite('L’ultima è partita alle ' + past[past.length - 1].dep + '.');
 
-  const left = future.length - count;
   if (left > 0) {
     const n = Math.min(left, 3);
     html += '<button class="more" data-act="more">' +
       (n === 1 ? 'Mostra un’altra corsa' : 'Mostra altre ' + n + ' corse') + '</button>';
   }
   cards.innerHTML = html;
-
-  const last = future[future.length - 1];
-  const tail = !last ? ''
-    : left > 1   ? 'Altre ' + left + ' corse fino alle ' + last.dep
-    : left === 1 ? 'Un’altra corsa alle ' + last.dep
-    :              'Ultima corsa alle ' + last.dep;
-  foot.innerHTML = (tail ? tail + '<br>' : '') + metaLine();
+  chiaviDom = chiavi; firmaDom = firma;
 }
 
 function metaLine() {
