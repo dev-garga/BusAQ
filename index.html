@@ -80,23 +80,23 @@
   .swap:active { background: rgba(255,255,255,.05); }
   .swap svg { transition: transform .45s cubic-bezier(.34,1.3,.5,1); }
 
-  /* ── Tratte recenti ── */
+  /* ── Tratte predefinite ── */
   /* Due sole tratte, impilate: con i nomi per esteso ci stanno in larghezza e non
      serve far scorrere niente. */
-  .recents { display: flex; flex-direction: column; gap: 6px; padding: 10px var(--pad) 0; }
-  .recent {
+  .preferite { display: flex; flex-direction: column; gap: 6px; padding: 10px var(--pad) 0; }
+  .scorciatoia {
     display: flex; align-items: center; gap: 9px; width: 100%; min-height: 40px;
     padding: 9px 13px; border-radius: var(--r-md); text-align: left;
     background: var(--surface); border: 1px solid var(--line);
     font-size: 13px; font-weight: 600; color: var(--muted);
   }
-  .recent { transition: transform .14s ease, background .18s ease, border-color .18s ease, color .18s ease; }
-  .recent:active { background: var(--surface2); transform: scale(.985); }
-  .recent.on { color: var(--text); border-color: rgba(110,168,254,.45); background: rgba(110,168,254,.10); }
-  .recent i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
-  .recent.on i { background: var(--accent); }
-  .recent span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .recent b { font-weight: 600; color: var(--faint); margin: 0 3px; }
+  .scorciatoia { transition: transform .14s ease, background .18s ease, border-color .18s ease, color .18s ease; }
+  .scorciatoia:active { background: var(--surface2); transform: scale(.985); }
+  .scorciatoia.on { color: var(--text); border-color: rgba(110,168,254,.45); background: rgba(110,168,254,.10); }
+  .scorciatoia i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+  .scorciatoia.on i { background: var(--accent); }
+  .scorciatoia span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .scorciatoia b { font-weight: 600; color: var(--faint); margin: 0 3px; }
 
   /* ── Avviso giorno ── */
   /* Piu' minuta delle tratte rapide: e' un filtro, non una scelta di pari rango. */
@@ -268,7 +268,7 @@
   </button>
 </div>
 
-<div class="recents" id="recents"></div>
+<div class="preferite" id="preferite"></div>
 
 <div class="days" id="days">
   <button class="day on" data-day="oggi">Oggi</button>
@@ -294,7 +294,7 @@
 // l'organizzazione delle linee AMA, che cambia ogni anno. Nessuna fermata e'
 // privilegiata: qualunque coppia servita da almeno una corsa e' selezionabile.
 let meta = null, dirs = [], stopIds = [], served = new Set();
-let origin = null, dest = null, recents = [];
+let origin = null, dest = null, preferite = [];
 let pickFor = null, pickAt = 0;
 let showAll = false, showPast = false, visible = 3;
 let giorno = 'oggi';                                   // 'oggi' | 'domani'
@@ -302,18 +302,25 @@ let giorno = 'oggi';                                   // 'oggi' | 'domani'
 // Il giorno della settimana di cui si stanno guardando gli orari.
 const dowMostrato = () => (new Date().getDay() + (giorno === 'domani' ? 1 : 0)) % 7;
 
-const PREF = 'busaq.route.v1';
+// v2: prima le due tratte in cima erano "recenti" e si riordinavano a ogni
+// selezione. Sono scorciatoie fisse, non una cronologia: la chiave cambia per non
+// ereditare un elenco gia' rimescolato.
+const PREF = 'busaq.route.v2';
 const DEFAULT_ROUTE = ['fontana_luminosa', 'uni'];
 const GUADAGNO_MIN = 5;   // sotto questa soglia il consiglio sarebbe rumore
 const FINESTRA_MIN = 30;  // quanto avanti guardare per trovare un arrivo migliore
-const MAX_RECENTS = 2;   // due tratte impilate, senza scorrimento
+const QUANTE_PREFERITE = 2;   // due tratte impilate, senza scorrimento
 
 const $ = id => document.getElementById(id);
 const key = (a, b) => a + '>' + b;
 
+// Chiavi delle versioni precedenti, rimaste sui dispositivi dopo i due cambi di
+// modello: si tolgono una volta invece di lasciarle li' per sempre.
+try { ['busaq.stops.v3', 'busaq.route.v1'].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+
 function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREF)) || {}; } catch (e) { return {}; } }
 function savePrefs() {
-  try { localStorage.setItem(PREF, JSON.stringify({ origin, dest, recents })); } catch (e) {}
+  try { localStorage.setItem(PREF, JSON.stringify({ origin, dest, preferite })); } catch (e) {}
 }
 
 // ── Helper ────────────────────────────────────
@@ -408,11 +415,16 @@ fetch('schedule.json').then(r => r.json()).then(data => {
 
 function restore() {
   const p = loadPrefs();
-  recents = (p.recents || []).filter(r => served.has(key(r[0], r[1]))).slice(0, MAX_RECENTS);
-  if (!recents.length) {
-    const [a, b] = DEFAULT_ROUTE;
-    recents = [[a, b], [b, a]].filter(r => served.has(key(r[0], r[1])));
+  const [ca, cb] = DEFAULT_ROUTE;
+  const valide = r => Array.isArray(r) && served.has(key(r[0], r[1]));
+  // Le predefinite si completano coi valori di riserva se ne mancano: due righe
+  // sempre, anche se una tratta sparisce da un aggiornamento degli orari.
+  preferite = (p.preferite || []).filter(valide);
+  for (const r of [[ca, cb], [cb, ca]]) {
+    if (preferite.length >= QUANTE_PREFERITE) break;
+    if (valide(r) && !preferite.some(x => x[0] === r[0] && x[1] === r[1])) preferite.push(r);
   }
+  preferite = preferite.slice(0, QUANTE_PREFERITE);
   if (p.origin && p.dest && served.has(key(p.origin, p.dest))) { origin = p.origin; dest = p.dest; return; }
   if (served.has(key(DEFAULT_ROUTE[0], DEFAULT_ROUTE[1]))) { [origin, dest] = DEFAULT_ROUTE; return; }
   [origin, dest] = [...served][0].split('>');
@@ -426,11 +438,8 @@ function tick() {
 tick(); setInterval(tick, 10000);
 
 // ── Tratta ────────────────────────────────────
-function setRoute(a, b, remember) {
+function setRoute(a, b) {
   origin = a; dest = b;
-  if (remember !== false) {
-    recents = [[a, b], ...recents.filter(r => r[0] !== a || r[1] !== b)].slice(0, MAX_RECENTS);
-  }
   savePrefs(); visible = 3; showPast = false;
   paintRoute(); render();
 }
@@ -438,9 +447,9 @@ function setRoute(a, b, remember) {
 function paintRoute() {
   $('v-origin').textContent = label(origin);
   $('v-dest').textContent = label(dest);
-  $('recents').style.display = recents.length ? 'flex' : 'none';
-  $('recents').innerHTML = recents.map((r, i) =>
-    '<button class="recent' + (r[0] === origin && r[1] === dest ? ' on' : '') + '" data-i="' + i + '">' +
+  $('preferite').style.display = preferite.length ? 'flex' : 'none';
+  $('preferite').innerHTML = preferite.map((r, i) =>
+    '<button class="scorciatoia' + (r[0] === origin && r[1] === dest ? ' on' : '') + '" data-i="' + i + '">' +
       '<i></i><span>' + label(r[0], true) + '<b>&rarr;</b>' + label(r[1], true) + '</span></button>').join('');
 }
 
@@ -522,9 +531,9 @@ $('swap').addEventListener('click', () => {
     setTimeout(() => { c.cancel(); d.cancel(); }, 260);
   }, 140);
 });
-$('recents').addEventListener('click', e => {
-  const b = e.target.closest('.recent');
-  if (b) setRoute(recents[b.dataset.i][0], recents[b.dataset.i][1], false);
+$('preferite').addEventListener('click', e => {
+  const b = e.target.closest('.scorciatoia');
+  if (b) setRoute(preferite[b.dataset.i][0], preferite[b.dataset.i][1]);
 });
 $('banner-btn').addEventListener('click', () => {
   showAll = !showAll;
