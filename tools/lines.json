@@ -1,0 +1,123 @@
+{
+  "_comment": [
+    "Configurazione per extract_schedule.py — orari AMA L'Aquila in vigore dal 16/09/2026.",
+    "Ogni anno AMA ripubblica i PDF cambiando impaginazione: quando succede si aggiorna",
+    "QUESTO file, non il codice. Usare tools/inspect_pdf.py per rileggere la struttura.",
+    "",
+    "Gli indici di colonna sono 0-based e si riferiscono alla tabella estratta da",
+    "pdfplumber (page.extract_table()). Le intestazioni dei PDF AMA sono ruotate e",
+    "tornano col testo rovesciato: 'sublanimret' = 'terminalbus'.",
+    "",
+    "I giorni usano la convenzione JS Date.getDay(): 0=domenica … 6=sabato.",
+    "AMA non pubblica orari domenicali per queste linee: il servizio non esiste."
+  ],
+
+  "effective": "2026-09-16",
+  "draft": true,
+  "draft_note": "Bozze Rev 1 allegate al comunicato prot. 1779 del 07/09/2026. Le versioni definitive appariranno nella sezione 'Linee e orari' del sito: usare check_updates.py.",
+
+  "default_days": [1, 2, 3, 4, 5, 6],
+
+  "sources": {
+    "orari1": {
+      "file": "Orari-1-parte_Rev__1.pdf",
+      "url": "https://www.ama.laquila.it/wp-content/uploads/2026/09/Orari-1-parte_Rev__1.pdf"
+    },
+    "orari2": {
+      "file": "Orari-2-parte_Rev_1.pdf",
+      "url": "https://www.ama.laquila.it/wp-content/uploads/2026/09/Orari-2-parte_Rev_1.pdf"
+    }
+  },
+
+  "stops": {
+    "fontana_luminosa": { "label": "Fontana Luminosa",     "short": "Fontana Lum." },
+    "via_strinella":    { "label": "Via Strinella",        "short": "Strinella" },
+    "terminal":         { "label": "Terminal Collemaggio", "short": "Collemaggio" },
+    "aquilone":         { "label": "L'Aquilone",           "short": "Aquilone" },
+    "uni":              { "label": "Università Coppito",   "short": "Coppito" }
+  },
+
+  "_legend_comment": [
+    "Le lettere nella colonna 'note' hanno significato DIVERSO da pagina a pagina:",
+    "su p4 'A' = non si effettua il sabato, su p6 'A' = variante di percorso.",
+    "Per questo la legenda è per pagina. Codici combinati come 'SA' o 'BS' vanno",
+    "letti carattere per carattere. Un codice mappato a {} è solo informativo",
+    "(deviazioni di percorso) e non incide sul calendario."
+  ],
+
+  "legends": {
+    "orari1:3": {
+      "S": { "scolastica": true, "no_saturday": true },
+      "A": { "scolastica": true, "no_saturday": true }
+    },
+    "orari1:4": {
+      "S": { "scolastica": true, "no_saturday": true },
+      "A": { "no_saturday": true },
+      "B": { "scolastica": true, "days": [1, 5] },
+      "C": {},
+      "T": {}
+    },
+    "orari1:6": {
+      "S": { "scolastica": true },
+      "A": {},
+      "B": {},
+      "T": {}
+    }
+  },
+
+  "lines": {
+    "linea1": {
+      "num": "1",
+      "sub": "",
+      "descrizione": "Terminalbus – Università Coppito – L'Aquilone (unificazione delle ex linee 1 e 4)",
+      "routes": {
+        "fontana_luminosa_uni": { "source": "orari1", "page": 3, "dep_col": 3, "arr_col": 12, "side": "università",
+                                  "approx": "AMA non pubblica un orario per Fontana Luminosa su questa linea benché l'itinerario la includa: si usa la colonna 'viale gran sasso', fermata adiacente." },
+        "terminal_uni":         { "source": "orari1", "page": 3, "dep_col": 2,  "arr_col": 12, "side": "università" },
+        "uni_aquilone":         { "source": "orari1", "page": 3, "dep_col": 12, "arr_col": 16 },
+        "uni_fontana_luminosa": { "source": "orari1", "page": 4, "dep_col": 6,  "arr_col": 16, "side": "ospedale",
+                                  "approx": "come sopra: colonna 'viale gran sasso'." },
+        "uni_terminal":         { "source": "orari1", "page": 4, "dep_col": 6,  "arr_col": 17, "side": "ospedale" },
+        "aquilone_uni":         { "source": "orari1", "page": 4, "dep_col": 2,  "arr_col": 6,  "side": "ospedale" }
+      }
+    },
+
+    "lineaA": {
+      "num": "A",
+      "sub": "",
+      "descrizione": "Anello ex EST: Terminalbus – Strinella – Fontana Luminosa – via Vetoio – Stazione FS – Terminalbus",
+      "routes": {
+        "terminal_uni":         { "source": "orari1", "page": 1, "dep_col": 0, "arr_col": 7, "side": "università" },
+        "via_strinella_uni":    { "source": "orari1", "page": 1, "dep_col": 1, "arr_col": 7, "side": "università" },
+        "fontana_luminosa_uni": { "source": "orari1", "page": 1, "dep_col": 2, "arr_col": 7, "side": "università" },
+        "uni_terminal":         { "source": "orari1", "page": 1, "dep_col": 7, "arr_col": 14 }
+      }
+    },
+
+    "lineaB": {
+      "num": "B",
+      "sub": "",
+      "descrizione": "Anello ex OVEST, senso opposto alla A",
+      "routes": {
+        "terminal_uni":         { "source": "orari1", "page": 2, "dep_col": 0, "arr_col": 7,  "side": "ospedale" },
+        "uni_fontana_luminosa": { "source": "orari1", "page": 2, "dep_col": 7, "arr_col": 12, "side": "ospedale" },
+        "uni_via_strinella":    { "source": "orari1", "page": 2, "dep_col": 7, "arr_col": 13, "side": "ospedale" },
+        "uni_terminal":         { "source": "orari1", "page": 2, "dep_col": 7, "arr_col": 14, "side": "ospedale" }
+      }
+    },
+
+    "linea2ut": {
+      "num": "2",
+      "sub": "UT",
+      "descrizione": "Circolare Terminalbus – Stazione – Università Coppito – Optimes – L'Aquilone",
+      "routes": {
+        "aquilone_uni":         { "source": "orari1", "page": 6, "dep_col": 3,  "arr_col": 5 },
+        "uni_terminal":         { "source": "orari1", "page": 6, "dep_col": 5,  "arr_col": 9 },
+        "terminal_uni":         { "source": "orari1", "page": 6, "dep_col": 9,  "arr_col": 13 },
+        "fontana_luminosa_uni": { "source": "orari1", "page": 6, "dep_col": 11, "arr_col": 13,
+                                  "approx": "la 2U non ha un punto orario a Fontana Luminosa: si usa 'viale croce rossa', adiacente." },
+        "uni_aquilone":         { "source": "orari1", "page": 6, "dep_col": 13, "arr_col": 16 }
+      }
+    }
+  }
+}

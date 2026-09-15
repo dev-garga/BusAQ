@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bus AQ</title>
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <meta name="theme-color" content="#0a0c12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,128 +14,145 @@
 <style>
   :root {
     --bg: #0a0c12;
-    --glass:         rgba(30, 34, 48, 0.55);
-    --glass-strong:  rgba(40, 46, 64, 0.70);
-    --glass-border:  rgba(255, 255, 255, 0.08);
-    --glass-edge:    rgba(255, 255, 255, 0.14);
-    --text:    #f0f2f7;
-    --muted:   rgba(240, 242, 247, 0.58);
-    --mute2:   rgba(240, 242, 247, 0.34);
-    --accent:        #5b95ff;
-    --accent-glow:   rgba(91, 149, 255, 0.40);
-    --accent2:       #ff8e54;
-    --accent2-glow:  rgba(255, 142, 84, 0.40);
-    --green:   #4ed084;
-    --orange:  #ffb547;
-    --red:     #ff6262;
-    --radius:    20px;
-    --radius-sm: 14px;
+
+    /* Vetro: riservato ai controlli che galleggiano sopra il contenuto. */
+    --glass:        rgba(30, 34, 48, 0.55);
+    --glass-strong: rgba(40, 46, 64, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.09);
+
+    /* Contenuto: quasi opaco, cosi' il testo resta leggibile e la lista scorre
+       senza impilare decine di livelli sfocati. */
+    --card-top:     rgba(33, 38, 54, 0.93);
+    --card-bottom:  rgba(26, 30, 43, 0.95);
+    --card-border:  rgba(255, 255, 255, 0.07);
+    --inset:        rgba(255, 255, 255, 0.055);
+
+    --text:   #f0f2f7;
+    --muted:  rgba(240, 242, 247, 0.60);
+    --mute2:  rgba(240, 242, 247, 0.36);
+
+    --accent:       #5b95ff;
+    --accent-glow:  rgba(91, 149, 255, 0.40);
+    --accent2:      #ff8e54;
+    --accent2-glow: rgba(255, 142, 84, 0.40);
+    --green:  #4ed084;
+    --orange: #ffb547;
+    --red:    #ff6262;
+
+    /* Raggi concentrici: l'interno vale l'esterno meno il padding che lo separa. */
+    --r-card:    24px;
+    --r-control: 22px;
+    --r-chip:    16px;
+    --r-inner:   12px;
+
+    --pad: 18px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
+
   body {
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
     font-weight: 500;
+    -webkit-text-size-adjust: 100%;           /* iOS non deve gonfiare il testo */
     display: flex; flex-direction: column;
+    min-height: 100dvh;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     max-width: 480px; margin: 0 auto;
     position: relative; overflow-x: hidden;
   }
 
-  /* Ambient color blobs diffused behind every glass surface */
+  /* Luci ambientali diffuse dietro le superfici di vetro. */
   body::before {
     content: ''; position: fixed; inset: -10%;
     background:
-      radial-gradient(circle at 15% 12%, rgba(91, 149, 255, 0.40), transparent 45%),
-      radial-gradient(circle at 85% 88%, rgba(255, 142, 84, 0.28), transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(140, 80, 220, 0.18), transparent 55%);
+      radial-gradient(circle at 15% 12%, rgba(91, 149, 255, 0.38), transparent 45%),
+      radial-gradient(circle at 85% 88%, rgba(255, 142, 84, 0.26), transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(140, 80, 220, 0.17), transparent 55%);
     filter: blur(40px);
     z-index: -1; pointer-events: none;
   }
 
-  /* ── Header ── */
-  header {
-    padding: 22px 22px 16px;
-    display: flex; align-items: center; gap: 12px;
+  /* Bordo lucido dei controlli: piu' luminoso in alto, sfuma scendendo. */
+  .lit { position: relative; }
+  .lit::before {
+    content: ''; position: absolute; inset: 0;
+    border-radius: inherit; padding: 1px;
+    background: linear-gradient(160deg,
+      rgba(255,255,255,.30), rgba(255,255,255,.07) 42%, rgba(255,255,255,0) 72%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
   }
+
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+            backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+  }
+
+  /* Elementi toccabili: nessun menu da pressione prolungata, nessuna selezione. */
+  button, .stop-chip, .stop-option {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none; user-select: none;
+    cursor: pointer;
+  }
+
+  /* ── Header ── */
+  header { padding: 20px var(--pad) 14px; display: flex; align-items: center; gap: 12px; }
   .app-icon { font-size: 26px; line-height: 1; }
   .app-title { font-size: 18px; font-weight: 700; letter-spacing: -0.015em; line-height: 1; }
-  .app-subtitle { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 500; letter-spacing: 0.01em; }
+  .app-subtitle { font-size: 11px; color: var(--muted); margin-top: 3px; }
   .clock {
-    font-size: 16px; color: var(--text); margin-left: auto;
+    font-size: 16px; margin-left: auto;
     font-variant-numeric: tabular-nums; font-weight: 600; letter-spacing: 0.02em;
   }
 
-  /* ── Direction toggle ── */
-  .dir-bar { display: flex; gap: 10px; padding: 0 18px 12px; }
+  /* ── Direzione ── */
+  .dir-bar { display: flex; gap: 10px; padding: 0 var(--pad) 12px; }
   .dir-btn {
-    flex: 1; padding: 14px 10px;
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
+    flex: 1; min-height: 52px; padding: 13px 10px;
+    border-radius: var(--r-control);
     color: var(--muted); font-size: 13px; font-weight: 600;
-    cursor: pointer; text-align: center; line-height: 1.3;
-    letter-spacing: 0.01em;
-    box-shadow:
-      inset 0 1px 0 var(--glass-edge),
-      0 6px 24px rgba(0, 0, 0, 0.22);
-    transition: all .2s ease;
+    text-align: center; line-height: 1.3;
+    transition: color .2s ease, background .2s ease, box-shadow .2s ease;
   }
   .dir-btn.active {
-    background: linear-gradient(180deg, rgba(91, 149, 255, 0.42), rgba(91, 149, 255, 0.18));
-    border-color: rgba(91, 149, 255, 0.55);
+    background: linear-gradient(180deg, rgba(91,149,255,.42), rgba(91,149,255,.18));
+    border-color: rgba(91,149,255,.55);
     color: #fff;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.28),
-      0 0 32px var(--accent-glow),
-      0 6px 24px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 0 30px var(--accent-glow), 0 6px 24px rgba(0,0,0,.22);
   }
   .dir-btn.active.home {
-    background: linear-gradient(180deg, rgba(255, 142, 84, 0.42), rgba(255, 142, 84, 0.18));
-    border-color: rgba(255, 142, 84, 0.55);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.28),
-      0 0 32px var(--accent2-glow),
-      0 6px 24px rgba(0, 0, 0, 0.22);
+    background: linear-gradient(180deg, rgba(255,142,84,.42), rgba(255,142,84,.18));
+    border-color: rgba(255,142,84,.55);
+    box-shadow: 0 0 30px var(--accent2-glow), 0 6px 24px rgba(0,0,0,.22);
   }
 
-  /* ── Stop chips ── */
-  .stops-row { display: flex; align-items: center; gap: 10px; padding: 0 18px 16px; }
+  /* ── Fermate ── */
+  .stops-row { display: flex; align-items: center; gap: 10px; padding: 0 var(--pad) 14px; }
   .stop-chip {
-    flex: 1; padding: 11px 14px;
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex; flex-direction: column;
-    box-shadow:
-      inset 0 1px 0 var(--glass-edge),
-      0 4px 16px rgba(0, 0, 0, 0.20);
+    flex: 1; min-height: 52px; padding: 9px 13px;
+    border-radius: var(--r-chip);
+    display: flex; flex-direction: column; justify-content: center;
     transition: border-color .2s ease, box-shadow .2s ease;
   }
-  .stop-chip.active {
-    border-color: rgba(91, 149, 255, 0.40);
-    box-shadow:
-      inset 0 1px 0 var(--glass-edge),
-      0 0 18px var(--accent-glow);
-  }
+  .stop-chip.tappable:active { background: rgba(255,255,255,.07); }
   .stop-chip .label { font-size: 10px; color: var(--mute2); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-bottom: 3px; }
   .stop-chip .name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stop-chip .name .caret { color: var(--mute2); font-size: 10px; margin-left: 3px; }
   .stop-arrow { color: var(--mute2); font-size: 18px; flex-shrink: 0; }
 
-  /* ── Modal ── */
+  /* ── Modal fermate ── */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.50);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: rgba(0,0,0,.50);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     z-index: 100; align-items: flex-end; justify-content: center;
   }
   .modal-overlay.open { display: flex; }
@@ -141,189 +160,138 @@
     width: 100%; max-width: 480px;
     background: var(--glass-strong);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-bottom: none;
-    border-radius: 24px 24px 0 0;
-    padding: 20px 14px 36px;
+            backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--glass-border); border-bottom: none;
+    border-radius: 26px 26px 0 0;
+    padding: 20px 14px calc(28px + env(safe-area-inset-bottom));
     transform: translateY(100%);
-    transition: transform .3s cubic-bezier(.32, .72, 0, 1);
-    box-shadow:
-      inset 0 1px 0 var(--glass-edge),
-      0 -12px 40px rgba(0, 0, 0, 0.40);
+    transition: transform .3s cubic-bezier(.32,.72,0,1);
+    box-shadow: 0 -12px 40px rgba(0,0,0,.40);
   }
   .modal-overlay.open .modal { transform: translateY(0); }
   .modal h3 { font-size: 12px; margin-bottom: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; padding-left: 8px; }
   .stop-option {
     display: flex; align-items: center; gap: 12px;
-    padding: 14px 14px; border-radius: 14px; cursor: pointer; margin-bottom: 4px;
-    background: rgba(255, 255, 255, 0.03);
+    min-height: 52px; padding: 13px 14px;
+    border-radius: var(--r-chip); margin-bottom: 5px;
+    background: rgba(255,255,255,.035);
     border: 1px solid transparent;
-    transition: all .15s ease;
+    transition: background .15s ease;
   }
-  .stop-option:active { background: rgba(255, 255, 255, 0.06); }
-  .stop-option.selected {
-    background: rgba(91, 149, 255, 0.13);
-    border-color: rgba(91, 149, 255, 0.32);
-  }
-  .stop-option .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--mute2); flex-shrink: 0;
-  }
-  .stop-option.selected .dot {
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent-glow);
-  }
+  .stop-option:active { background: rgba(255,255,255,.08); }
+  .stop-option.selected { background: rgba(91,149,255,.14); border-color: rgba(91,149,255,.34); }
+  .stop-option .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mute2); flex-shrink: 0; }
+  .stop-option.selected .dot { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
   .stop-option span { font-size: 15px; font-weight: 500; }
+  .stop-option .lines { margin-left: auto; font-size: 10px; color: var(--mute2); font-weight: 600; letter-spacing: .04em; }
 
-  /* ── Cards ── */
-  .cards { flex: 1; overflow-y: auto; padding: 0 18px 24px; display: flex; flex-direction: column; gap: 12px; }
+  /* ── Lista corse ── */
+  .cards {
+    flex: 1; overflow-y: auto; overscroll-behavior: contain;
+    padding: 0 var(--pad) 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
 
   .card {
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
-    padding: 16px 18px;
+    /* Contenuto, non controllo: niente backdrop-filter, solo il bordo lucido. */
+    background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+    border: 1px solid var(--card-border);
+    border-radius: var(--r-card);
+    padding: 15px 17px;
     display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 4px 12px; align-items: center;
+    gap: 3px 12px; align-items: center;
     position: relative;
-    box-shadow:
-      inset 0 1px 0 var(--glass-edge),
-      0 8px 28px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 6px 20px rgba(0,0,0,.28);
     transition: opacity .2s ease;
   }
   .card.next {
-    border-color: rgba(91, 149, 255, 0.45);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.20),
-      0 0 28px rgba(91, 149, 255, 0.28),
-      0 8px 28px rgba(0, 0, 0, 0.30);
+    border-color: rgba(91,149,255,.42);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14),
+                0 0 26px rgba(91,149,255,.22), 0 6px 20px rgba(0,0,0,.30);
   }
-  .card.past { opacity: 0.50; }
+  .card.past { opacity: .48; }
 
   .linea-badge {
     grid-row: span 2;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 12px;
-    padding: 8px 12px; text-align: center; min-width: 52px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    background: var(--inset);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: var(--r-inner);
+    padding: 7px 11px; text-align: center; min-width: 50px;
   }
   .linea-badge .num { font-size: 20px; font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
-  .linea-badge .sub { font-size: 10px; color: var(--muted); margin-top: 3px; font-weight: 600; letter-spacing: 0.06em; }
+  .linea-badge .sub { font-size: 9px; color: var(--muted); margin-top: 3px; font-weight: 700; letter-spacing: .05em; }
 
   .times { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; min-width: 0; }
   .dep-time { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
-  .arr-label { font-size: 10px; color: var(--mute2); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .arr-label { font-size: 10px; color: var(--mute2); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
   .arr-time { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .stop-names { font-size: 11px; color: var(--mute2); font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .stop-names { font-size: 11px; color: var(--mute2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stop-names .side { color: var(--muted); }
 
   .countdown {
-    grid-row: span 2; text-align: center;
+    grid-row: span 2; justify-self: end; text-align: center;
     font-size: 12px; font-weight: 700;
     padding: 6px 10px; border-radius: 999px;
     white-space: nowrap; align-self: center;
     border: 1px solid transparent;
-    letter-spacing: 0.01em;
-    justify-self: end;
   }
-  .countdown.now {
-    color: var(--green);
-    background: rgba(78, 208, 132, 0.14);
-    border-color: rgba(78, 208, 132, 0.28);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 0 18px rgba(78, 208, 132, 0.22);
-  }
-  .countdown.soon {
-    color: var(--orange);
-    background: rgba(255, 181, 71, 0.13);
-    border-color: rgba(255, 181, 71, 0.28);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  }
-  .countdown.later {
-    color: var(--muted);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.05);
-  }
-  .countdown.past {
-    color: var(--mute2);
-    background: rgba(255, 255, 255, 0.04);
-    font-size: 12px; font-weight: 600;
-  }
+  .countdown.now   { color: var(--green);  background: rgba(78,208,132,.14); border-color: rgba(78,208,132,.28); }
+  .countdown.soon  { color: var(--orange); background: rgba(255,181,71,.13); border-color: rgba(255,181,71,.26); }
+  .countdown.later { color: var(--muted);  background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.05); }
+  .countdown.past  { color: var(--mute2);  background: rgba(255,255,255,.04); font-weight: 600; }
 
-  .scolastica-tag, .feriale-tag {
-    position: absolute; top: 9px; right: 10px;
+  .tag {
+    position: absolute; top: 9px; right: 11px;
     font-size: 9px; padding: 3px 7px; border-radius: 999px;
-    font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
     border: 1px solid transparent;
   }
-  .scolastica-tag { color: var(--muted); background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.05); }
-  .feriale-tag { color: var(--orange); background: rgba(255, 181, 71, 0.10); border-color: rgba(255, 181, 71, 0.22); }
+  .tag.scolastica { color: var(--muted);  background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.06); }
+  .tag.ridotta    { color: var(--orange); background: rgba(255,181,71,.10); border-color: rgba(255,181,71,.22); }
 
-  /* ── Empty state ── */
-  .empty { text-align: center; padding: 56px 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  /* ── Stato vuoto ── */
+  .empty { text-align: center; padding: 52px 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
   .empty strong { color: var(--text); font-weight: 700; display: block; margin-bottom: 6px; font-size: 17px; letter-spacing: -0.01em; }
-  .empty .empty-icon { font-size: 36px; display: block; margin-bottom: 10px; opacity: 0.7; }
+  .empty .empty-icon { font-size: 36px; display: block; margin-bottom: 10px; opacity: .75; }
 
-  /* ── Glass buttons (show more / show past) ── */
+  /* ── Pulsanti lista ── */
   .show-more, .show-past {
-    width: 100%; padding: 13px 16px;
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
-    color: var(--accent);
-    font-size: 13px; font-weight: 600;
-    cursor: pointer; letter-spacing: 0.01em;
-    box-shadow:
-      inset 0 1px 0 var(--glass-edge),
-      0 4px 18px rgba(0, 0, 0, 0.20);
+    width: 100%; min-height: 46px; padding: 12px 16px;
+    border-radius: var(--r-control);
+    color: var(--accent); font-size: 13px; font-weight: 600;
     transition: background .15s ease;
   }
-  .show-past {
-    color: var(--mute2); font-size: 12px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.025);
-  }
-  .show-more:active, .show-past:active { background: rgba(255, 255, 255, 0.06); }
+  .show-past { color: var(--mute2); font-size: 12px; }
+  .show-more:active, .show-past:active { background: rgba(255,255,255,.07); }
 
-  /* ── Day banner ── */
+  /* ── Avviso giorno ── */
   .day-banner {
-    margin: 0 18px 14px;
-    padding: 12px 16px;
-    background: linear-gradient(180deg, rgba(255, 181, 71, 0.18), rgba(255, 181, 71, 0.08));
+    margin: 0 var(--pad) 12px; padding: 10px 14px;
+    background: linear-gradient(180deg, rgba(255,181,71,.18), rgba(255,181,71,.08));
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(255, 181, 71, 0.28);
-    border-radius: var(--radius-sm);
-    font-size: 12px; font-weight: 600;
-    color: var(--orange);
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    box-shadow: inset 0 1px 0 rgba(255, 181, 71, 0.18);
+            backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,181,71,.28);
+    border-radius: var(--r-chip);
+    font-size: 12px; font-weight: 600; color: var(--orange);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    min-height: 52px;
   }
   .day-banner.sunday {
-    background: linear-gradient(180deg, rgba(255, 98, 98, 0.18), rgba(255, 98, 98, 0.08));
-    border-color: rgba(255, 98, 98, 0.28);
-    color: var(--red);
-    box-shadow: inset 0 1px 0 rgba(255, 98, 98, 0.18);
+    background: linear-gradient(180deg, rgba(255,98,98,.18), rgba(255,98,98,.08));
+    border-color: rgba(255,98,98,.28); color: var(--red);
   }
   .day-banner-toggle {
+    min-height: 34px; padding: 7px 12px;
     font-size: 11px; font-weight: 700;
-    background: rgba(0, 0, 0, 0.22);
-    border: 1px solid currentColor;
-    color: inherit;
-    padding: 5px 11px; border-radius: 999px;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    letter-spacing: 0.02em;
+    background: rgba(0,0,0,.22);
+    border: 1px solid currentColor; color: inherit;
+    border-radius: 999px; white-space: nowrap; flex-shrink: 0;
   }
 
-  /* ── Info bar ── */
-  .info-bar {
-    padding: 4px 20px 20px; font-size: 11px; color: var(--mute2); line-height: 1.5; text-align: center;
-    font-weight: 500;
-  }
+  /* ── Piè di pagina ── */
+  .info-bar { padding: 2px var(--pad) 16px; font-size: 11px; color: var(--mute2); line-height: 1.5; text-align: center; }
+  .info-bar .draft { color: var(--orange); }
 </style>
 </head>
 <body>
@@ -338,28 +306,28 @@
 </header>
 
 <div class="dir-bar">
-  <button class="dir-btn active" id="btn-uni" onclick="setDir('uni')">
+  <button class="dir-btn glass lit active" id="btn-uni" onclick="setDir('uni')">
     &#x1F3EB; Vado<br>all'Università
   </button>
-  <button class="dir-btn home" id="btn-home" onclick="setDir('home')">
+  <button class="dir-btn glass lit home" id="btn-home" onclick="setDir('home')">
     &#x1F3E0; Torno<br>a Casa
   </button>
 </div>
 
 <div class="stops-row">
-  <div class="stop-chip active" id="chip-origin" onclick="openPicker('origin')">
+  <div class="stop-chip glass lit" id="chip-origin" onclick="openPicker('origin')">
     <div class="label">Da</div>
-    <div class="name" id="origin-name">Viale Gran Sasso</div>
+    <div class="name" id="origin-name">—</div>
   </div>
   <span class="stop-arrow">&#x2192;</span>
-  <div class="stop-chip" id="chip-dest" onclick="openPicker('dest')">
+  <div class="stop-chip glass lit" id="chip-dest" onclick="openPicker('dest')">
     <div class="label">A</div>
-    <div class="name" id="dest-name">Coppito</div>
+    <div class="name" id="dest-name">—</div>
   </div>
 </div>
 
 <div class="day-banner" id="day-banner" style="display:none">
-  <span id="day-banner-text">&#x1F4C5; Sabato &middot; corse ridotte</span>
+  <span id="day-banner-text"></span>
   <button class="day-banner-toggle" id="day-banner-toggle" onclick="toggleShowAll()">Mostra tutte</button>
 </div>
 
@@ -369,7 +337,6 @@
 
 <div class="info-bar" id="info-bar"></div>
 
-<!-- Stop picker modal -->
 <div class="modal-overlay" id="modal" onclick="closePicker(event)">
   <div class="modal">
     <h3 id="modal-title">Seleziona fermata</h3>
@@ -378,110 +345,160 @@
 </div>
 
 <script>
-// ── Data & state ──────────────────────────────
-let schedule = null;
+// ── Stato ─────────────────────────────────────
+// Linee, fermate e rotte arrivano tutte da schedule.json: l'app non sa nulla
+// dell'organizzazione delle linee AMA, che cambia ogni anno.
+let schedule = null, meta = null;
 let dir = 'uni';
-let originStop = 'gran_sasso';
-let destStop   = 'uni';
-let pickerFor  = null;
-let showAllTrips = false;
-let showPast = false;
+let originStop = null, destStop = null;
+let pickerFor = null;
+let showAllTrips = false, showPast = false;
 let visibleCount = 3;
 
-const STOPS = {
-  gran_sasso:    { label: 'Viale Gran Sasso',     short: 'Gran Sasso' },
-  terminal:      { label: 'Terminal Collemaggio', short: 'Collemaggio' },
-  aquilone:      { label: "L'Aquilone",            short: 'Aquilone' },
-  uni:           { label: 'Univ. Coppito',         short: 'Coppito' },
-};
+const UNI = 'uni';
+const FALLBACK_ORIGIN = 'fontana_luminosa';
+const PREF_KEY = 'busaq.stops.v2';
 
-const ROUTE_KEYS = {
-  'gran_sasso_uni':  { keys: ['to_uni'] },
-  'uni_gran_sasso':  { keys: ['to_home'] },
-  'terminal_uni':    { keys: ['terminal_to_uni'] },
-  'uni_terminal':    { keys: ['uni_to_terminal'] },
-  'aquilone_uni':    { keys: ['aquilone_to_uni'] },
-  'uni_aquilone':    { keys: ['uni_to_aquilone'] },
-};
+// ── Preferenze (per-dispositivo, possono non essere disponibili) ──
+function loadPrefs() {
+  try { return JSON.parse(localStorage.getItem(PREF_KEY)) || {}; }
+  catch (e) { return {}; }
+}
+function savePrefs(patch) {
+  try {
+    localStorage.setItem(PREF_KEY, JSON.stringify(Object.assign(loadPrefs(), patch)));
+  } catch (e) { /* modalita' privata o storage pieno: si prosegue senza memoria */ }
+}
 
-const LINE_LABELS = {
-  linea1:   { num: '1',   sub: '' },
-  linea2ut: { num: '2',   sub: 'UT' },
-  linea4:   { num: '4',   sub: '' },
-  linea6sd: { num: '6',   sub: 'S/D' },
-};
-
-// ── Helpers ───────────────────────────────────
+// ── Helper ────────────────────────────────────
 function toMin(hhmm) { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; }
 function nowMin() { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
-function fmt(hhmm) { return hhmm; }
+function stopLabel(id, short) {
+  const s = meta && meta.stops[id];
+  return s ? (short ? s.short : s.label) : id;
+}
 function diffLabel(diff) {
   if (diff >= -2 && diff < 2) return ['Ora', 'now'];
   if (diff < 0) {
     const m = -diff;
     if (m < 60) return [`${m}m fa`, 'past'];
-    const h = Math.floor(m / 60), rest = m % 60;
-    return [rest > 0 ? `${h}h ${rest}m fa` : `${h}h fa`, 'past'];
+    const h = Math.floor(m / 60), r = m % 60;
+    return [r ? `${h}h ${r}m fa` : `${h}h fa`, 'past'];
   }
-  if (diff < 60)  return [`${diff} min`, diff < 10 ? 'now' : 'soon'];
+  if (diff < 60) return [`${diff} min`, diff < 10 ? 'now' : 'soon'];
   const h = Math.floor(diff / 60), m = diff % 60;
-  return [m > 0 ? `${h}h ${m}m` : `${h}h`, 'later'];
+  return [m ? `${h}h ${m}m` : `${h}h`, 'later'];
 }
 
-// ── Load schedule ─────────────────────────────
+// ── Rotte disponibili, dedotte dai dati ───────
+function lineIds() { return Object.keys(schedule).filter(k => k[0] !== '_'); }
+
+function splitRoute(key) {
+  // Gli id fermata contengono underscore: si cerca il prefisso piu' lungo che
+  // combacia, altrimenti 'fontana_luminosa_uni' verrebbe spezzato male.
+  const ids = Object.keys(meta.stops).sort((a, b) => b.length - a.length);
+  for (const o of ids) {
+    if (key.startsWith(o + '_')) {
+      const d = key.slice(o.length + 1);
+      if (ids.includes(d)) return [o, d];
+    }
+  }
+  return null;
+}
+
+function allRoutes() {
+  const out = new Set();
+  for (const id of lineIds()) for (const k of Object.keys(schedule[id])) out.add(k);
+  return [...out].map(splitRoute).filter(Boolean);
+}
+
+function originsFor(direction) {
+  const rs = allRoutes().filter(([o, d]) => direction === 'uni' ? d === UNI : o === UNI);
+  return [...new Set(rs.map(([o]) => o))];
+}
+function destsFor(direction) {
+  const rs = allRoutes().filter(([o, d]) => direction === 'uni' ? d === UNI : o === UNI);
+  return [...new Set(rs.map(([, d]) => d))];
+}
+function linesServing(origin, dest) {
+  const key = `${origin}_${dest}`;
+  return lineIds().filter(id => schedule[id][key] && schedule[id][key].length)
+                  .map(id => meta.lines[id].num + meta.lines[id].sub);
+}
+
+// ── Caricamento ───────────────────────────────
 fetch('schedule.json')
   .then(r => r.json())
-  .then(data => { schedule = data; render(); setInterval(render, 30000); })
+  .then(data => {
+    schedule = data;
+    meta = data._meta;
+    restoreStops();
+    updateChips();
+    render();
+    setInterval(render, 30000);
+  })
   .catch(() => {
     document.getElementById('cards').innerHTML =
-      '<div class="empty"><span class="empty-icon">&#x26A0;&#xFE0F;</span><strong>Errore di rete</strong>Impossibile caricare gli orari.<br>Riprova dopo aver ripristinato la connessione.</div>';
+      '<div class="empty"><span class="empty-icon">&#x26A0;&#xFE0F;</span><strong>Errore di rete</strong>Impossibile caricare gli orari.</div>';
   });
 
-// ── Clock ─────────────────────────────────────
+function restoreStops() {
+  const prefs = loadPrefs();
+  const opts = originsFor('uni');
+  const wanted = prefs.home;
+  const home = opts.includes(wanted) ? wanted
+             : opts.includes(FALLBACK_ORIGIN) ? FALLBACK_ORIGIN
+             : opts[0];
+  if (dir === 'uni') { originStop = home; destStop = UNI; }
+  else               { originStop = UNI;  destStop = home; }
+}
+
+// ── Orologio ──────────────────────────────────
 function updateClock() {
   const n = new Date();
   document.getElementById('clock').textContent =
-    `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+    `${String(n.getHours()).padStart(2, '0')}:${String(n.getMinutes()).padStart(2, '0')}`;
 }
 updateClock(); setInterval(updateClock, 10000);
 
-// ── Direction control ─────────────────────────
+// ── Direzione ─────────────────────────────────
 function setDir(d) {
   dir = d;
   document.getElementById('btn-uni').classList.toggle('active', d === 'uni');
   document.getElementById('btn-home').classList.toggle('active', d === 'home');
-  if (d === 'uni') { originStop = 'gran_sasso'; destStop = 'uni'; }
-  else             { originStop = 'uni'; destStop = 'gran_sasso'; }
+  restoreStops();                 // conserva la fermata di casa scelta
   visibleCount = 3; showPast = false;
   updateChips(); render();
 }
 
 function updateChips() {
-  document.getElementById('origin-name').textContent = STOPS[originStop].label;
-  document.getElementById('dest-name').textContent   = STOPS[destStop].short;
+  const oOpts = originsFor(dir), dOpts = destsFor(dir);
+  const set = (chipId, nameId, id, opts, short) => {
+    const many = opts.length > 1;
+    document.getElementById(nameId).innerHTML =
+      stopLabel(id, short) + (many ? ' <span class="caret">&#x25BE;</span>' : '');
+    document.getElementById(chipId).classList.toggle('tappable', many);
+  };
+  set('chip-origin', 'origin-name', originStop, oOpts, false);
+  set('chip-dest',   'dest-name',   destStop,   dOpts, true);
 }
 
-// ── Stop picker ───────────────────────────────
-const ORIGIN_OPTS_UNI  = ['gran_sasso', 'terminal', 'aquilone'];
-const ORIGIN_OPTS_HOME = ['uni'];
-const DEST_OPTS_UNI    = ['uni'];
-const DEST_OPTS_HOME   = ['gran_sasso', 'terminal', 'aquilone'];
-
+// ── Selettore fermate ─────────────────────────
 function openPicker(which) {
-  pickerFor = which;
-  const opts = which === 'origin'
-    ? (dir === 'uni' ? ORIGIN_OPTS_UNI : ORIGIN_OPTS_HOME)
-    : (dir === 'uni' ? DEST_OPTS_UNI   : DEST_OPTS_HOME);
+  const opts = which === 'origin' ? originsFor(dir) : destsFor(dir);
   if (opts.length <= 1) return;
-
+  pickerFor = which;
   const current = which === 'origin' ? originStop : destStop;
   document.getElementById('modal-title').textContent =
     which === 'origin' ? 'Fermata di partenza' : 'Fermata di arrivo';
-  document.getElementById('modal-options').innerHTML = opts.map(s => `
-    <div class="stop-option ${s === current ? 'selected' : ''}" onclick="selectStop('${s}')">
-      <div class="dot"></div>
-      <span>${STOPS[s].label}</span>
-    </div>`).join('');
+  document.getElementById('modal-options').innerHTML = opts.map(s => {
+    const lines = which === 'origin' ? linesServing(s, destStop) : linesServing(originStop, s);
+    return `<div class="stop-option ${s === current ? 'selected' : ''}" onclick="selectStop('${s}')">
+        <div class="dot"></div>
+        <span>${stopLabel(s)}</span>
+        <span class="lines">${lines.join(' · ')}</span>
+      </div>`;
+  }).join('');
   document.getElementById('modal').classList.add('open');
 }
 
@@ -492,176 +509,159 @@ function closePicker(e) {
 
 function selectStop(s) {
   if (pickerFor === 'origin') originStop = s; else destStop = s;
+  if (s !== UNI) savePrefs({ home: s });      // ricorda la fermata di casa
   document.getElementById('modal').classList.remove('open');
   visibleCount = 3; showPast = false;
   updateChips(); render();
 }
 
-// ── Show more / Show past ─────────────────────
+// ── Comandi lista ─────────────────────────────
 function showMore() { visibleCount += 3; render(); }
 function togglePast() { showPast = !showPast; render(); }
-
-// ── Saturday "show all" toggle ────────────────
 function toggleShowAll() {
   showAllTrips = !showAllTrips;
-  document.getElementById('day-banner-toggle').textContent = showAllTrips ? 'Solo sabato' : 'Mostra tutte';
+  document.getElementById('day-banner-toggle').textContent =
+    showAllTrips ? 'Solo oggi' : 'Mostra tutte';
   render();
 }
 
-// ── Trips computation ─────────────────────────
+// ── Calcolo corse ─────────────────────────────
 function getTrips() {
-  if (!schedule) return { past: [], future: [] };
-  const day = new Date().getDay();
-  if (day === 0) return { past: [], future: [] }; // Sunday → no service
+  const empty = { past: [], future: [] };
+  if (!schedule) return empty;
 
-  const routeKey = `${originStop}_${destStop}`;
-  const def = ROUTE_KEYS[routeKey];
-  if (!def) return { past: [], future: [] };
+  const today = new Date().getDay();
+  if (today === 0) return empty;              // domenica: nessun servizio AMA
 
+  const key = `${originStop}_${destStop}`;
   const now = nowMin();
-  const isSaturday = day === 6;
-  const past = [];
-  const future = [];
+  const past = [], future = [];
 
-  for (const [lineKey, lineData] of Object.entries(schedule)) {
-    for (const key of def.keys) {
-      const trips = lineData[key];
-      if (!trips) continue;
-      for (const trip of trips) {
-        if (isSaturday && trip.no_saturday && !showAllTrips) continue;
-        const depMin = toMin(trip.dep);
-        const diff = depMin - now;
-        const entry = {
-          dep: trip.dep, arr: trip.arr,
-          linea: lineKey,
-          variant: trip.linea || null,
-          scolastica: trip.scolastica,
-          no_saturday: trip.no_saturday,
-          depMin, diff
-        };
-        if (diff < -2) {
-          if (diff > -60) past.push(entry); // keep up to 1h ago
-        } else {
-          future.push(entry);
-        }
-      }
+  for (const id of lineIds()) {
+    const trips = schedule[id][key];
+    if (!trips) continue;
+    for (const t of trips) {
+      const runsToday = t.days.includes(today);
+      if (!runsToday && !showAllTrips) continue;
+      const depMin = toMin(t.dep);
+      const diff = depMin - now;
+      const entry = Object.assign({}, t, { line: id, depMin, diff, runsToday });
+      if (diff < -2) { if (diff > -60) past.push(entry); }
+      else future.push(entry);
     }
   }
-  const sorter = (a, b) => a.depMin - b.depMin || a.linea.localeCompare(b.linea);
-  past.sort(sorter); future.sort(sorter);
+  const byTime = (a, b) => a.depMin - b.depMin || a.line.localeCompare(b.line);
+  past.sort(byTime); future.sort(byTime);
   return { past, future };
 }
 
-// ── Render ────────────────────────────────────
+// ── Rendering ─────────────────────────────────
+function cardHTML(trip, isNext, isPast) {
+  const lb = (meta.lines && meta.lines[trip.line]) || { num: '?', sub: '' };
+  const [cnt, cntClass] = diffLabel(trip.diff);
+  // La variante (1T, 1G, 13X…) e' piu' informativa del suffisso generico di linea.
+  const sub = (trip.variant && trip.variant !== lb.num) ? trip.variant : lb.sub;
+  // I chip in alto dicono gia' la tratta: qui conta il lato di fermata, che
+  // cambia da linea a linea. Senza lato si ripiega sulla tratta.
+  const detail = trip.side
+    ? `<span class="side">Fermata lato ${trip.side}</span>`
+    : `${stopLabel(originStop, true)} &#x2192; ${stopLabel(destStop, true)}`;
+
+  let tag = '';
+  if (!trip.runsToday)      tag = '<div class="tag ridotta">non oggi</div>';
+  else if (trip.scolastica) tag = '<div class="tag scolastica">scolastica</div>';
+
+  return `
+    <div class="card${isNext ? ' next' : ''}${isPast ? ' past' : ''}">
+      <div class="linea-badge">
+        <div class="num">${lb.num}</div>
+        ${sub ? `<div class="sub">${sub}</div>` : ''}
+      </div>
+      <div class="times">
+        <span class="dep-time">${trip.dep}</span>
+        <span class="arr-label">arr.</span>
+        <span class="arr-time">${trip.arr}</span>
+      </div>
+      <div class="countdown ${cntClass}">${cnt}</div>
+      <div class="stop-names">${detail}</div>
+      ${tag}
+    </div>`;
+}
+
 function render() {
   if (!schedule) return;
-  const day = new Date().getDay();
-  const isSunday = day === 0;
-  const isSaturday = day === 6;
+  const today = new Date().getDay();
+  const isSunday = today === 0, isSaturday = today === 6;
 
-  // Banner
   const banner = document.getElementById('day-banner');
-  const bannerText = document.getElementById('day-banner-text');
-  const bannerToggle = document.getElementById('day-banner-toggle');
+  const bText = document.getElementById('day-banner-text');
+  const bToggle = document.getElementById('day-banner-toggle');
   if (isSunday) {
-    banner.style.display = 'flex';
-    banner.classList.add('sunday');
-    bannerText.innerHTML = '\u{1F6AB} Domenica · servizio non attivo';
-    bannerToggle.style.display = 'none';
+    banner.style.display = 'flex'; banner.classList.add('sunday');
+    bText.innerHTML = '&#x1F6AB; Domenica &middot; servizio non attivo';
+    bToggle.style.display = 'none';
   } else if (isSaturday) {
-    banner.style.display = 'flex';
-    banner.classList.remove('sunday');
-    bannerText.innerHTML = '\u{1F4C5} Sabato · corse ridotte';
-    bannerToggle.style.display = '';
+    banner.style.display = 'flex'; banner.classList.remove('sunday');
+    bText.innerHTML = '&#x1F4C5; Sabato &middot; corse ridotte';
+    bToggle.style.display = '';
   } else {
     banner.style.display = 'none';
   }
 
-  const container = document.getElementById('cards');
-  const infoBar = document.getElementById('info-bar');
+  const cards = document.getElementById('cards');
+  const info = document.getElementById('info-bar');
 
   if (isSunday) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">\u{1F634}</span><strong>Domenica · nessun bus</strong>AMA non effettua corse di domenica.<br>Riprova lunedì mattina!</div>';
-    infoBar.textContent = '';
+    cards.innerHTML = '<div class="empty"><span class="empty-icon">&#x1F634;</span><strong>Domenica &middot; nessun bus</strong>AMA non effettua corse di domenica.<br>Riprova lunedì mattina!</div>';
+    info.innerHTML = metaLine();
     return;
   }
 
   const { past, future } = getTrips();
-
-  if (future.length === 0 && past.length === 0) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">\u{1F4A4}</span><strong>Nessuna corsa</strong>Non ci sono altre corse oggi.<br>Controlla domani mattina!</div>';
-    infoBar.textContent = '';
+  if (!future.length && !past.length) {
+    cards.innerHTML = '<div class="empty"><span class="empty-icon">&#x1F4A4;</span><strong>Nessuna corsa</strong>Non ci sono altre corse oggi su questa tratta.</div>';
+    info.innerHTML = metaLine();
     return;
   }
 
   let html = '';
-
-  // "Show past" button at top
-  if (past.length > 0) {
-    const recentCount = Math.min(past.length, 3);
-    html += `<button class="show-past" onclick="togglePast()">${
-      showPast ? '↓ Nascondi precedenti' : `↑ Mostra ${recentCount} corse precedenti`
-    }</button>`;
+  if (past.length) {
+    html += `<button class="show-past glass lit" onclick="togglePast()">${
+      showPast ? '&#x2193; Nascondi precedenti'
+               : `&#x2191; Mostra ${Math.min(past.length, 3)} corse precedenti`}</button>`;
   }
 
-  // Build the list: past (if showing) + future
-  const tripsToShow = [];
-  if (showPast) tripsToShow.push(...past.slice(-3));
-  const firstFutureIdx = tripsToShow.length;
-  tripsToShow.push(...future.slice(0, visibleCount));
+  const list = [];
+  if (showPast) list.push(...past.slice(-3));
+  const firstFuture = list.length;
+  list.push(...future.slice(0, visibleCount));
 
-  const fromLabel = STOPS[originStop]?.short || originStop;
-  const toLabel   = STOPS[destStop]?.short   || destStop;
+  html += list.map((t, i) => cardHTML(t, i === firstFuture && t.diff >= -2, t.diff < -2)).join('');
 
-  html += tripsToShow.map((trip, i) => {
-    const isPast = trip.diff < -2;
-    const lb = LINE_LABELS[trip.linea] || { num: '?', sub: '' };
-    const [cntTxt, cntClass] = diffLabel(trip.diff) || ['–', 'later'];
-    const isNext = !isPast && i === firstFutureIdx;
-
-    return `
-    <div class="card${isNext ? ' next' : ''}${isPast ? ' past' : ''}">
-      <div class="linea-badge">
-        <div class="num">${lb.num}</div>
-        ${trip.variant ? `<div class="sub">${trip.variant}</div>` : (lb.sub ? `<div class="sub">${lb.sub}</div>` : '')}
-      </div>
-      <div class="times">
-        <span class="dep-time">${fmt(trip.dep)}</span>
-        <span class="arr-label">arr.</span>
-        <span class="arr-time">${fmt(trip.arr)}</span>
-      </div>
-      <div class="countdown ${cntClass}">${cntTxt}</div>
-      <div class="stop-names">${fromLabel} → ${toLabel}</div>
-      ${trip.scolastica ? '<div class="scolastica-tag">scolastica</div>' : ''}
-      ${(isSaturday && showAllTrips && trip.no_saturday) ? '<div class="feriale-tag">solo feriale</div>' : ''}
-    </div>`;
-  }).join('');
-
-  // Show more button
   const remaining = future.length - visibleCount;
   if (remaining > 0) {
-    html += `<button class="show-more" onclick="showMore()">Mostra altre ${Math.min(remaining, 3)} corse</button>`;
+    html += `<button class="show-more glass lit" onclick="showMore()">Mostra altre ${Math.min(remaining, 3)} corse</button>`;
   }
+  cards.innerHTML = html;
 
-  container.innerHTML = html;
+  const last = future[future.length - 1];
+  const tail = last
+    ? (remaining > 0
+        ? `+${remaining} cors${remaining === 1 ? 'a' : 'e'} fino alle ${last.dep}`
+        : `Ultima corsa alle ${last.dep}`)
+    : '';
+  info.innerHTML = (tail ? tail + '<br>' : '') + metaLine();
+}
 
-  // Info bar
-  const lastTrip = future[future.length - 1];
-  if (lastTrip) {
-    infoBar.textContent = remaining > 0
-      ? `+${remaining} cors${remaining === 1 ? 'a' : 'e'} fino alle ${lastTrip.dep}`
-      : `Ultima corsa alle ${lastTrip.dep}`;
-  } else {
-    infoBar.textContent = '';
-  }
+function metaLine() {
+  if (!meta) return '';
+  const d = meta.effective ? meta.effective.split('-').reverse().join('/') : '';
+  const draft = meta.draft ? ' <span class="draft">&middot; orari provvisori</span>' : '';
+  return `Orari in vigore dal ${d}${draft}`;
 }
 
 // ── Service Worker ────────────────────────────
-if ('serviceWorker' in navigator)
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-
-// ── Init ──────────────────────────────────────
-updateChips();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
 </html>

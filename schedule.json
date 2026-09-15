@@ -1,2056 +1,4208 @@
 {
-  "linea1": {
-    "to_uni": [
-      {
-        "dep": "08:23",
-        "arr": "08:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:03",
-        "arr": "09:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "09:43",
-        "arr": "10:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:23",
-        "arr": "10:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:03",
-        "arr": "11:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:43",
-        "arr": "12:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:23",
-        "arr": "12:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:03",
-        "arr": "13:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:43",
-        "arr": "14:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:23",
-        "arr": "14:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:03",
-        "arr": "15:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:43",
-        "arr": "16:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:23",
-        "arr": "16:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:03",
-        "arr": "17:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:43",
-        "arr": "18:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:23",
-        "arr": "18:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:03",
-        "arr": "19:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:43",
-        "arr": "20:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:23",
-        "arr": "20:45",
-        "scolastica": false,
-        "no_saturday": false
-      }
+ "linea1": {
+  "fontana_luminosa_uni": [
+   {
+    "dep": "07:08",
+    "arr": "07:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
-    "to_home": [
-      {
-        "dep": "07:12",
-        "arr": "07:35",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "07:22",
-        "arr": "07:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "07:47",
-        "arr": "08:10",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:22",
-        "arr": "08:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:42",
-        "arr": "09:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:05",
-        "arr": "09:33",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:45",
-        "arr": "10:13",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:25",
-        "arr": "10:53",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "11:05",
-        "arr": "11:33",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:45",
-        "arr": "12:13",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:25",
-        "arr": "12:53",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:05",
-        "arr": "13:33",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:17",
-        "arr": "13:35",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:17",
-        "arr": "13:35",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:45",
-        "arr": "14:13",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "14:25",
-        "arr": "14:53",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:05",
-        "arr": "15:33",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:45",
-        "arr": "16:13",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "16:25",
-        "arr": "16:53",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "17:45",
-        "arr": "18:13",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "18:25",
-        "arr": "18:53",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "19:05",
-        "arr": "19:33",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:45",
-        "arr": "20:13",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:25",
-        "arr": "20:53",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "21:20",
-        "arr": "21:48",
-        "scolastica": false,
-        "no_saturday": false
-      }
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "07:29",
+    "arr": "07:57",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
-    "uni_to_aquilone": [
-      {
-        "dep": "08:10",
-        "arr": "08:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:45",
-        "arr": "09:00",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:05",
-        "arr": "09:15",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:25",
-        "arr": "09:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "09:32",
-        "arr": "09:42",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:05",
-        "arr": "10:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:45",
-        "arr": "11:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:25",
-        "arr": "11:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:05",
-        "arr": "12:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "12:45",
-        "arr": "13:00",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:25",
-        "arr": "13:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "14:05",
-        "arr": "14:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:45",
-        "arr": "15:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:25",
-        "arr": "15:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "16:05",
-        "arr": "16:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "16:45",
-        "arr": "17:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:25",
-        "arr": "17:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "18:05",
-        "arr": "18:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "18:45",
-        "arr": "19:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:25",
-        "arr": "19:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:05",
-        "arr": "20:20",
-        "scolastica": false,
-        "no_saturday": false
-      }
+    "scolastica": false,
+    "variant": "4L",
+    "side": "università"
+   },
+   {
+    "dep": "07:43",
+    "arr": "08:07",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
-    "aquilone_to_uni": [
-      {
-        "dep": "07:10",
-        "arr": "07:12",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "07:20",
-        "arr": "07:22",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "07:45",
-        "arr": "07:47",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:20",
-        "arr": "08:22",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:40",
-        "arr": "08:42",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:00",
-        "arr": "09:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:40",
-        "arr": "09:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:20",
-        "arr": "10:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "11:00",
-        "arr": "11:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:40",
-        "arr": "11:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:20",
-        "arr": "12:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:00",
-        "arr": "13:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:40",
-        "arr": "13:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "14:20",
-        "arr": "14:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:00",
-        "arr": "15:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:40",
-        "arr": "15:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "16:20",
-        "arr": "16:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "17:40",
-        "arr": "17:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "18:20",
-        "arr": "18:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "19:00",
-        "arr": "19:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:40",
-        "arr": "19:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:20",
-        "arr": "20:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "21:15",
-        "arr": "21:20",
-        "scolastica": false,
-        "no_saturday": false
-      }
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "07:46",
+    "arr": "08:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
     ],
-    "terminal_to_uni": [
-      {
-        "dep": "07:56",
-        "arr": "08:10",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:20",
-        "arr": "08:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:45",
-        "arr": "09:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:00",
-        "arr": "09:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "09:10",
-        "arr": "09:32",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:40",
-        "arr": "10:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:20",
-        "arr": "10:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "11:00",
-        "arr": "11:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:40",
-        "arr": "12:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:20",
-        "arr": "12:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:00",
-        "arr": "13:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:40",
-        "arr": "14:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "14:20",
-        "arr": "14:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:00",
-        "arr": "15:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:40",
-        "arr": "16:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "16:20",
-        "arr": "16:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "17:00",
-        "arr": "17:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:40",
-        "arr": "18:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "18:20",
-        "arr": "18:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "19:00",
-        "arr": "19:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:40",
-        "arr": "20:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:20",
-        "arr": "20:45",
-        "scolastica": false,
-        "no_saturday": false
-      }
+    "scolastica": true,
+    "variant": "1X",
+    "side": "università",
+    "note": "SA"
+   },
+   {
+    "dep": "07:47",
+    "arr": "08:17",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
-    "uni_to_terminal": [
-      {
-        "dep": "07:12",
-        "arr": "07:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "07:22",
-        "arr": "07:50",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "07:47",
-        "arr": "08:15",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:22",
-        "arr": "08:50",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "08:42",
-        "arr": "09:10",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:05",
-        "arr": "09:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:45",
-        "arr": "10:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:25",
-        "arr": "11:00",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "11:05",
-        "arr": "11:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:45",
-        "arr": "12:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "12:25",
-        "arr": "13:00",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:05",
-        "arr": "13:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:17",
-        "arr": "13:40",
-        "scolastica": true,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:17",
-        "arr": "13:40",
-        "scolastica": true,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:45",
-        "arr": "14:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "14:25",
-        "arr": "15:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:05",
-        "arr": "15:40",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "15:45",
-        "arr": "16:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "16:25",
-        "arr": "17:00",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "17:45",
-        "arr": "18:20",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "18:25",
-        "arr": "19:00",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "19:05",
-        "arr": "19:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:45",
-        "arr": "20:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:25",
-        "arr": "21:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "21:20",
-        "arr": "21:55",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ]
+    "scolastica": false,
+    "variant": "4L",
+    "side": "università"
+   },
+   {
+    "dep": "08:08",
+    "arr": "08:32",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "08:58",
+    "arr": "09:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "09:48",
+    "arr": "10:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "10:38",
+    "arr": "11:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "11:28",
+    "arr": "12:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "12:18",
+    "arr": "12:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "13:08",
+    "arr": "13:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "13:58",
+    "arr": "14:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "14:48",
+    "arr": "15:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "15:38",
+    "arr": "16:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "16:28",
+    "arr": "17:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "17:18",
+    "arr": "17:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "18:08",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "18:58",
+    "arr": "19:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "19:48",
+    "arr": "20:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "20:23",
+    "arr": "20:53",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   }
+  ],
+  "terminal_uni": [
+   {
+    "dep": "07:05",
+    "arr": "07:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "07:25",
+    "arr": "07:57",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "4L",
+    "side": "università"
+   },
+   {
+    "dep": "07:40",
+    "arr": "08:07",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "07:43",
+    "arr": "08:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "scolastica": true,
+    "variant": "1X",
+    "side": "università",
+    "note": "SA"
+   },
+   {
+    "dep": "07:43",
+    "arr": "08:17",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "4L",
+    "side": "università"
+   },
+   {
+    "dep": "08:05",
+    "arr": "08:32",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "08:55",
+    "arr": "09:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "09:45",
+    "arr": "10:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "10:35",
+    "arr": "11:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G",
+    "side": "università"
+   },
+   {
+    "dep": "11:25",
+    "arr": "12:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "12:15",
+    "arr": "12:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "13:05",
+    "arr": "13:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "13:55",
+    "arr": "14:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "14:45",
+    "arr": "15:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "15:35",
+    "arr": "16:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "16:25",
+    "arr": "17:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "17:15",
+    "arr": "17:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "18:05",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "18:55",
+    "arr": "19:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "19:45",
+    "arr": "20:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   },
+   {
+    "dep": "20:20",
+    "arr": "20:53",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "università"
+   }
+  ],
+  "uni_aquilone": [
+   {
+    "dep": "07:57",
+    "arr": "08:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "4L"
+   },
+   {
+    "dep": "08:07",
+    "arr": "08:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G"
+   },
+   {
+    "dep": "08:10",
+    "arr": "08:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "08:17",
+    "arr": "08:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "4L"
+   },
+   {
+    "dep": "08:32",
+    "arr": "08:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1G"
+   },
+   {
+    "dep": "09:05",
+    "arr": "09:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "09:32",
+    "arr": "09:42",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "10:20",
+    "arr": "10:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "12:00",
+    "arr": "12:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "12:50",
+    "arr": "13:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "13:40",
+    "arr": "13:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "14:30",
+    "arr": "14:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "15:20",
+    "arr": "15:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "16:10",
+    "arr": "16:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "17:00",
+    "arr": "17:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "17:50",
+    "arr": "18:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "18:40",
+    "arr": "18:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "19:30",
+    "arr": "19:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   },
+   {
+    "dep": "20:20",
+    "arr": "20:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1"
+   }
+  ],
+  "uni_fontana_luminosa": [
+   {
+    "dep": "07:02",
+    "arr": "07:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "07:17",
+    "arr": "07:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "07:42",
+    "arr": "08:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "08:30",
+    "arr": "09:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:00",
+    "arr": "09:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:50",
+    "arr": "10:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:40",
+    "arr": "11:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:30",
+    "arr": "12:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:10",
+    "arr": "13:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:00",
+    "arr": "14:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1T",
+    "side": "ospedale",
+    "note": "T"
+   },
+   {
+    "dep": "14:50",
+    "arr": "15:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:40",
+    "arr": "16:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:30",
+    "arr": "17:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:20",
+    "arr": "17:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:10",
+    "arr": "18:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:00",
+    "arr": "19:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:50",
+    "arr": "20:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "20:25",
+    "arr": "21:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "21:20",
+    "arr": "21:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "M1",
+    "side": "ospedale"
+   }
+  ],
+  "uni_terminal": [
+   {
+    "dep": "07:02",
+    "arr": "07:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "07:17",
+    "arr": "08:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "07:42",
+    "arr": "08:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "08:30",
+    "arr": "09:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:00",
+    "arr": "09:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:50",
+    "arr": "10:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:40",
+    "arr": "11:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:30",
+    "arr": "12:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "12:20",
+    "arr": "13:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:10",
+    "arr": "13:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:00",
+    "arr": "14:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1T",
+    "side": "ospedale",
+    "note": "T"
+   },
+   {
+    "dep": "14:50",
+    "arr": "15:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:40",
+    "arr": "16:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:30",
+    "arr": "17:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:20",
+    "arr": "18:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:10",
+    "arr": "18:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:00",
+    "arr": "19:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:50",
+    "arr": "20:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "20:25",
+    "arr": "21:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "21:20",
+    "arr": "22:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "M1",
+    "side": "ospedale"
+   }
+  ],
+  "aquilone_uni": [
+   {
+    "dep": "07:00",
+    "arr": "07:02",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "07:15",
+    "arr": "07:17",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "07:40",
+    "arr": "07:42",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "08:25",
+    "arr": "08:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "08:55",
+    "arr": "09:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:35",
+    "arr": "10:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "12:15",
+    "arr": "12:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:05",
+    "arr": "13:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:55",
+    "arr": "14:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1T",
+    "side": "ospedale",
+    "note": "T"
+   },
+   {
+    "dep": "14:45",
+    "arr": "14:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:35",
+    "arr": "15:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:15",
+    "arr": "17:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:05",
+    "arr": "18:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:55",
+    "arr": "19:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:45",
+    "arr": "19:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "20:20",
+    "arr": "20:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "1",
+    "side": "ospedale"
+   },
+   {
+    "dep": "21:15",
+    "arr": "21:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "M1",
+    "side": "ospedale"
+   }
+  ]
+ },
+ "lineaA": {
+  "terminal_uni": [
+   {
+    "dep": "08:10",
+    "arr": "08:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "09:00",
+    "arr": "09:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "09:50",
+    "arr": "10:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "10:40",
+    "arr": "11:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "11:30",
+    "arr": "12:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "12:20",
+    "arr": "12:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "13:10",
+    "arr": "13:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "14:00",
+    "arr": "14:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "14:50",
+    "arr": "15:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "15:40",
+    "arr": "16:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "16:30",
+    "arr": "17:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "17:20",
+    "arr": "17:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "18:10",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "19:00",
+    "arr": "19:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "19:50",
+    "arr": "20:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "20:40",
+    "arr": "21:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   }
+  ],
+  "via_strinella_uni": [
+   {
+    "dep": "08:13",
+    "arr": "08:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "09:03",
+    "arr": "09:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "09:53",
+    "arr": "10:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "10:43",
+    "arr": "11:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "11:33",
+    "arr": "12:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "12:23",
+    "arr": "12:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "13:13",
+    "arr": "13:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "14:03",
+    "arr": "14:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "14:53",
+    "arr": "15:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "15:43",
+    "arr": "16:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "16:33",
+    "arr": "17:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "17:23",
+    "arr": "17:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "18:13",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "19:03",
+    "arr": "19:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "19:53",
+    "arr": "20:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "20:43",
+    "arr": "21:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   }
+  ],
+  "fontana_luminosa_uni": [
+   {
+    "dep": "08:15",
+    "arr": "08:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "09:05",
+    "arr": "09:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "09:55",
+    "arr": "10:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "10:45",
+    "arr": "11:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "11:35",
+    "arr": "12:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "12:25",
+    "arr": "12:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "13:15",
+    "arr": "13:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "14:05",
+    "arr": "14:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "14:55",
+    "arr": "15:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "15:45",
+    "arr": "16:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "16:35",
+    "arr": "17:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "17:25",
+    "arr": "17:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "18:15",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "19:05",
+    "arr": "19:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "19:55",
+    "arr": "20:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   },
+   {
+    "dep": "20:45",
+    "arr": "21:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "università"
+   }
+  ],
+  "uni_terminal": [
+   {
+    "dep": "07:30",
+    "arr": "08:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "08:40",
+    "arr": "09:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "09:30",
+    "arr": "10:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "10:20",
+    "arr": "11:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "11:10",
+    "arr": "11:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "12:00",
+    "arr": "12:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "12:50",
+    "arr": "13:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "13:40",
+    "arr": "14:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "14:30",
+    "arr": "15:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "15:20",
+    "arr": "16:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "16:10",
+    "arr": "16:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "17:00",
+    "arr": "17:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "17:50",
+    "arr": "18:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "18:40",
+    "arr": "19:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "19:30",
+    "arr": "20:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   },
+   {
+    "dep": "20:20",
+    "arr": "21:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false
+   }
+  ]
+ },
+ "lineaB": {
+  "terminal_uni": [
+   {
+    "dep": "08:35",
+    "arr": "09:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:25",
+    "arr": "09:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:15",
+    "arr": "10:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:05",
+    "arr": "11:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:55",
+    "arr": "12:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "12:45",
+    "arr": "13:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:35",
+    "arr": "14:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:25",
+    "arr": "14:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:15",
+    "arr": "15:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:05",
+    "arr": "16:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:55",
+    "arr": "17:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:45",
+    "arr": "18:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:35",
+    "arr": "19:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:25",
+    "arr": "19:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "20:15",
+    "arr": "20:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   }
+  ],
+  "uni_fontana_luminosa": [
+   {
+    "dep": "09:05",
+    "arr": "09:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:55",
+    "arr": "10:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:45",
+    "arr": "11:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:35",
+    "arr": "11:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "12:25",
+    "arr": "12:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:15",
+    "arr": "13:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:05",
+    "arr": "14:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:55",
+    "arr": "15:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:45",
+    "arr": "16:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:35",
+    "arr": "16:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:25",
+    "arr": "17:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:15",
+    "arr": "18:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:05",
+    "arr": "19:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:55",
+    "arr": "20:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   }
+  ],
+  "uni_via_strinella": [
+   {
+    "dep": "09:05",
+    "arr": "09:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:55",
+    "arr": "10:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:45",
+    "arr": "11:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:35",
+    "arr": "12:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "12:25",
+    "arr": "12:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:15",
+    "arr": "13:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:05",
+    "arr": "14:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:55",
+    "arr": "15:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:45",
+    "arr": "16:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:35",
+    "arr": "17:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:25",
+    "arr": "17:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:15",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:05",
+    "arr": "19:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:55",
+    "arr": "20:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   }
+  ],
+  "uni_terminal": [
+   {
+    "dep": "09:05",
+    "arr": "09:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "09:55",
+    "arr": "10:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "10:45",
+    "arr": "11:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "11:35",
+    "arr": "12:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "12:25",
+    "arr": "13:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "13:15",
+    "arr": "13:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:05",
+    "arr": "14:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "14:55",
+    "arr": "15:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "15:45",
+    "arr": "16:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "16:35",
+    "arr": "17:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "17:25",
+    "arr": "18:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "18:15",
+    "arr": "18:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:05",
+    "arr": "19:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   },
+   {
+    "dep": "19:55",
+    "arr": "20:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "side": "ospedale"
+   }
+  ]
+ },
+ "linea2ut": {
+  "aquilone_uni": [
+   {
+    "dep": "12:50",
+    "arr": "12:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "S"
+   },
+   {
+    "dep": "13:55",
+    "arr": "14:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   },
+   {
+    "dep": "16:00",
+    "arr": "16:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   },
+   {
+    "dep": "17:00",
+    "arr": "17:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "S"
+   },
+   {
+    "dep": "17:30",
+    "arr": "17:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT",
+    "note": "A"
+   },
+   {
+    "dep": "18:00",
+    "arr": "18:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "SA"
+   },
+   {
+    "dep": "18:20",
+    "arr": "18:25",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT",
+    "note": "A"
+   },
+   {
+    "dep": "19:15",
+    "arr": "19:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   }
+  ],
+  "uni_terminal": [
+   {
+    "dep": "12:55",
+    "arr": "13:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "S"
+   },
+   {
+    "dep": "13:28",
+    "arr": "13:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   },
+   {
+    "dep": "14:00",
+    "arr": "14:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   },
+   {
+    "dep": "16:02",
+    "arr": "16:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "S"
+   },
+   {
+    "dep": "16:05",
+    "arr": "16:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   },
+   {
+    "dep": "17:05",
+    "arr": "17:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "S"
+   },
+   {
+    "dep": "17:35",
+    "arr": "18:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT",
+    "note": "A"
+   },
+   {
+    "dep": "18:05",
+    "arr": "18:40",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "SA"
+   },
+   {
+    "dep": "18:25",
+    "arr": "19:00",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT",
+    "note": "A"
+   },
+   {
+    "dep": "19:20",
+    "arr": "19:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UT"
+   }
+  ],
+  "terminal_uni": [
+   {
+    "dep": "06:00",
+    "arr": "06:12",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "M2U"
+   },
+   {
+    "dep": "07:30",
+    "arr": "07:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UG"
+   },
+   {
+    "dep": "08:05",
+    "arr": "08:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "ST"
+   },
+   {
+    "dep": "08:10",
+    "arr": "08:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "08:30",
+    "arr": "08:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "08:45",
+    "arr": "09:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:00",
+    "arr": "09:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:15",
+    "arr": "09:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "10:10",
+    "arr": "10:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   }
+  ],
+  "fontana_luminosa_uni": [
+   {
+    "dep": "06:04",
+    "arr": "06:12",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "M2U"
+   },
+   {
+    "dep": "07:34",
+    "arr": "07:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2UG"
+   },
+   {
+    "dep": "08:09",
+    "arr": "08:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "ST"
+   },
+   {
+    "dep": "08:14",
+    "arr": "08:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "08:34",
+    "arr": "08:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "08:49",
+    "arr": "09:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:04",
+    "arr": "09:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:19",
+    "arr": "09:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "10:14",
+    "arr": "10:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   }
+  ],
+  "uni_aquilone": [
+   {
+    "dep": "07:42",
+    "arr": "07:52",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U",
+    "note": "B"
+   },
+   {
+    "dep": "08:20",
+    "arr": "08:30",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2UT",
+    "note": "ST"
+   },
+   {
+    "dep": "08:30",
+    "arr": "08:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "08:30",
+    "arr": "08:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "08:50",
+    "arr": "09:05",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "09:00",
+    "arr": "09:10",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:05",
+    "arr": "09:20",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:20",
+    "arr": "09:35",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "09:35",
+    "arr": "09:50",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "10:00",
+    "arr": "10:15",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   },
+   {
+    "dep": "10:30",
+    "arr": "10:45",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": true,
+    "variant": "2U",
+    "note": "S"
+   },
+   {
+    "dep": "11:40",
+    "arr": "11:55",
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "scolastica": false,
+    "variant": "2U"
+   }
+  ]
+ },
+ "_meta": {
+  "generated": "2026-09-15",
+  "effective": "2026-09-16",
+  "draft": true,
+  "stops": {
+   "fontana_luminosa": {
+    "label": "Fontana Luminosa",
+    "short": "Fontana Lum."
+   },
+   "via_strinella": {
+    "label": "Via Strinella",
+    "short": "Strinella"
+   },
+   "terminal": {
+    "label": "Terminal Collemaggio",
+    "short": "Collemaggio"
+   },
+   "aquilone": {
+    "label": "L'Aquilone",
+    "short": "Aquilone"
+   },
+   "uni": {
+    "label": "Università Coppito",
+    "short": "Coppito"
+   }
   },
-  "linea2ut": {
-    "to_uni": [
-      {
-        "dep": "08:05",
-        "arr": "08:20",
-        "scolastica": true,
-        "no_saturday": false
-      }
-    ],
-    "to_home": [
-      {
-        "dep": "12:55",
-        "arr": "13:30",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:28",
-        "arr": "13:50",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:38",
-        "arr": "14:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:00",
-        "arr": "14:35",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:02",
-        "arr": "16:35",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:05",
-        "arr": "16:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:32",
-        "arr": "17:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:05",
-        "arr": "17:40",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:35",
-        "arr": "18:10",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:05",
-        "arr": "18:40",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:25",
-        "arr": "19:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:20",
-        "arr": "19:55",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "uni_to_aquilone": [
-      {
-        "dep": "08:20",
-        "arr": "08:30",
-        "scolastica": true,
-        "no_saturday": false
-      }
-    ],
-    "aquilone_to_uni": [
-      {
-        "dep": "12:50",
-        "arr": "12:55",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:20",
-        "arr": "13:28",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:35",
-        "arr": "13:38",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:55",
-        "arr": "14:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:00",
-        "arr": "16:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:00",
-        "arr": "16:02",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:30",
-        "arr": "16:32",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:00",
-        "arr": "17:05",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:30",
-        "arr": "17:35",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:00",
-        "arr": "18:05",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:20",
-        "arr": "18:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:15",
-        "arr": "19:20",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "terminal_to_uni": [
-      {
-        "dep": "08:05",
-        "arr": "08:20",
-        "scolastica": true,
-        "no_saturday": false
-      }
-    ],
-    "uni_to_terminal": [
-      {
-        "dep": "12:55",
-        "arr": "13:30",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:28",
-        "arr": "13:50",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:38",
-        "arr": "14:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:00",
-        "arr": "14:35",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:02",
-        "arr": "16:35",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:05",
-        "arr": "16:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:32",
-        "arr": "17:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:05",
-        "arr": "17:40",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:35",
-        "arr": "18:10",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:05",
-        "arr": "18:40",
-        "scolastica": true,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:25",
-        "arr": "19:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:20",
-        "arr": "19:55",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ]
-  },
-  "linea4": {
-    "to_uni": [
-      {
-        "dep": "08:19",
-        "arr": "08:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "08:59",
-        "arr": "09:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:39",
-        "arr": "10:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:19",
-        "arr": "10:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:59",
-        "arr": "11:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:39",
-        "arr": "12:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "12:19",
-        "arr": "12:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:59",
-        "arr": "13:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:39",
-        "arr": "14:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:19",
-        "arr": "14:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:59",
-        "arr": "15:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:39",
-        "arr": "16:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:19",
-        "arr": "16:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:54",
-        "arr": "17:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:34",
-        "arr": "18:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:14",
-        "arr": "18:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:54",
-        "arr": "19:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:39",
-        "arr": "20:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:19",
-        "arr": "20:45",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "to_home": [
-      {
-        "dep": "07:33",
-        "arr": "07:57",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "08:13",
-        "arr": "08:37",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "08:53",
-        "arr": "09:17",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:33",
-        "arr": "09:57",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:13",
-        "arr": "10:37",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:53",
-        "arr": "11:17",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:33",
-        "arr": "11:57",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "12:13",
-        "arr": "12:37",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:58",
-        "arr": "13:22",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:33",
-        "arr": "13:57",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:13",
-        "arr": "14:37",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:53",
-        "arr": "15:17",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:33",
-        "arr": "15:57",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:13",
-        "arr": "16:37",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:53",
-        "arr": "17:17",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:28",
-        "arr": "17:52",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:08",
-        "arr": "18:32",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:48",
-        "arr": "19:12",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:28",
-        "arr": "19:52",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:13",
-        "arr": "20:37",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "terminal_to_uni": [
-      {
-        "dep": "08:15",
-        "arr": "08:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "08:55",
-        "arr": "09:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:35",
-        "arr": "10:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:15",
-        "arr": "10:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:55",
-        "arr": "11:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:35",
-        "arr": "12:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "12:15",
-        "arr": "12:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:55",
-        "arr": "13:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:35",
-        "arr": "14:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:15",
-        "arr": "14:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:55",
-        "arr": "15:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:35",
-        "arr": "16:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:15",
-        "arr": "16:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:50",
-        "arr": "17:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:30",
-        "arr": "18:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:10",
-        "arr": "18:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:50",
-        "arr": "19:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:35",
-        "arr": "20:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:15",
-        "arr": "20:45",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "uni_to_terminal": [
-      {
-        "dep": "07:33",
-        "arr": "08:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "08:13",
-        "arr": "08:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "08:53",
-        "arr": "09:25",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "09:33",
-        "arr": "10:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:13",
-        "arr": "10:45",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "10:53",
-        "arr": "11:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:33",
-        "arr": "12:05",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "12:13",
-        "arr": "12:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:58",
-        "arr": "13:30",
-        "scolastica": false,
-        "no_saturday": true
-      },
-      {
-        "dep": "13:33",
-        "arr": "14:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:13",
-        "arr": "14:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:53",
-        "arr": "15:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:33",
-        "arr": "16:05",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:13",
-        "arr": "16:45",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:53",
-        "arr": "17:25",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:28",
-        "arr": "18:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:08",
-        "arr": "18:40",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:48",
-        "arr": "19:20",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:28",
-        "arr": "20:00",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:13",
-        "arr": "20:45",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ]
-  },
-  "linea6sd": {
-    "to_uni": [
-      {
-        "dep": "09:13",
-        "arr": "09:35",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:18",
-        "arr": "10:40",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:13",
-        "arr": "11:35",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:28",
-        "arr": "12:50",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:23",
-        "arr": "13:45",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:38",
-        "arr": "15:00",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:43",
-        "arr": "15:55",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:48",
-        "arr": "17:10",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:43",
-        "arr": "18:05",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:03",
-        "arr": "19:25",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:03",
-        "arr": "20:15",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "to_home": [
-      {
-        "dep": "08:58",
-        "arr": "09:18",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:03",
-        "arr": "10:23",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:08",
-        "arr": "11:28",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:13",
-        "arr": "12:33",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:18",
-        "arr": "13:38",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:23",
-        "arr": "14:43",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:28",
-        "arr": "15:48",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:33",
-        "arr": "16:53",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:43",
-        "arr": "18:03",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:43",
-        "arr": "19:03",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:48",
-        "arr": "20:08",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:08",
-        "arr": "20:28",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "uni_to_aquilone": [
-      {
-        "dep": "09:35",
-        "arr": "09:45",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:40",
-        "arr": "10:50",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:35",
-        "arr": "11:45",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:50",
-        "arr": "13:00",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:45",
-        "arr": "13:55",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:00",
-        "arr": "15:10",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:55",
-        "arr": "16:05",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:10",
-        "arr": "17:20",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:05",
-        "arr": "18:15",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:25",
-        "arr": "19:35",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:15",
-        "arr": "20:25",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "aquilone_to_uni": [
-      {
-        "dep": "08:50",
-        "arr": "08:58",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "09:55",
-        "arr": "10:03",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:00",
-        "arr": "11:08",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:05",
-        "arr": "12:13",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:10",
-        "arr": "13:18",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:15",
-        "arr": "14:23",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:20",
-        "arr": "15:28",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:25",
-        "arr": "16:33",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:35",
-        "arr": "17:43",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:35",
-        "arr": "18:43",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:40",
-        "arr": "19:48",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:00",
-        "arr": "20:08",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "terminal_to_uni": [
-      {
-        "dep": "06:30",
-        "arr": "06:45",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "09:10",
-        "arr": "09:35",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:15",
-        "arr": "10:40",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:20",
-        "arr": "11:35",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:25",
-        "arr": "12:50",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:30",
-        "arr": "13:45",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:35",
-        "arr": "15:00",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:40",
-        "arr": "15:55",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:45",
-        "arr": "17:10",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:50",
-        "arr": "18:05",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:00",
-        "arr": "19:25",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:00",
-        "arr": "20:15",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ],
-    "uni_to_terminal": [
-      {
-        "dep": "08:58",
-        "arr": "09:25",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "10:03",
-        "arr": "10:30",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "11:08",
-        "arr": "11:35",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "12:13",
-        "arr": "12:40",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "13:18",
-        "arr": "13:45",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "14:23",
-        "arr": "14:50",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "15:28",
-        "arr": "15:55",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "16:33",
-        "arr": "17:00",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "17:43",
-        "arr": "18:10",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "18:43",
-        "arr": "19:10",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "19:48",
-        "arr": "20:10",
-        "linea": "6D",
-        "scolastica": false,
-        "no_saturday": false
-      },
-      {
-        "dep": "20:08",
-        "arr": "20:30",
-        "linea": "6S",
-        "scolastica": false,
-        "no_saturday": false
-      }
-    ]
+  "lines": {
+   "linea1": {
+    "num": "1",
+    "sub": "",
+    "descrizione": "Terminalbus – Università Coppito – L'Aquilone (unificazione delle ex linee 1 e 4)"
+   },
+   "lineaA": {
+    "num": "A",
+    "sub": "",
+    "descrizione": "Anello ex EST: Terminalbus – Strinella – Fontana Luminosa – via Vetoio – Stazione FS – Terminalbus"
+   },
+   "lineaB": {
+    "num": "B",
+    "sub": "",
+    "descrizione": "Anello ex OVEST, senso opposto alla A"
+   },
+   "linea2ut": {
+    "num": "2",
+    "sub": "UT",
+    "descrizione": "Circolare Terminalbus – Stazione – Università Coppito – Optimes – L'Aquilone"
+   }
   }
+ }
 }
