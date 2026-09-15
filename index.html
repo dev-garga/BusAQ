@@ -70,10 +70,13 @@
   body::before {
     content: ''; position: fixed; inset: 0;
     background:
-      radial-gradient(120% 60% at 8% 34%,  rgba(91, 149, 255, 0.30), transparent 62%),
-      radial-gradient(110% 55% at 92% 74%, rgba(255, 142, 84, 0.22), transparent 64%),
-      radial-gradient(140% 75% at 50% 112%, rgba(126, 84, 214, 0.30), transparent 68%),
-      linear-gradient(180deg, rgba(10, 12, 18, 0.72) 0%, rgba(10, 12, 18, 0) 20%);
+      radial-gradient(110% 46% at 6% 50%,  rgba(91, 149, 255, 0.30), transparent 62%),
+      radial-gradient(110% 52% at 92% 76%, rgba(255, 142, 84, 0.22), transparent 64%),
+      radial-gradient(140% 72% at 50% 112%, rgba(126, 84, 214, 0.30), transparent 68%),
+      linear-gradient(180deg,
+        var(--bg) 0,
+        var(--bg) calc(env(safe-area-inset-top, 0px) + 58px),
+        rgba(10, 12, 18, 0) calc(env(safe-area-inset-top, 0px) + 150px));
     z-index: -1; pointer-events: none;
   }
 
@@ -198,6 +201,7 @@
   .dep-time { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .arr-label { font-size: 10px; color: var(--mute2); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
   .arr-time { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .detail .est { color: var(--orange); font-weight: 600; }
   .detail { font-size: 11px; color: var(--mute2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .countdown {
@@ -553,7 +557,9 @@ function cardHTML(trip, isNext, isPast) {
   const [cnt, cntClass] = diffLabel(trip.diff);
   const sub = (trip.variant && trip.variant !== lb.num) ? trip.variant : lb.sub;
 
-  const bits = [`${trip.dur} min`];
+  const bits = [];
+  if (trip.approx) bits.push(`<span class="est">stimato</span>`);
+  bits.push(`${trip.dur} min`);
   if (trip.side) bits.push(`lato ${trip.side}`);
 
   let tag = '';
@@ -567,7 +573,7 @@ function cardHTML(trip, isNext, isPast) {
         <div class="num">${lb.num}</div>${sub ? `<div class="sub">${sub}</div>` : ''}
       </div>
       <div class="times">
-        <span class="dep-time">${trip.approx ? '≈' : ''}${trip.dep}</span>
+        <span class="dep-time">${trip.dep}</span>
         <span class="arr-label">arr.</span>
         <span class="arr-time">${trip.arr}</span>
       </div>
