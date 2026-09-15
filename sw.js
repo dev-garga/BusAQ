@@ -2,7 +2,7 @@
 // service worker, quindi l'app continua a funzionare se il repository (e con
 // esso l'URL di GitHub Pages) viene rinominato. Con percorsi assoluti una
 // rinomina fa fallire addAll e l'app perde del tutto la modalita' offline.
-const CACHE = 'bus-aq-v7';
+const CACHE = 'bus-aq-v8';
 const FILES = [
   './',
   './index.html',
