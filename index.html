@@ -79,15 +79,21 @@
   .swap:active { background: rgba(255,255,255,.05); }
 
   /* ── Tratte recenti ── */
-  .recents { display: flex; gap: 8px; padding: 10px var(--pad) 2px; overflow-x: auto; scrollbar-width: none; }
-  .recents::-webkit-scrollbar { display: none; }
+  /* Due sole tratte, impilate: con i nomi per esteso ci stanno in larghezza e non
+     serve far scorrere niente. */
+  .recents { display: flex; flex-direction: column; gap: 6px; padding: 10px var(--pad) 0; }
   .recent {
-    flex-shrink: 0; min-height: 34px; padding: 8px 13px; border-radius: 999px;
+    display: flex; align-items: center; gap: 9px; width: 100%; min-height: 40px;
+    padding: 9px 13px; border-radius: var(--r-md); text-align: left;
     background: var(--surface); border: 1px solid var(--line);
-    font-size: 12.5px; font-weight: 600; color: var(--muted); white-space: nowrap;
+    font-size: 13px; font-weight: 600; color: var(--muted);
   }
   .recent:active { background: var(--surface2); }
-  .recent.on { color: var(--text); border-color: rgba(110,168,254,.45); background: rgba(110,168,254,.12); }
+  .recent.on { color: var(--text); border-color: rgba(110,168,254,.45); background: rgba(110,168,254,.10); }
+  .recent i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+  .recent.on i { background: var(--accent); }
+  .recent span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent b { font-weight: 600; color: var(--faint); margin: 0 3px; }
 
   /* ── Avviso giorno ── */
   .banner {
@@ -124,7 +130,7 @@
   .dep { font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .arr { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
   .arr::before { content: '\2192'; margin-right: 5px; color: var(--faint); }
-  .detail { font-size: 11.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .detail { font-size: 11.5px; line-height: 1.35; color: var(--faint); }
   .detail .est { color: #f0b547; font-weight: 600; }
 
   .cd { grid-row: span 2; justify-self: end; font-size: 13px; font-weight: 700;
@@ -173,8 +179,9 @@
   .opt.on { background: rgba(110,168,254,.12); }
   .opt i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex-shrink: 0; }
   .opt.on i { background: var(--accent); }
-  .opt .nm { font-size: 15px; font-weight: 550; }
-  .opt .sub { font-size: 11px; color: var(--faint); margin-top: 2px; }
+  .opt .txt { min-width: 0; }
+  .opt .nm { font-size: 15px; font-weight: 550; display: block; }
+  .opt .sub { font-size: 11px; line-height: 1.35; color: var(--faint); margin-top: 3px; display: block; }
   .opt .ln { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--faint); white-space: nowrap; }
   .opt[disabled] { opacity: .35; }
 </style>
@@ -207,7 +214,7 @@
 
 <div class="recents" id="recents"></div>
 
-<div class="banner" id="banner"><span id="banner-text"></span><button id="banner-btn">Mostra tutte</button></div>
+<div class="banner" id="banner"><span id="banner-text"></span><button id="banner-btn">Tutte le corse</button></div>
 
 <div class="cards" id="cards"><div class="empty">Caricamento orari&hellip;</div></div>
 <div class="foot" id="foot"></div>
@@ -234,7 +241,7 @@ const PREF = 'busaq.route.v1';
 const DEFAULT_ROUTE = ['fontana_luminosa', 'uni'];
 const GUADAGNO_MIN = 5;   // sotto questa soglia il consiglio sarebbe rumore
 const FINESTRA_MIN = 30;  // quanto avanti guardare per trovare un arrivo migliore
-const MAX_RECENTS = 5;
+const MAX_RECENTS = 2;   // due tratte impilate, senza scorrimento
 
 const $ = id => document.getElementById(id);
 const key = (a, b) => a + '>' + b;
@@ -251,17 +258,33 @@ const label = (id, short) => {
   const s = meta && meta.stops[id];
   return s ? (short && s.short ? s.short : s.label) : id;
 };
+// L'unita' si scrive solo quando non ci sono ore: '25 min', '1h 25'. Mescolare
+// "min" e l'apostrofo nella stessa colonna si notava.
+function attesa(m) {
+  if (m < 60) return m + ' min';
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? h + 'h ' + String(r).padStart(2, '0') : h + 'h';
+}
 function diffLabel(diff) {
   if (diff >= -2 && diff < 2) return ['ora', 'now'];
-  if (diff < 0) {
-    const m = -diff;
-    if (m < 60) return [m + "' fa", 'past'];
-    const h = Math.floor(m / 60), r = m % 60;
-    return [(r ? h + 'h ' + r + "'" : h + 'h') + ' fa', 'past'];
-  }
-  if (diff < 60) return [diff + ' min', diff < 10 ? 'now' : 'soon'];
-  const h = Math.floor(diff / 60), m = diff % 60;
-  return [m ? h + 'h ' + m + "'" : h + 'h', ''];
+  if (diff < 0) return [attesa(-diff) + ' fa', 'past'];
+  return [attesa(diff), diff < 10 ? 'now' : diff < 60 ? 'soon' : ''];
+}
+
+// 'non oggi' non diceva perche'. I giorni di servizio sono nei dati: si scrivono.
+const GIORNI = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+function giorniLabel(days) {
+  const d = [...days].sort((a, b) => a - b);
+  const contigui = d.every((v, i) => i === 0 || v === d[i - 1] + 1);
+  return d.length > 2 && contigui ? GIORNI[d[0]] + '–' + GIORNI[d[d.length - 1]]
+                                  : d.map(x => GIORNI[x]).join(' e ');
+}
+
+const MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno',
+              'luglio','agosto','settembre','ottobre','novembre','dicembre'];
+function dataEstesa(iso) {
+  const [y, m, d] = (iso || '').split('-');
+  return MESI[+m - 1] ? +d + ' ' + MESI[+m - 1] + ' ' + y : iso;
 }
 
 // ── Coppie servite, dedotte dai dati ──────────
@@ -291,8 +314,20 @@ function linesFor(a, b) {
   return [...out];
 }
 function approxNote(stop) {
-  for (const d of dirs) if (d.approx && d.approx[stop]) return 'linea ' + meta.lines[d.line].num + ': ' + d.approx[stop];
-  return '';
+  const per = new Map();
+  for (const d of dirs) {
+    const motivo = d.approx && d.approx[stop];
+    if (!motivo) continue;
+    if (!per.has(motivo)) per.set(motivo, []);
+    per.get(motivo).push(meta.lines[d.line].num + meta.lines[d.line].sub);
+  }
+  if (!per.size) return '';
+  return [...per].map(([motivo, linee]) => {
+    const u = [...new Set(linee)];
+    const cap = motivo.charAt(0).toUpperCase() + motivo.slice(1);
+    // Se il motivo vale per tutte le linee che servono la fermata, elencarle non aggiunge nulla.
+    return u.length > 1 ? cap : 'Linea ' + u[0] + ' &middot; ' + motivo;
+  }).join(' &middot; ');
 }
 
 // ── Caricamento ───────────────────────────────
@@ -301,7 +336,8 @@ fetch('schedule.json').then(r => r.json()).then(data => {
   indexPairs(); restore(); paintRoute(); render();
   setInterval(render, 30000);
 }).catch(() => {
-  $('cards').innerHTML = '<div class="empty"><strong>Errore di rete</strong>Impossibile caricare gli orari.</div>';
+  $('cards').innerHTML = '<div class="empty"><strong>Orari non disponibili</strong>' +
+    'Non è stato possibile caricarli. Controlla la connessione e riapri l’app.</div>';
 });
 
 function restore() {
@@ -339,7 +375,7 @@ function paintRoute() {
   $('recents').style.display = recents.length ? 'flex' : 'none';
   $('recents').innerHTML = recents.map((r, i) =>
     '<button class="recent' + (r[0] === origin && r[1] === dest ? ' on' : '') + '" data-i="' + i + '">' +
-      label(r[0], true) + ' &rarr; ' + label(r[1], true) + '</button>').join('');
+      '<i></i><span>' + label(r[0], true) + '<b>&rarr;</b>' + label(r[1], true) + '</span></button>').join('');
 }
 
 // ── Selettore fermate ─────────────────────────
@@ -347,16 +383,21 @@ function openPicker(which) {
   pickFor = which; pickAt = Date.now();
   const fixed = which === 'origin' ? dest : origin;
   const current = which === 'origin' ? origin : dest;
-  $('sheet-title').textContent = which === 'origin' ? 'Da dove parti' : 'Dove vai';
+  $('sheet-title').textContent = which === 'origin' ? 'Fermata di partenza' : 'Fermata di arrivo';
   $('sheet-opts').innerHTML = stopIds.filter(s => s !== fixed).map(s => {
     const [a, b] = which === 'origin' ? [s, fixed] : [fixed, s];
     const ok = served.has(key(a, b));
     const lines = ok ? linesFor(a, b) : [];
-    const note = ok ? approxNote(s) : 'nessuna corsa diretta ' + (which === 'origin' ? 'verso ' : 'da ') + label(fixed, true);
+    const note = ok ? approxNote(s)
+                    : 'Nessuna corsa diretta ' + (which === 'origin' ? 'verso ' : 'da ') + label(fixed);
+    // Coppito e' servita da sette linee: elencarle tutte spingerebbe il nome a capo.
+    const ln = !lines.length ? ''
+      : lines.length > 4 ? lines.length + ' linee'
+      : (lines.length > 1 ? 'linee ' : 'linea ') + lines.join(' &middot; ');
     return '<button class="opt' + (s === current ? ' on' : '') + '" data-stop="' + s + '"' + (ok ? '' : ' disabled') + '>' +
-      '<i></i><span><span class="nm">' + label(s) + '</span>' +
-      (note ? '<span class="sub" style="display:block">' + note + '</span>' : '') + '</span>' +
-      '<span class="ln">' + lines.join(' &middot; ') + '</span></button>';
+      '<i></i><span class="txt"><span class="nm">' + label(s) + '</span>' +
+      (note ? '<span class="sub">' + note + '</span>' : '') + '</span>' +
+      '<span class="ln">' + ln + '</span></button>';
   }).join('');
   $('sheet-bg').classList.add('open');
 }
@@ -372,7 +413,7 @@ $('recents').addEventListener('click', e => {
 });
 $('banner-btn').addEventListener('click', () => {
   showAll = !showAll;
-  $('banner-btn').textContent = showAll ? 'Solo oggi' : 'Mostra tutte';
+  $('banner-btn').textContent = showAll ? 'Solo oggi' : 'Tutte le corse';
   render();
 });
 
@@ -424,7 +465,7 @@ function getTrips() {
       const e = {
         dep, arr, depMin, arrMin, diff, dur: arrMin - depMin,
         line: d.line, side: d.side, variant: r.variant,
-        scolastica: r.scolastica, ignota: r.nota_ignota, runsToday,
+        scolastica: r.scolastica, ignota: r.nota_ignota, runsToday, days,
         approx: !!(d.approx && (d.approx[origin] || d.approx[dest]))
       };
       if (diff < -2) { if (diff > -60) out.past.push(e); } else out.future.push(e);
@@ -445,7 +486,7 @@ function markFastest(future, count) {
   for (const t of near) if (t.arrMin < best.arrMin) best = t;
   const gain = near[0].arrMin - best.arrMin;
   if (best === near[0] || gain < GUADAGNO_MIN) return count;
-  best.fastest = gain; best.fastestThan = near[0].dep;
+  best.fastest = gain;
   best.sameDep = best.depMin === near[0].depMin;   // due corse alla stessa ora
   return Math.max(count, future.indexOf(best) + 1);
 }
@@ -454,17 +495,17 @@ function markFastest(future, count) {
 function cardHTML(t, isNext, isPast) {
   const ln = meta.lines[t.line] || { num: '?', sub: '' };
   const [cd, cdClass] = diffLabel(t.diff);
-  const sub = (t.variant && t.variant !== ln.num) ? t.variant : ln.sub;
+  const sub = ((t.variant && t.variant !== ln.num ? t.variant : ln.sub) || '').replace(/\s+/g, '');
 
-  const bits = [];
-  if (t.approx) bits.push('<span class="est">stimato</span>');
-  bits.push(t.dur + ' min');
+  const bits = [t.dur + ' min'];
   // 'lato' distingue le due fermate di Coppito (universita' / ospedale): dirlo su una
   // tratta che non tocca l'universita' confonderebbe invece di aiutare.
-  if (t.side && (origin === 'uni' || dest === 'uni')) bits.push('lato ' + t.side);
+  if (t.side && dest === 'uni')        bits.push('arrivo lato ' + t.side);
+  else if (t.side && origin === 'uni') bits.push('partenza lato ' + t.side);
+  if (t.approx) bits.push('<span class="est">orario stimato</span>');
 
   let tag = '';
-  if (!t.runsToday)     tag = '<span class="tag warn">non oggi</span>';
+  if (!t.runsToday)     tag = '<span class="tag warn">solo ' + giorniLabel(t.days) + '</span>';
   else if (t.ignota)    tag = '<span class="tag bad">nota ' + t.ignota + '</span>';
   else if (t.scolastica) tag = '<span class="tag">scolastica</span>';
 
@@ -473,9 +514,8 @@ function cardHTML(t, isNext, isPast) {
     '<div class="times"><span class="dep">' + t.dep + '</span><span class="arr">' + t.arr + '</span></div>' +
     '<div class="cd ' + cdClass + '">' + cd + '</div>' +
     '<div class="detail">' + bits.join(' &middot; ') + '</div>' +
-    (t.fastest ? '<div class="hint">' + (t.sameDep
-        ? 'Stessa partenza, ma arriva ' + t.fastest + ' min prima'
-        : 'Parte dopo, ma arriva ' + t.fastest + ' min prima di quella delle ' + t.fastestThan) + '</div>' : '') +
+    (t.fastest ? '<div class="hint">' + (t.sameDep ? 'Stessa partenza' : 'Parte dopo') +
+        ', ma arriva ' + t.fastest + ' min prima</div>' : '') +
     tag + '</div>';
 }
 
@@ -486,7 +526,7 @@ function render() {
 
   if (today === 0) {
     banner.style.display = 'flex'; banner.classList.add('sunday');
-    $('banner-text').textContent = 'Domenica · servizio non attivo';
+    $('banner-text').textContent = 'Domenica · nessun servizio';
     $('banner-btn').style.display = 'none';
   } else if (today === 6) {
     banner.style.display = 'flex'; banner.classList.remove('sunday');
@@ -496,18 +536,18 @@ function render() {
 
   const cards = $('cards'), foot = $('foot');
   if (today === 0) {
-    cards.innerHTML = '<div class="empty"><strong>Nessun bus oggi</strong>AMA non effettua corse di domenica.</div>';
+    cards.innerHTML = '<div class="empty"><strong>Oggi è domenica</strong>AMA non effettua corse la domenica.</div>';
     foot.innerHTML = metaLine(); return;
   }
 
   const { past, future } = getTrips();
   if (!future.length && !past.length) {
-    cards.innerHTML = '<div class="empty"><strong>Nessuna corsa</strong>Non ci sono altre corse oggi fra ' +
-      label(origin, true) + ' e ' + label(dest, true) + '.</div>';
+    cards.innerHTML = '<div class="empty"><strong>Nessun’altra corsa oggi</strong>' +
+      'L’ultima da ' + label(origin) + ' a ' + label(dest) + ' è già passata.</div>';
     foot.innerHTML = metaLine(); return;
   }
 
-  future.forEach(t => { delete t.fastest; delete t.fastestThan; delete t.sameDep; });
+  future.forEach(t => { delete t.fastest; delete t.sameDep; });
   const count = markFastest(future, visible);
 
   let html = '';
@@ -527,20 +567,23 @@ function render() {
   if (left > 0) {
     const n = Math.min(left, 3);
     html += '<button class="more" data-act="more">' +
-      (n === 1 ? "Mostra un'altra corsa" : 'Mostra altre ' + n + ' corse') + '</button>';
+      (n === 1 ? 'Mostra un’altra corsa' : 'Mostra altre ' + n + ' corse') + '</button>';
   }
   cards.innerHTML = html;
 
   const last = future[future.length - 1];
-  const tail = last ? (left > 0 ? '+' + left + ' cors' + (left === 1 ? 'a' : 'e') + ' fino alle ' + last.dep
-                                : 'Ultima corsa alle ' + last.dep) : '';
+  const tail = !last ? ''
+    : left > 1   ? 'Altre ' + left + ' corse fino alle ' + last.dep
+    : left === 1 ? 'Un’altra corsa alle ' + last.dep
+    :              'Ultima corsa alle ' + last.dep;
   foot.innerHTML = (tail ? tail + '<br>' : '') + metaLine();
 }
 
 function metaLine() {
   if (!meta) return '';
-  const d = meta.effective ? meta.effective.split('-').reverse().join('/') : '';
-  return 'Orari in vigore dal ' + d + (meta.draft ? ' <span class="draft">· provvisori</span>' : '');
+  const d = dataEstesa(meta.effective);
+  return meta.draft ? 'Orari <span class="draft">provvisori</span>, in vigore dal ' + d
+                    : 'Orari in vigore dal ' + d;
 }
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
