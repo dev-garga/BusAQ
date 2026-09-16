@@ -21,20 +21,16 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { background: var(--bg); }
 
-/* Nell'app installata iOS disegna la barra di stato sopra la pagina e ne sfoca il
-   contenuto: si allontana l'intestazione dal bordo, con un minimo garantito nel caso
-   l'inset non venga riportato. Deve stare DOPO la regola di body, altrimenti la
-   scorciatoia `padding` la annulla. */
-@media (display-mode: standalone) {
-  body { padding-top: max(calc(env(safe-area-inset-top) + 14px), 58px); }
-}
-
 body {
   color: var(--text);
   font: 500 15px/1.4 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   -webkit-text-size-adjust: 100%;
   display: flex; flex-direction: column; min-height: 100dvh;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /* I 24 px sopra l'area di sicurezza tengono il logo e il titolo fuori dalla
+     sfocatura con cui iOS disegna la barra di stato: la sfumatura del materiale
+     arriva piu' in basso del bordo dell'inset. Stanno dentro la scorciatoia e non in
+     una regola a parte, che a seconda dell'ordine verrebbe annullata da questa. */
+  padding: calc(env(safe-area-inset-top) + 24px) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   max-width: 480px; margin: 0 auto;
 }
 

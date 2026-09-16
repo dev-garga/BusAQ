@@ -10,9 +10,12 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <meta name="theme-color" content="#0f1115">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<!-- Barra di stato opaca: con 'black-translucent' il contenuto le scorre sotto e iOS
-     la disegna con un materiale sfocato, che sbavava sopra il logo e il titolo. -->
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!-- 'black-translucent' e' la configurazione in cui iOS riporta davvero
+     env(safe-area-inset-top). Con la barra opaca l'inset torna a zero ma il sistema
+     continua a disegnare sopra la pagina, e il margine calcolato sull'inset sparisce:
+     e' il motivo per cui la sfocatura sbavava ancora sul titolo. Lo spazio sotto la
+     barra lo tiene il riempimento di body, in stile.css. -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bus AQ">
 </head>
 <body>

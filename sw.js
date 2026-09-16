@@ -5,12 +5,12 @@
 //
 // Il nome della cache lo scrive tools/rilascia.py dall'impronta dei file serviti:
 // cambia da se' quando cambia qualcosa e non cambia quando non e' cambiato niente.
-const CACHE = 'bus-aq-8b22030f30';
+const CACHE = 'bus-aq-d24cabcc30';
 
 // Cio' che cambia a ogni pubblicazione: si chiede prima alla rete, cosi' una versione
 // nuova si vede subito. Era questo il difetto — con la cache per prima, l'unico
 // interruttore restava il nome della cache, da incrementare a mano.
-const VIVI = ['./', './index.html', './stile.css', './app.js', './orari.js', './diagnostica.js', './schedule.json'];
+const VIVI = ['./', './index.html', './stile.css', './app.js', './orari.js', './schedule.json'];
 
 // Cio' che non cambia mai: inutile pagarlo a ogni apertura.
 const FERMI = ['./manifest.json', './icon-180.png', './icon-192.png', './icon-512.png'];
