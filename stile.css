@@ -26,11 +26,11 @@ body {
   font: 500 15px/1.4 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   -webkit-text-size-adjust: 100%;
   display: flex; flex-direction: column; min-height: 100dvh;
-  /* I 48 px sopra l'area di sicurezza tengono il logo e il titolo fuori dalla
+  /* I 36 px sopra l'area di sicurezza tengono il logo e il titolo fuori dalla
      sfocatura con cui iOS disegna la barra di stato: la sfumatura del materiale
      arriva piu' in basso del bordo dell'inset. Stanno dentro la scorciatoia e non in
      una regola a parte, che a seconda dell'ordine verrebbe annullata da questa. */
-  padding: calc(env(safe-area-inset-top) + 48px) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: calc(env(safe-area-inset-top) + 36px) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   max-width: 480px; margin: 0 auto;
 }
 
