@@ -264,6 +264,16 @@ def main():
     kb = Path(args.out).stat().st_size / 1024
     print(f"\nscritto {args.out}  ({kb:.0f} KB)")
 
+    # La verifica gira subito: un'estrazione sbagliata va vista adesso, non fra tre
+    # settimane alla fermata. Non cancella il file — lo si vuole poter ispezionare —
+    # ma il codice di uscita impedisce di proseguire senza accorgersene.
+    verifica = ROOT / "verifica.py"
+    if verifica.exists():
+        import subprocess
+        rel = Path(args.out).resolve().relative_to(ROOT.parent)
+        return subprocess.call([sys.executable, str(verifica), "--file", str(rel)])
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main() or 0)
