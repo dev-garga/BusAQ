@@ -15,16 +15,16 @@ export const minuti = t => { const [h, m] = t.split(':').map(Number); return h *
 export const chiave = (a, b) => a + '>' + b;
 
 // ── Formattazione ─────────────────────────────
-// L'unita' si scrive solo quando non ci sono ore: '25 min', '1h 25'. Mescolare
-// "min" e l'apostrofo nella stessa colonna si notava.
+// I minuti si scrivono col primo: 25′, e le ore per esteso: 1h 25. L'unita' non
+// compare mai due volte nella stessa espressione.
 export function attesa(m) {
-  if (m < 60) return m + ' min';
+  if (m < 60) return m + '′';
   const h = Math.floor(m / 60), r = m % 60;
   return r ? h + 'h ' + String(r).padStart(2, '0') : h + 'h';
 }
 
 export function etichettaAttesa(diff) {
-  if (diff >= -2 && diff < 2) return ['ora', 'now'];
+  if (diff >= -2 && diff < 2) return ['Ora', 'now'];
   if (diff < 0) return [attesa(-diff) + ' fa', 'past'];
   return [attesa(diff), diff < 10 ? 'now' : diff < 60 ? 'soon' : ''];
 }
@@ -91,7 +91,7 @@ export function notaApprossimazione(idx, fermata) {
   return [...per].map(([motivo, righe]) => {
     const u = [...new Set(righe)];
     const cap = motivo.charAt(0).toUpperCase() + motivo.slice(1);
-    return u.length > 1 ? cap : 'Linea ' + u[0] + ' · ' + motivo;
+    return u.length > 1 ? cap : 'Linea ' + u[0] + ' · ' + cap;
   });
 }
 

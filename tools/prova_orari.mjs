@@ -137,13 +137,13 @@ test('le descrizioni delle fermate', () => {
 });
 
 test('formattazione', () => {
-  assert.equal(attesa(25), '25 min');
+  assert.equal(attesa(25), '25\u2032');
   assert.equal(attesa(60), '1h');
   assert.equal(attesa(85), '1h 25');
-  assert.deepEqual(etichettaAttesa(0), ['ora', 'now']);
-  assert.deepEqual(etichettaAttesa(-30), ['30 min fa', 'past']);
-  assert.deepEqual(etichettaAttesa(5), ['5 min', 'now']);
-  assert.deepEqual(etichettaAttesa(30), ['30 min', 'soon']);
+  assert.deepEqual(etichettaAttesa(0), ['Ora', 'now']);
+  assert.deepEqual(etichettaAttesa(-30), ['30\u2032 fa', 'past']);
+  assert.deepEqual(etichettaAttesa(5), ['5\u2032', 'now']);
+  assert.deepEqual(etichettaAttesa(30), ['30\u2032', 'soon']);
   assert.deepEqual(etichettaAttesa(90), ['1h 30', '']);
   assert.equal(giorniLabel([1, 2, 3, 4, 5]), 'lun–ven');
   assert.equal(giorniLabel([1, 5]), 'lun e ven');

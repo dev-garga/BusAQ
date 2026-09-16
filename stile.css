@@ -21,6 +21,14 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { background: var(--bg); }
 
+/* Nell'app installata iOS disegna la barra di stato sopra la pagina e ne sfoca il
+   contenuto: si allontana l'intestazione dal bordo, con un minimo garantito nel caso
+   l'inset non venga riportato. Deve stare DOPO la regola di body, altrimenti la
+   scorciatoia `padding` la annulla. */
+@media (display-mode: standalone) {
+  body { padding-top: max(calc(env(safe-area-inset-top) + 14px), 58px); }
+}
+
 body {
   color: var(--text);
   font: 500 15px/1.4 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
@@ -157,6 +165,7 @@ header { display: flex; align-items: center; gap: 10px; padding: 22px var(--pad)
 .arr { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
 .arr::before { content: '\2192'; margin-right: 5px; color: var(--faint); }
 .detail { grid-column: 2; font-size: 11.5px; line-height: 1.35; color: var(--faint); }
+.detail b { font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
 .detail .est { color: #f0b547; font-weight: 600; }
 
 .cd { grid-column: 3; grid-row: span 2; justify-self: end; font-size: 13px; font-weight: 700;

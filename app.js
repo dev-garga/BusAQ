@@ -6,6 +6,7 @@ import {
 } from './orari.js';
 
 const $ = id => document.getElementById(id);
+const maiuscola = t => t.charAt(0).toUpperCase() + t.slice(1);
 
 // ── Stato ─────────────────────────────────────
 // Un oggetto solo e un solo punto di modifica. Prima erano otto variabili sparse,
@@ -121,7 +122,7 @@ function disegnaGiorni() {
   const dom = (new Date().getDay() + 1) % 7;
   $('days').querySelectorAll('.day').forEach(b => {
     b.classList.toggle('on', b.dataset.day === stato.giorno);
-    if (b.dataset.day === 'domani') b.innerHTML = 'Domani <small>· ' + giornoBreve(dom) + '</small>';
+    if (b.dataset.day === 'domani') b.innerHTML = 'Domani <small>· ' + maiuscola(giornoBreve(dom)) + '</small>';
   });
 }
 
@@ -129,11 +130,11 @@ function disegnaAvviso(dow) {
   const banner = $('banner');
   if (dow === 0) {
     banner.style.display = 'flex'; banner.classList.add('sunday');
-    $('banner-text').textContent = 'Domenica · nessun servizio';
+    $('banner-text').textContent = 'Domenica · Nessun servizio';
     $('banner-btn').style.display = 'none';
   } else if (dow === 6) {
     banner.style.display = 'flex'; banner.classList.remove('sunday');
-    $('banner-text').textContent = 'Sabato · corse ridotte';
+    $('banner-text').textContent = 'Sabato · Corse ridotte';
     $('banner-btn').style.display = '';
     $('banner-btn').textContent = stato.tutte ? 'Solo oggi' : 'Tutte le corse';
   } else banner.style.display = 'none';
@@ -148,12 +149,14 @@ function scheda(t, prima, passata, ord) {
   const [cd, cdClasse] = t.diff === null ? ['', ''] : etichettaAttesa(t.diff);
   const sigla = ((t.variant && t.variant !== ln.num ? t.variant : ln.sub) || '').replace(/\s+/g, '');
 
-  const pezzi = [t.dur + ' min'];
-  // 'lato' distingue le due fermate di Coppito (universita' / ospedale): dirlo su una
-  // tratta che non tocca l'universita' confonderebbe invece di aiutare.
-  if (t.side && stato.arrivo === 'uni')        pezzi.push('arrivo lato ' + t.side);
-  else if (t.side && stato.partenza === 'uni') pezzi.push('partenza lato ' + t.side);
-  if (t.approx) pezzi.push('<span class="est">orario stimato</span>');
+  const pezzi = ['<b>' + t.dur + '′</b>'];
+  // 'arrivo lato ospedale' si leggeva come "ti lascia all'ospedale". Il lato e' quello
+  // della fermata di Coppito: il PDF la chiama "universita' coppito (lato ospedale)",
+  // perche' il campus confina col San Salvatore e ha due fermate distinte. Dirlo su
+  // una tratta che non tocca l'universita' confonderebbe invece di aiutare.
+  if (t.side && stato.arrivo === 'uni')        pezzi.push('Arrivo a Coppito lato ' + t.side);
+  else if (t.side && stato.partenza === 'uni') pezzi.push('Partenza da Coppito lato ' + t.side);
+  if (t.approx) pezzi.push('<span class="est">Orario stimato</span>');
 
   let tag = '';
   if (!t.oggi)           tag = '<span class="tag warn">solo ' + giorniLabel(t.days) + '</span>';
@@ -169,7 +172,7 @@ function scheda(t, prima, passata, ord) {
     (t.diff === null ? '' : '<div class="cd ' + cdClasse + '">' + cd + '</div>') +
     '<div class="detail">' + pezzi.join(' &middot; ') + '</div>' +
     (t.guadagno ? '<div class="hint">' + (t.stessaPartenza ? 'Stessa partenza' : 'Parte dopo') +
-        ', ma arriva ' + t.guadagno + ' min prima</div>' : '') +
+        ', ma arriva ' + t.guadagno + '′ prima</div>' : '') +
     tag + '</div>';
 }
 
@@ -301,7 +304,7 @@ function apriSelettore(quale) {
                     : 'Nessuna corsa diretta ' + (quale === 'origin' ? 'verso ' : 'da ') + nome(fisso);
     // Coppito e' servita da sette linee: elencarle tutte spingerebbe il nome a capo.
     const et = !l.length ? '' : l.length > 4 ? l.length + ' linee'
-             : (l.length > 1 ? 'linee ' : 'linea ') + l.join(' &middot; ');
+             : (l.length > 1 ? 'Linee ' : 'Linea ') + l.join(' &middot; ');
     return '<button class="opt' + (s === attuale ? ' on' : '') + '" data-stop="' + s + '"' +
       ' style="--i:' + i + '"' + (ok ? '' : ' disabled') + '>' +
       '<i></i><span class="txt"><span class="nm">' + nome(s) + '</span>' +
