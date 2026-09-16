@@ -5,7 +5,7 @@
 //
 // Il nome della cache lo scrive tools/rilascia.py dall'impronta dei file serviti:
 // cambia da se' quando cambia qualcosa e non cambia quando non e' cambiato niente.
-const CACHE = 'bus-aq-d24cabcc30';
+const CACHE = 'bus-aq-581cdd6f9b';
 
 // Cio' che cambia a ogni pubblicazione: si chiede prima alla rete, cosi' una versione
 // nuova si vede subito. Era questo il difetto — con la cache per prima, l'unico
