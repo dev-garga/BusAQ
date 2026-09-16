@@ -392,6 +392,21 @@ $('swap').addEventListener('click', () => {
   }, 140);
 });
 
+// ── Misure del dispositivo (temporaneo) ───────
+// Tre tocchi sull'orologio aprono un pannello con le misure reali del telefono.
+// Serve a capire la sfocatura in cima, che non riesco a riprodurre. Da togliere
+// insieme a diagnostica.js quando la questione e' chiusa.
+let tocchi = 0, ultimoTocco = 0;
+$('clock').addEventListener('click', () => {
+  const ora = Date.now();
+  tocchi = ora - ultimoTocco < 1200 ? tocchi + 1 : 1;
+  ultimoTocco = ora;
+  if (tocchi >= 3) {
+    tocchi = 0;
+    import('./diagnostica.js').then(m => m.mostra()).catch(() => {});
+  }
+});
+
 // ── Service worker ────────────────────────────
 // updateViaCache 'none': senza, Safari puo' servire dalla propria cache HTTP perfino
 // lo script del worker, e allora nessun aggiornamento viene mai notato. Il controllo
