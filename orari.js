@@ -38,6 +38,40 @@ export function giorniLabel(days) {
 }
 
 export const giornoBreve = dow => GIORNI[dow];
+
+// ── Festivi ───────────────────────────────────
+// Nei festivi AMA segue l'orario festivo (2UF, M14F…) e le linee feriali non
+// circolano. Senza calendario, l'8 dicembre l'app mostrerebbe corse che non esistono.
+// Niente patrono: San Massimo non ha data fissa (nel 2026 cade il 14 giugno).
+const FESTE_FISSE = {
+  '1-1': 'Capodanno', '1-6': 'Epifania', '4-25': 'Festa della Liberazione',
+  '5-1': 'Festa del lavoro', '6-2': 'Festa della Repubblica', '8-15': 'Ferragosto',
+  '11-1': 'Ognissanti', '12-8': 'Immacolata', '12-25': 'Natale', '12-26': 'Santo Stefano'
+};
+
+// Domenica di Pasqua nel calendario gregoriano (algoritmo di Meeus/Jones/Butcher).
+export function pasqua(anno) {
+  const a = anno % 19, b = Math.floor(anno / 100), c = anno % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const mese = Math.floor((h + l - 7 * m + 114) / 31), giorno = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(anno, mese - 1, giorno);
+}
+
+// Nome della festivita' o null. Le domeniche non hanno nome: sono festive e basta.
+export function festivita(data) {
+  const fissa = FESTE_FISSE[(data.getMonth() + 1) + '-' + data.getDate()];
+  if (fissa) return fissa;
+  const lunedi = pasqua(data.getFullYear());
+  lunedi.setDate(lunedi.getDate() + 1);
+  return lunedi.getMonth() === data.getMonth() && lunedi.getDate() === data.getDate()
+    ? 'Pasquetta' : null;
+}
+
+// Il giorno della settimana secondo cui circolano gli autobus: 0 nei festivi.
+export const giornoServizio = data => festivita(data) ? 0 : data.getDay();
 export const giornoLungo = dow => GIORNI_LUNGHI[dow];
 
 export function dataEstesa(iso) {
@@ -79,28 +113,36 @@ export function linee(idx, a, b) {
   return [...out];
 }
 
-// Se piu' linee condividono lo stesso motivo, citarne una sola era fuorviante.
+// Un motivo per riga: "Linee 1, 2UF: orario di Viale Gran Sasso". Il nome delle linee
+// si omette solo se il motivo vale per TUTTE quelle che servono la fermata: sotto
+// Fontana Luminosa non va scritto in generale, perche' la A e la 3 pubblicano
+// l'orario vero.
 export function notaApprossimazione(idx, fermata) {
+  const sigla = l => idx.meta.lines[l].num + idx.meta.lines[l].sub;
+  const tutte = new Set(idx.direzioni.filter(d => d.stops.includes(fermata)).map(d => sigla(d.line)));
   const per = new Map();
   for (const d of idx.direzioni) {
     const motivo = d.approx && d.approx[fermata];
     if (!motivo) continue;
-    if (!per.has(motivo)) per.set(motivo, []);
-    per.get(motivo).push(idx.meta.lines[d.line].num + idx.meta.lines[d.line].sub);
+    if (!per.has(motivo)) per.set(motivo, new Set());
+    per.get(motivo).add(sigla(d.line));
   }
-  return [...per].map(([motivo, righe]) => {
-    const u = [...new Set(righe)];
-    const cap = motivo.charAt(0).toUpperCase() + motivo.slice(1);
-    return u.length > 1 ? cap : 'Linea ' + u[0] + ' · ' + cap;
+  return [...per].map(([motivo, linee]) => {
+    if (linee.size === tutte.size) return motivo.charAt(0).toUpperCase() + motivo.slice(1);
+    return (linee.size > 1 ? 'Linee ' : 'Linea ') + [...linee].join(', ') + ': ' + motivo;
   });
 }
 
 // ── Corse ─────────────────────────────────────
+const SCUOLA = 1, VACANZE = 2;
+const periodi = t => t.scolastica ? SCUOLA : t.vacanze ? VACANZE : SCUOLA | VACANZE;
+
 // `adesso: null` significa "giornata intera": e' il caso di domani, dove non
-// esiste un momento presente attorno a cui dividere passato e futuro.
+// esiste un momento presente attorno a cui dividere passato e futuro. Quali corse
+// circolano la domenica lo dicono i dati (le linee festive hanno days [0]), non una
+// regola scritta qui: prima la domenica si scartava tutto, e la 2UF non compariva mai.
 export function corse(idx, { partenza, arrivo, dow, adesso = null, tutte = false }) {
   const out = { passate: [], future: [] };
-  if (dow === 0) return out;                     // domenica: nessun servizio AMA
 
   const intera = adesso === null, viste = new Map();
 
@@ -116,23 +158,30 @@ export function corse(idx, { partenza, arrivo, dow, adesso = null, tutte = false
 
       const days = r.days || idx.meta.default_days;
       const oggi = days.includes(dow);
-      if (!oggi && !tutte) continue;
+      // "Tutte le corse" serve a vedere il sabato quelle del solo lun-ven: le festive
+      // non c'entrano, e in un giorno feriale sarebbero solo rumore.
+      const festiva = days.length === 1 && days[0] === 0;
+      if (!oggi && !(tutte && !festiva)) continue;
 
       const k = d.line + dep + arr;
       const e = {
         dep, arr, depMin, arrMin, dur: arrMin - depMin,
         diff: intera ? null : depMin - adesso,
         line: d.line, side: d.side, variant: r.variant,
-        scolastica: !!r.scolastica, ignota: r.nota_ignota, oggi, days,
+        scolastica: !!r.scolastica, vacanze: !!r.vacanze, ignota: r.nota_ignota, oggi, days,
         approx: !!(d.approx && (d.approx[partenza] || d.approx[arrivo]))
       };
 
-      // Stessa linea, stessa partenza, stesso arrivo: e' la stessa corsa vista da
-      // due pannelli del PDF. Vince la versione meno restrittiva — se altrove la
-      // corsa e' pubblicata senza vincolo scolastico, non va etichettata come tale.
+      // Stessa linea, stessa partenza, stesso arrivo: e' la stessa corsa pubblicata
+      // due volte. Spesso una volta come S (solo periodo scolastico) e una come N (solo
+      // vacanze): insieme vogliono dire "sempre". I periodi si uniscono — prima vinceva
+      // la versione incontrata per prima, e una corsa che circola tutto l'anno poteva
+      // risultare "solo vacanze".
       const gia = viste.get(k);
       if (gia) {
-        if (gia.scolastica && !e.scolastica) gia.scolastica = false;
+        const u = periodi(gia) | periodi(e);
+        gia.scolastica = u === SCUOLA;
+        gia.vacanze = u === VACANZE;
         if (e.days.length > gia.days.length) { gia.days = e.days; gia.oggi = e.oggi; }
         continue;
       }

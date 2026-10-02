@@ -1,0 +1,27 @@
+{
+ "_comment": [
+  "Corse trascritte a mano da tabelle che non si possono leggere in modo affidabile.",
+  "extract_schedule.py le unisce a quelle estratte; check_updates.py avvisa quando il PDF",
+  "di origine cambia, perche' allora la trascrizione va ricontrollata.",
+  "",
+  "Linea 13: il PDF non ha intestazioni come testo (sono disegnate) e nel pannello in",
+  "basso la corsa delle 7:10 finisce in una cella unita con l'itinerario 'preturo-coppito'.",
+  "Qui solo le corse con orario sia all'universita' sia al Terminal: le altre righe hanno",
+  "testo al posto dell'orario a Coppito (13Z 'preturo-coppito 3-coppito piazza',",
+  "13Y 'sottopasso-sassa-optimes')."
+ ],
+ "directions": [
+  {
+   "id": "13:ritorno",
+   "line": "linea13",
+   "source": "13",
+   "fonte": "Orario-13-M13A_28092026_2.pdf, pannello «linee 13-13X-13V-13Y-13J-13W-13Z», metà destra",
+   "stops": ["uni", "terminal"],
+   "runs": [
+    {"t": ["07:10", "07:40"], "scolastica": true, "variant": "13"},
+    {"t": ["07:15", "07:40"], "vacanze": true, "variant": "13"},
+    {"t": ["07:25", "08:10"], "scolastica": true, "variant": "13J"}
+   ]
+  }
+ ]
+}

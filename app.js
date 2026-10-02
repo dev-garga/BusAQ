@@ -2,7 +2,8 @@
 // il DOM: qui non si decide mai quali corse esistono, solo come si mostrano.
 import {
   indicizza, corse, arrivoPiuRapido, servita, linee, notaApprossimazione,
-  etichettaAttesa, giorniLabel, giornoBreve, giornoLungo, dataEstesa, chiave
+  etichettaAttesa, giorniLabel, giornoBreve, giornoLungo, dataEstesa, chiave,
+  festivita, giornoServizio
 } from './orari.js';
 
 const $ = id => document.getElementById(id);
@@ -78,15 +79,21 @@ const nome = (id, breve) => {
   return s ? (breve && s.short ? s.short : s.label) : id;
 };
 
-// Il giorno della settimana di cui si stanno guardando gli orari.
-const dowMostrato = () => (new Date().getDay() + (stato.giorno === 'domani' ? 1 : 0)) % 7;
+// La data di cui si stanno guardando gli orari, e il giorno secondo cui circolano:
+// nei festivi vale come una domenica.
+const dataMostrata = () => {
+  const d = new Date();
+  if (stato.giorno === 'domani') d.setDate(d.getDate() + 1);
+  return d;
+};
+const dowMostrato = () => giornoServizio(dataMostrata());
 const adessoMin = () => { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); };
 
 function rigaMeta() {
   if (!idx) return '';
-  const d = dataEstesa(idx.meta.effective);
-  return idx.meta.draft ? 'Orari <span class="draft">provvisori</span>, in vigore dal ' + d
-                        : 'Orari in vigore dal ' + d;
+  if (idx.meta.draft)
+    return 'Orari <span class="draft">provvisori</span>, in vigore dal ' + dataEstesa(idx.meta.effective);
+  return 'Orari ufficiali AMA, aggiornati al ' + dataEstesa(idx.meta.aggiornato || idx.meta.effective);
 }
 
 // ── Avvio ─────────────────────────────────────
@@ -119,21 +126,24 @@ function disegnaTratta() {
 }
 
 function disegnaGiorni() {
-  const dom = (new Date().getDay() + 1) % 7;
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  const etichetta = festivita(d) ? 'Festivo' : maiuscola(giornoBreve(d.getDay()));
   $('days').querySelectorAll('.day').forEach(b => {
     b.classList.toggle('on', b.dataset.day === stato.giorno);
-    if (b.dataset.day === 'domani') b.innerHTML = 'Domani <small>· ' + maiuscola(giornoBreve(dom)) + '</small>';
+    if (b.dataset.day === 'domani') b.innerHTML = 'Domani <small>· ' + etichetta + '</small>';
   });
 }
 
-function disegnaAvviso(dow) {
-  const banner = $('banner');
+// Il festivo non e' piu' un errore ("nessun servizio"): AMA ha un orario festivo.
+function disegnaAvviso() {
+  const data = dataMostrata(), dow = giornoServizio(data), banner = $('banner');
+  banner.classList.remove('sunday');
   if (dow === 0) {
-    banner.style.display = 'flex'; banner.classList.add('sunday');
-    $('banner-text').textContent = 'Domenica · Nessun servizio';
+    banner.style.display = 'flex';
+    $('banner-text').textContent = (festivita(data) || 'Domenica') + ' · Orario festivo';
     $('banner-btn').style.display = 'none';
   } else if (dow === 6) {
-    banner.style.display = 'flex'; banner.classList.remove('sunday');
+    banner.style.display = 'flex';
     $('banner-text').textContent = 'Sabato · Corse ridotte';
     $('banner-btn').style.display = '';
     $('banner-btn').textContent = stato.tutte ? 'Solo oggi' : 'Tutte le corse';
@@ -159,14 +169,17 @@ function scheda(t, prima, passata, ord) {
   if (t.approx) pezzi.push('<span class="est">Orario stimato</span>');
 
   let tag = '';
+  // "Solo vacanze": la legenda AMA dice "si effettua solo nei periodi non scolastici".
+  // Senza il calendario scolastico non si puo' nascondere, ma va detto.
   if (!t.oggi)           tag = '<span class="tag warn">solo ' + giorniLabel(t.days) + '</span>';
   else if (t.ignota)     tag = '<span class="tag bad">nota ' + t.ignota + '</span>';
+  else if (t.vacanze)    tag = '<span class="tag warn">solo vacanze</span>';
   else if (t.scolastica) tag = '<span class="tag">scolastica</span>';
 
   return '<div class="card' + (prima ? ' next' : '') + (passata ? ' past' : '') +
       (prima && imminente(t) ? ' imminente' : '') + '"' +
       (ord >= 0 ? ' data-in style="--i:' + ord + '"' : '') + '>' +
-    '<div class="badge"><span class="num">' + ln.num + '</span>' +
+    '<div class="badge"><span class="num' + (ln.num.length > 3 ? ' lunga' : '') + '">' + ln.num + '</span>' +
       (sigla ? '<span class="sub">' + sigla + '</span>' : '') + '</div>' +
     '<div class="times"><span class="dep">' + t.dep + '</span><span class="arr">' + t.arr + '</span></div>' +
     (t.diff === null ? '' : '<div class="cd ' + cdClasse + '">' + cd + '</div>') +
@@ -202,30 +215,27 @@ function disegnaElenco() {
   const cards = $('cards'), piede = $('foot');
   const svuota = html => { cards.innerHTML = html; chiaviDom = []; firmaDom = ''; };
 
-  if (dow === 0) {
-    svuota('<div class="empty"><strong>' + (domani ? 'Domani' : 'Oggi') + ' è domenica</strong>' +
-           'AMA non effettua corse la domenica.</div>');
-    piede.innerHTML = rigaMeta(); return;
-  }
-
-  const { passate, future } = corse(idx, {
-    partenza: stato.partenza, arrivo: stato.arrivo, dow,
-    adesso: domani ? null : adessoMin(), tutte: stato.tutte
-  });
+  // Il pulsante "Tutte le corse" esiste solo il sabato: altrove la scelta non vale.
+  const filtro = { partenza: stato.partenza, arrivo: stato.arrivo, dow, tutte: stato.tutte && dow === 6 };
+  const { passate, future } = corse(idx, { ...filtro, adesso: domani ? null : adessoMin() });
 
   const verso = 'da ' + nome(stato.partenza) + ' a ' + nome(stato.arrivo);
+  const quando = dow === 0 ? 'nei giorni festivi' : 'di ' + giornoLungo(dow);
   const invito = '<button class="vedi-domani" data-act="domani">Vedi le corse di domani</button>';
   const finite = (coda, dentro) =>
     '<div class="empty' + (dentro ? ' inline' : '') + '"><strong>Nessun’altra corsa oggi</strong>' +
     (coda || 'L’ultima ' + verso + ' è già passata.') + invito + '</div>';
+  // Diverso da "sono finite": su questa tratta, in questo tipo di giorno, non ne passa nessuna.
+  const nessuna = () => '<div class="empty"><strong>Nessuna corsa ' + (domani ? 'domani' : 'oggi') +
+    '</strong>Nessun bus va ' + verso + ' ' + quando + '.' + (domani ? '' : invito) + '</div>';
 
   if (!future.length) {
-    if (domani) {
-      svuota('<div class="empty"><strong>Nessuna corsa domani</strong>' +
-             'Nessun bus ' + verso + ' circola di ' + giornoLungo(dow) + '.</div>');
+    if (domani) { svuota(nessuna()); piede.innerHTML = rigaMeta(); return; }
+    if (!passate.length) {
+      const giornata = corse(idx, { ...filtro, adesso: null }).future.length;
+      svuota(giornata ? finite('') : nessuna());
       piede.innerHTML = rigaMeta(); return;
     }
-    if (!passate.length) { svuota(finite('')); piede.innerHTML = rigaMeta(); return; }
   }
 
   // Il consiglio sull'arrivo piu' rapido confronta la mezz'ora dopo la prima partenza
@@ -283,7 +293,7 @@ function disegna() {
   if (!idx) return;
   disegnaTratta();
   disegnaGiorni();
-  disegnaAvviso(dowMostrato());
+  disegnaAvviso();
   disegnaElenco();
 }
 
@@ -300,7 +310,7 @@ function apriSelettore(quale) {
     const [a, b] = quale === 'origin' ? [s, fisso] : [fisso, s];
     const ok = servita(idx, a, b);
     const l = ok ? linee(idx, a, b) : [];
-    const nota = ok ? notaApprossimazione(idx, s).join(' · ')
+    const nota = ok ? notaApprossimazione(idx, s).join('<br>')
                     : 'Nessuna corsa diretta ' + (quale === 'origin' ? 'verso ' : 'da ') + nome(fisso);
     // Coppito e' servita da sette linee: elencarle tutte spingerebbe il nome a capo.
     const et = !l.length ? '' : l.length > 4 ? l.length + ' linee'

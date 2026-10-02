@@ -1,10 +1,117 @@
 {
- "orari1": {
-  "last_modified": "Fri, 11 Sep 2026 15:55:40 GMT",
-  "length": "934288"
+ "A": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2021/05/LineaA170926.pdf",
+  "file": "LineaA170926.pdf",
+  "aggiornata": "17 settembre 2026"
  },
- "orari2": {
-  "last_modified": "Fri, 11 Sep 2026 13:32:17 GMT",
-  "length": "733677"
- }
+ "B": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2021/05/LineaB160926_2.pdf",
+  "file": "LineaB160926_2.pdf",
+  "aggiornata": "15 settembre 2026"
+ },
+ "1": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/09/Orario-1_28092026.pdf",
+  "file": "Orario-1_28092026.pdf",
+  "aggiornata": "28 settembre 2026"
+ },
+ "2": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2021/09/orario2_160926_2.pdf",
+  "file": "orario2_160926_2.pdf",
+  "aggiornata": "15 settembre 2026"
+ },
+ "2U": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/10/orario2U_160926_2.pdf",
+  "file": "orario2U_160926_2.pdf",
+  "aggiornata": "15 settembre 2026"
+ },
+ "3": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/09/Orario-3_28092026.pdf",
+  "file": "Orario-3_28092026.pdf",
+  "aggiornata": "28 settembre 2026"
+ },
+ "12": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/10/Orario-12_21092026-1.pdf",
+  "file": "Orario-12_21092026-1.pdf",
+  "aggiornata": "15 settembre 2026"
+ },
+ "12A": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/09/Orario-12A_28092026.pdf",
+  "file": "Orario-12A_28092026.pdf",
+  "aggiornata": "28 settembre 2026"
+ },
+ "13": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/10/Orario-13-M13A_28092026_2.pdf",
+  "file": "Orario-13-M13A_28092026_2.pdf",
+  "aggiornata": "28 settembre 2026"
+ },
+ "14D": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/10/Orario-14D_21062026.pdf",
+  "file": "Orario-14D_21062026.pdf",
+  "aggiornata": "15 settembre 2026"
+ },
+ "15": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/09/Orario-15_01102026.pdf",
+  "file": "Orario-15_01102026.pdf",
+  "aggiornata": "01 ottobre 2026"
+ },
+ "2UF": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/07/Orario-2UF-M2UF_01102026.pdf",
+  "file": "Orario-2UF-M2UF_01102026.pdf",
+  "aggiornata": "30 settembre 2026"
+ },
+ "M14F": {
+  "url": "https://www.ama.laquila.it/wp-content/uploads/2022/07/orario-M14F.pdf",
+  "file": "orario-M14F.pdf",
+  "aggiornata": "18 aprile 2025"
+ },
+ "_pagina": [
+  "1",
+  "10",
+  "11",
+  "11A",
+  "12",
+  "12A",
+  "13",
+  "14D",
+  "15",
+  "16",
+  "16A",
+  "2",
+  "2U",
+  "2UF",
+  "3",
+  "5",
+  "5F",
+  "6S-6D",
+  "7",
+  "8",
+  "9",
+  "A",
+  "B",
+  "CENTRO",
+  "Collesapone (scolastico)",
+  "I.I.S. Da Vinci",
+  "Istituto D. Cotugno (scolastico)",
+  "Legenda linee",
+  "M11F",
+  "M12X",
+  "M14F",
+  "M15F",
+  "M16F",
+  "M17",
+  "M6",
+  "M6B",
+  "M6F",
+  "NAVETTA CENTRO FESTIVI",
+  "NAVETTA EX-CASERMA ROSSI",
+  "NOTTURNO BUS",
+  "Punti di interesse",
+  "SCUOLA MEDIA CARDUCCI",
+  "SCUOLA MEDIA PAGANICA",
+  "Scuola Media Mazzini (scolastico)",
+  "Scuola Media Pettino(scolastico)",
+  "Scuola Media Sassa e Pianola (scolastico)",
+  "Stazione FF.SS. festivo",
+  "Thales Alenia Space"
+ ]
 }

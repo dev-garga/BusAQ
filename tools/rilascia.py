@@ -51,13 +51,16 @@ def main():
                     help="non scrive niente, esce con 1 se il timbro non e' aggiornato")
     ap.add_argument("--salta-verifica", action="store_true",
                     help="non eseguire tools/verifica.py")
+    ap.add_argument("--accetta-perdite", action="store_true",
+                    help="inoltrato a verifica.py: perdite di corse gia' rilette sul PDF")
     args = ap.parse_args()
 
     if not args.salta_verifica:
         verifica = RADICE / "tools" / "verifica.py"
         if verifica.exists():
             print("verifica dei dati…")
-            if subprocess.call([sys.executable, str(verifica)]) != 0:
+            opzioni = ["--accetta-perdite"] if args.accetta_perdite else []
+            if subprocess.call([sys.executable, str(verifica), *opzioni]) != 0:
                 print("\nverifica fallita: non timbro niente.", file=sys.stderr)
                 return 1
         else:

@@ -1,620 +1,901 @@
 {
-  "_comment": [
-    "Configurazione per extract_schedule.py — orari AMA in vigore dal 16/09/2026.",
-    "",
-    "Ogni anno AMA ripubblica i PDF cambiando impaginazione: quando succede si aggiorna",
-    "QUESTO file, non il codice. tools/inspect_pdf.py rilegge la struttura di una pagina.",
-    "",
-    "Una voce di 'directions' = un percorso in un senso. Gli anelli (A, B, 2U) sono spezzati",
-    "in due voci sulla stessa pagina, perche' toccano il capolinea due volte e l'elenco",
-    "'stops' dev'essere in ordine di percorso senza ripetizioni.",
-    "",
-    "'columns' usa indici 0-based della tabella estratta da pdfplumber. Le intestazioni sono",
-    "ruotate e tornano col testo rovesciato: 'sublanimret' = 'terminalbus'.",
-    "'table_index' serve dove la pagina contiene piu' tabelle (linee 12, 13, 14D, 15);",
-    "'note_col' perche' nei pannelli affiancati le note non stanno in colonna 0.",
-    "",
-    "Giorni secondo Date.getDay(): 0=domenica … 6=sabato. AMA non pubblica orari domenicali",
-    "per queste linee: il servizio non esiste."
-  ],
-  "effective": "2026-09-16",
-  "draft": true,
-  "draft_note": "Bozze Rev 1 allegate al comunicato prot. 1779 del 07/09/2026. Usare check_updates.py per accorgersi dei definitivi.",
-  "default_days": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6
-  ],
-  "_grey_comment": [
-    "Rettangolo grigio (non_stroking_color ~0.749, largo >40% pagina) = corsa dal lunedi' al",
-    "venerdi'. Le voci di legenda senza lettera ('non si effettua il sabato' su p8, 'si effettua",
-    "dal lunedi' al venerdi'' su p6) ne sono la didascalia. Convive coi codici lettera: si",
-    "applicano entrambi. L'appartenenza di una corsa alla fascia grigia si decide sulla",
-    "geometria delle parole, perche' find_tables() disallinea le righe."
-  ],
-  "_legend_comment": [
-    "La stessa lettera vale cose diverse da pagina a pagina: su p4 'A' = non si effettua il",
-    "sabato, su p6 = variante di percorso, su p8 = deviazione a colle sapone. Per questo la",
-    "legenda sta dentro ogni direzione e non va mai dedotta.",
-    "Un codice mappato a {} e' solo informativo e non tocca il calendario.",
-    "Le lettere assenti dalla legenda diventano 'nota_ignota': la corsa resta visibile ma",
-    "dichiarata incerta, invece di essere scartata o data per normale in silenzio."
-  ],
-  "sources": {
-    "orari1": {
-      "file": "Orari-1-parte_Rev__1.pdf",
-      "url": "https://www.ama.laquila.it/wp-content/uploads/2026/09/Orari-1-parte_Rev__1.pdf"
-    },
-    "orari2": {
-      "file": "Orari-2-parte_Rev_1.pdf",
-      "url": "https://www.ama.laquila.it/wp-content/uploads/2026/09/Orari-2-parte_Rev_1.pdf"
-    }
+ "_comment": [
+  "Configurazione per extract_schedule.py — orari ufficiali AMA, un PDF per linea.",
+  "",
+  "'sources' indica le linee per ETICHETTA sulla pagina «Elenco linee AMA», non per URL:",
+  "AMA mette la data di revisione nel nome del file, quindi l'URL cambia a ogni revisione.",
+  "tools/ama.py trova l'URL corrente; il file scaricato e' registrato in pdf_state.json.",
+  "",
+  "'columns' cerca le colonne PER NOME: un'espressione regolare sul nome della fermata",
+  "letto dalle intestazioni ruotate, con '@n' per l'n-esima occorrenza nei giri completi",
+  "(es. 'terminalbus@2' = il Terminal di ritorno). Un numero resta un indice di colonna.",
+  "'note' e 'linea' trovano allo stesso modo le colonne delle note e della variante.",
+  "'table' e' l'indice fra le tabelle della pagina; 'giorni' sostituisce default_days",
+  "(le festive valgono [0]). Giorni secondo Date.getDay(): 0=domenica … 6=sabato.",
+  "",
+  "La linea 13 non ha intestazioni leggibili e celle unite: le sue corse utili stanno in",
+  "manuali.json, trascritte a mano."
+ ],
+ "_grey_comment": [
+  "Rettangolo grigio (~0.749, largo >40% pagina): la didascalia senza lettera nella",
+  "legenda ne da' il significato, e cambia da pagina a pagina. Sulla 1 e sull'andata",
+  "della 3 vuol dire 'non si effettua il sabato e i giorni non scolastici', cioe'",
+  "lun-ven e solo in periodo scolastico; sul ritorno della 3 solo 'non il sabato'.",
+  "Convive coi codici lettera: si applicano entrambi."
+ ],
+ "_legend_comment": [
+  "La stessa lettera vale cose diverse da pagina a pagina: la legenda sta in ogni",
+  "direzione e non va mai dedotta. Un codice mappato a {} e' una variante di percorso.",
+  "N vale 'solo nei periodi NON scolastici' su ogni pagina che la usa: ne fanno",
+  "corse 'vacanze'. Le lettere assenti dalla legenda diventano 'nota_ignota'."
+ ],
+ "effective": "2026-09-16",
+ "draft": false,
+ "default_days": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6
+ ],
+ "sources": {
+  "A": {
+   "etichetta": "A"
   },
-  "stops": {
-    "fontana_luminosa": {
-      "label": "Fontana Luminosa",
-      "short": "Fontana Luminosa"
-    },
-    "via_panella": {
-      "label": "Viale Panella",
-      "short": "Panella"
-    },
-    "via_strinella": {
-      "label": "Via Strinella",
-      "short": "Strinella"
-    },
-    "terminal": {
-      "label": "Terminal Collemaggio",
-      "short": "Collemaggio"
-    },
-    "aquilone": {
-      "label": "L’Aquilone",
-      "short": "Aquilone"
-    },
-    "uni": {
-      "label": "Università Coppito",
-      "short": "Coppito"
-    }
+  "B": {
+   "etichetta": "B"
   },
-  "lines": {
-    "linea1": {
-      "num": "1",
-      "sub": "",
-      "descrizione": "Terminalbus – Università Coppito – L’Aquilone (ex linee 1 e 4 unificate)"
-    },
-    "linea3": {
-      "num": "3",
-      "sub": "",
-      "descrizione": "Terminalbus – Strinella – Fontana Luminosa – Cansatessa – Ospedale/Università"
-    },
-    "lineaA": {
-      "num": "A",
-      "sub": "",
-      "descrizione": "Anello ex EST: Terminalbus – Fontana Luminosa – via Vetoio – Stazione FS"
-    },
-    "lineaB": {
-      "num": "B",
-      "sub": "",
-      "descrizione": "Anello ex OVEST, senso opposto alla A"
-    },
-    "linea2ut": {
-      "num": "2",
-      "sub": "UT",
-      "descrizione": "Circolare Terminalbus – Stazione – Università Coppito – L’Aquilone"
-    },
-    "linea12": {
-      "num": "12",
-      "sub": "",
-      "descrizione": "Terminalbus – Ospedale – Genzano – Sassa – Prata"
-    },
-    "linea13": {
-      "num": "13",
-      "sub": "",
-      "descrizione": "Terminalbus – Ospedale/Università – Preturo – Menzano"
-    },
-    "linea14d": {
-      "num": "14",
-      "sub": "D",
-      "descrizione": "Cese di Preturo – Università Coppito – L’Aquilone"
-    },
-    "linea15": {
-      "num": "15",
-      "sub": "",
-      "descrizione": "Terminalbus – Università Coppito – S.Vittorino – Arischia"
-    }
+  "1": {
+   "etichetta": "1"
   },
-  "directions": [
-    {
-      "id": "linea1:andata",
-      "line": "linea1",
-      "source": "orari1",
-      "page": 3,
-      "note_col": 0,
-      "line_col": 1,
-      "side": "università",
-      "grey": "weekdays",
-      "columns": {
-        "terminal": 2,
-        "fontana_luminosa": 3,
-        "via_panella": 3,
-        "uni": 12,
-        "aquilone": 16
-      },
-      "order": [
-        "terminal",
-        "via_panella",
-        "fontana_luminosa",
-        "uni",
-        "aquilone"
-      ],
-      "approx": {
-        "fontana_luminosa": "orario di Viale Gran Sasso, fermata adiacente",
-        "via_panella": "orario della fermata contigua: AMA non ne pubblica uno"
-      },
-      "legend": {
-        "S": {
-          "scolastica": true,
-          "no_saturday": true
-        },
-        "A": {
-          "scolastica": true,
-          "no_saturday": true
-        }
-      }
+  "2": {
+   "etichetta": "2"
+  },
+  "2U": {
+   "etichetta": "2U"
+  },
+  "3": {
+   "etichetta": "3"
+  },
+  "12": {
+   "etichetta": "12"
+  },
+  "12A": {
+   "etichetta": "12A"
+  },
+  "13": {
+   "etichetta": "13"
+  },
+  "14D": {
+   "etichetta": "14D"
+  },
+  "15": {
+   "etichetta": "15"
+  },
+  "2UF": {
+   "etichetta": "2UF"
+  },
+  "M14F": {
+   "etichetta": "M14F"
+  }
+ },
+ "stops": {
+  "fontana_luminosa": {
+   "label": "Fontana Luminosa",
+   "short": "Fontana Luminosa"
+  },
+  "via_panella": {
+   "label": "Viale Panella",
+   "short": "Panella"
+  },
+  "via_strinella": {
+   "label": "Via Strinella",
+   "short": "Strinella"
+  },
+  "terminal": {
+   "label": "Terminal Collemaggio",
+   "short": "Collemaggio"
+  },
+  "aquilone": {
+   "label": "L’Aquilone",
+   "short": "Aquilone"
+  },
+  "uni": {
+   "label": "Università Coppito",
+   "short": "Coppito"
+  }
+ },
+ "lines": {
+  "lineaA": {
+   "num": "A",
+   "sub": "",
+   "descrizione": "Anello: Terminalbus – Strinella – Fontana Luminosa – Ospedale/Università – Stazione FS"
+  },
+  "lineaB": {
+   "num": "B",
+   "sub": "",
+   "descrizione": "Anello in senso opposto alla A"
+  },
+  "linea1": {
+   "num": "1",
+   "sub": "",
+   "descrizione": "Terminalbus – Gran Sasso – Università Coppito – L’Aquilone"
+  },
+  "linea2": {
+   "num": "2",
+   "sub": "",
+   "descrizione": "Terminalbus – Stazione – Hotel My Suite – L’Aquilone"
+  },
+  "linea2u": {
+   "num": "2U",
+   "sub": "",
+   "descrizione": "Terminalbus – Cencioni – Università Coppito – L’Aquilone"
+  },
+  "linea3": {
+   "num": "3",
+   "sub": "",
+   "descrizione": "Terminalbus – Strinella – Fontana Luminosa – Cansatessa – Ospedale/Università"
+  },
+  "linea12": {
+   "num": "12",
+   "sub": "",
+   "descrizione": "Terminalbus – Ospedale/Università – L’Aquilone – Sassa – Prata"
+  },
+  "linea12a": {
+   "num": "12",
+   "sub": "A",
+   "descrizione": "Terminalbus – L’Aquilone – Pagliare – Sassa – Università (lato ospedale)"
+  },
+  "linea13": {
+   "num": "13",
+   "sub": "",
+   "descrizione": "Ospedale/Università – Preturo – Menzano – Terminalbus"
+  },
+  "linea14d": {
+   "num": "14",
+   "sub": "D",
+   "descrizione": "Cese di Preturo – Università Coppito – L’Aquilone"
+  },
+  "linea15": {
+   "num": "15",
+   "sub": "",
+   "descrizione": "Terminalbus – Università Coppito – S.Vittorino – Arischia"
+  },
+  "linea2uf": {
+   "num": "2U",
+   "sub": "F",
+   "descrizione": "Festiva: Terminalbus – Gran Sasso – Ospedale/Università – L’Aquilone"
+  },
+  "lineaM14F": {
+   "num": "M14F",
+   "sub": "",
+   "descrizione": "Festiva: Terminalbus – Ospedale – L’Aquilone – Preturo – Ospedale – Terminalbus"
+  }
+ },
+ "directions": [
+  {
+   "id": "A:andata",
+   "line": "lineaA",
+   "source": "A",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "via_strinella",
+    "via_panella",
+    "fontana_luminosa",
+    "uni"
+   ],
+   "columns": {
+    "terminal": "terminalbus@1",
+    "via_strinella": "strinella",
+    "via_panella": "luminosa",
+    "fontana_luminosa": "luminosa",
+    "uni": "universit"
+   },
+   "side": "università",
+   "approx": {
+    "via_panella": "orario di Fontana Luminosa"
+   }
+  },
+  {
+   "id": "A:ritorno",
+   "line": "lineaA",
+   "source": "A",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "uni",
+    "terminal"
+   ],
+   "columns": {
+    "uni": "universit",
+    "terminal": "terminalbus@2"
+   },
+   "side": "università"
+  },
+  {
+   "id": "B:andata",
+   "line": "lineaB",
+   "source": "B",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "uni"
+   ],
+   "columns": {
+    "terminal": "terminalbus@1",
+    "uni": "universit"
+   },
+   "side": "ospedale"
+  },
+  {
+   "id": "B:ritorno",
+   "line": "lineaB",
+   "source": "B",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "uni",
+    "fontana_luminosa",
+    "via_panella",
+    "via_strinella",
+    "terminal"
+   ],
+   "columns": {
+    "uni": "universit",
+    "fontana_luminosa": "luminosa",
+    "via_panella": "luminosa",
+    "via_strinella": "strinella",
+    "terminal": "terminalbus@2"
+   },
+   "side": "ospedale",
+   "approx": {
+    "via_panella": "orario di Fontana Luminosa"
+   }
+  },
+  {
+   "id": "1:andata",
+   "line": "linea1",
+   "source": "1",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "via_panella",
+    "fontana_luminosa",
+    "uni",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminalbus",
+    "via_panella": "cencioni",
+    "fontana_luminosa": "gran sasso",
+    "uni": "universit",
+    "aquilone": "aquilone"
+   },
+   "side": "università",
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "scolastica": true
+   },
+   "legend": {
+    "A": {
+     "scolastica": true
     },
-    {
-      "id": "linea1:ritorno",
-      "line": "linea1",
-      "source": "orari1",
-      "page": 4,
-      "note_col": 0,
-      "line_col": 1,
-      "side": "ospedale",
-      "grey": "weekdays",
-      "columns": {
-        "aquilone": 2,
-        "uni": 6,
-        "fontana_luminosa": 16,
-        "via_panella": 16,
-        "terminal": 17
-      },
-      "order": [
-        "aquilone",
-        "uni",
-        "fontana_luminosa",
-        "via_panella",
-        "terminal"
-      ],
-      "approx": {
-        "fontana_luminosa": "orario di Viale Gran Sasso, fermata adiacente",
-        "via_panella": "orario della fermata contigua: AMA non ne pubblica uno"
-      },
-      "legend": {
-        "S": {
-          "scolastica": true,
-          "no_saturday": true
-        },
-        "A": {
-          "no_saturday": true
-        },
-        "B": {
-          "scolastica": true,
-          "days": [
-            1,
-            5
-          ]
-        },
-        "C": {},
-        "T": {}
-      }
-    },
-    {
-      "id": "linea3:andata",
-      "line": "linea3",
-      "source": "orari1",
-      "page": 7,
-      "note_col": 0,
-      "line_col": 1,
-      "side": "ospedale",
-      "grey": "weekdays",
-      "columns": {
-        "terminal": 2,
-        "via_strinella": 3,
-        "fontana_luminosa": 4,
-        "uni": 12
-      },
-      "order": [
-        "terminal",
-        "via_strinella",
-        "fontana_luminosa",
-        "uni"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true,
-          "no_saturday": true
-        }
-      }
-    },
-    {
-      "id": "linea3:ritorno",
-      "line": "linea3",
-      "source": "orari1",
-      "page": 8,
-      "note_col": 0,
-      "line_col": 1,
-      "side": "ospedale",
-      "grey": "weekdays",
-      "columns": {
-        "uni": 2,
-        "fontana_luminosa": 9,
-        "via_strinella": 10,
-        "terminal": 11
-      },
-      "order": [
-        "uni",
-        "fontana_luminosa",
-        "via_strinella",
-        "terminal"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "A": {}
-      }
-    },
-    {
-      "id": "lineaA:andata",
-      "line": "lineaA",
-      "source": "orari1",
-      "page": 1,
-      "side": "università",
-      "columns": {
-        "terminal": 0,
-        "via_strinella": 1,
-        "via_panella": 2,
-        "fontana_luminosa": 2,
-        "uni": 7
-      },
-      "order": [
-        "terminal",
-        "via_strinella",
-        "via_panella",
-        "fontana_luminosa",
-        "uni"
-      ],
-      "approx": {
-        "via_panella": "orario della fermata contigua: AMA non ne pubblica uno"
-      },
-      "legend": {}
-    },
-    {
-      "id": "lineaA:ritorno",
-      "line": "lineaA",
-      "source": "orari1",
-      "page": 1,
-      "side": "università",
-      "columns": {
-        "uni": 7,
-        "terminal": 14
-      },
-      "order": [
-        "uni",
-        "terminal"
-      ],
-      "legend": {}
-    },
-    {
-      "id": "lineaB:andata",
-      "line": "lineaB",
-      "source": "orari1",
-      "page": 2,
-      "side": "ospedale",
-      "columns": {
-        "terminal": 0,
-        "uni": 7
-      },
-      "order": [
-        "terminal",
-        "uni"
-      ],
-      "legend": {}
-    },
-    {
-      "id": "lineaB:ritorno",
-      "line": "lineaB",
-      "source": "orari1",
-      "page": 2,
-      "side": "ospedale",
-      "columns": {
-        "uni": 7,
-        "fontana_luminosa": 12,
-        "via_panella": 12,
-        "via_strinella": 13,
-        "terminal": 14
-      },
-      "order": [
-        "uni",
-        "fontana_luminosa",
-        "via_panella",
-        "via_strinella",
-        "terminal"
-      ],
-      "approx": {
-        "via_panella": "orario della fermata contigua: AMA non ne pubblica uno"
-      },
-      "legend": {}
-    },
-    {
-      "id": "linea2ut:andata",
-      "line": "linea2ut",
-      "source": "orari1",
-      "page": 6,
-      "note_col": 0,
-      "line_col": 1,
-      "columns": {
-        "terminal": 9,
-        "via_panella": 11,
-        "uni": 13,
-        "aquilone": 16
-      },
-      "order": [
-        "terminal",
-        "via_panella",
-        "uni",
-        "aquilone"
-      ],
-      "approx": {
-        "via_panella": "orario della fermata contigua: AMA non ne pubblica uno"
-      },
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "A": {},
-        "B": {},
-        "T": {}
-      }
-    },
-    {
-      "id": "linea2ut:ritorno",
-      "line": "linea2ut",
-      "source": "orari1",
-      "page": 6,
-      "note_col": 0,
-      "line_col": 1,
-      "columns": {
-        "aquilone": 3,
-        "uni": 5,
-        "terminal": 9
-      },
-      "order": [
-        "aquilone",
-        "uni",
-        "terminal"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "A": {},
-        "B": {},
-        "T": {}
-      }
-    },
-    {
-      "id": "linea12:andata",
-      "line": "linea12",
-      "source": "orari2",
-      "page": 11,
-      "table_index": 1,
-      "note_col": 0,
-      "columns": {
-        "terminal": 1,
-        "uni": 3,
-        "aquilone": 4
-      },
-      "order": [
-        "terminal",
-        "uni",
-        "aquilone"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "A": {}
-      }
-    },
-    {
-      "id": "linea12:ritorno",
-      "line": "linea12",
-      "source": "orari2",
-      "page": 11,
-      "table_index": 1,
-      "note_col": 0,
-      "columns": {
-        "aquilone": 19,
-        "uni": 20,
-        "terminal": 21
-      },
-      "order": [
-        "aquilone",
-        "uni",
-        "terminal"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "A": {}
-      }
-    },
-    {
-      "id": "linea13:ritorno",
-      "line": "linea13",
-      "source": "orari2",
-      "page": 14,
-      "table_index": 1,
-      "note_col": 13,
-      "line_col": 14,
-      "columns": {
-        "uni": 23,
-        "terminal": 25
-      },
-      "order": [
-        "uni",
-        "terminal"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "A": {
-          "scolastica": true
-        },
-        "B": {
-          "scolastica": true
-        },
-        "D": {
-          "scolastica": true
-        },
-        "E": {
-          "scolastica": true
-        },
-        "G": {
-          "scolastica": true
-        },
-        "L": {
-          "scolastica": true
-        },
-        "N": {
-          "scolastica": false
-        },
-        "C": {},
-        "F": {}
-      },
-      "nota": "Solo il ritorno: i pannelli M13A/M13B terminano all'ospedale e l'andata ha celle di annotazione fuse fra colonne."
-    },
-    {
-      "id": "linea14d:andata",
-      "line": "linea14d",
-      "source": "orari2",
-      "page": 16,
-      "table_index": 1,
-      "note_col": 0,
-      "line_col": 1,
-      "columns": {
-        "uni": 7,
-        "aquilone": 9
-      },
-      "order": [
-        "uni",
-        "aquilone"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "N": {
-          "scolastica": false
-        },
-        "Z": {},
-        "J": {}
-      }
-    },
-    {
-      "id": "linea14d:ritorno",
-      "line": "linea14d",
-      "source": "orari2",
-      "page": 16,
-      "table_index": 1,
-      "note_col": 0,
-      "line_col": 1,
-      "columns": {
-        "aquilone": 9,
-        "uni": 11
-      },
-      "order": [
-        "aquilone",
-        "uni"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "N": {
-          "scolastica": false
-        },
-        "Z": {},
-        "J": {}
-      }
-    },
-    {
-      "id": "linea15:andata",
-      "line": "linea15",
-      "source": "orari2",
-      "page": 17,
-      "table_index": 1,
-      "note_col": 0,
-      "line_col": 1,
-      "columns": {
-        "terminal": 2,
-        "uni": 4
-      },
-      "order": [
-        "terminal",
-        "uni"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "N": {
-          "scolastica": false
-        },
-        "B": {},
-        "C": {},
-        "D": {},
-        "F": {},
-        "O": {},
-        "T": {}
-      }
-    },
-    {
-      "id": "linea15:ritorno",
-      "line": "linea15",
-      "source": "orari2",
-      "page": 17,
-      "table_index": 1,
-      "note_col": 0,
-      "line_col": 1,
-      "columns": {
-        "uni": 12,
-        "terminal": 14
-      },
-      "order": [
-        "uni",
-        "terminal"
-      ],
-      "legend": {
-        "S": {
-          "scolastica": true
-        },
-        "N": {
-          "scolastica": false
-        },
-        "B": {},
-        "C": {},
-        "D": {},
-        "F": {},
-        "O": {},
-        "T": {}
-      }
+    "S": {
+     "scolastica": true
     }
-  ]
+   },
+   "approx": {
+    "via_panella": "orario di via Cencioni",
+    "fontana_luminosa": "orario di Viale Gran Sasso"
+   }
+  },
+  {
+   "id": "1:ritorno",
+   "line": "linea1",
+   "source": "1",
+   "page": 2,
+   "table": 0,
+   "order": [
+    "aquilone",
+    "uni",
+    "fontana_luminosa",
+    "via_panella",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone",
+    "uni": "universit",
+    "fontana_luminosa": "gran sasso",
+    "via_panella": "cencioni",
+    "terminal": "terminalbus"
+   },
+   "side": "università",
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "scolastica": true
+   },
+   "legend": {
+    "A": {
+     "no_saturday": true
+    },
+    "B": {
+     "days": [
+      1,
+      5
+     ],
+     "scolastica": true
+    },
+    "C": {},
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   },
+   "approx": {
+    "via_panella": "orario di via Cencioni",
+    "fontana_luminosa": "orario di Viale Gran Sasso"
+   }
+  },
+  {
+   "id": "2:andata",
+   "line": "linea2",
+   "source": "2",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminalbus@1",
+    "aquilone": "aquilone@1"
+   },
+   "note": "^note$@1",
+   "linea": "^linea$@1",
+   "legend": {
+    "A": {},
+    "B": {},
+    "C": {},
+    "D": {
+     "scolastica": true
+    },
+    "E": {
+     "scolastica": true
+    },
+    "S": {
+     "scolastica": true
+    }
+   }
+  },
+  {
+   "id": "2:ritorno",
+   "line": "linea2",
+   "source": "2",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "aquilone",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone@2",
+    "terminal": "terminalbus@2"
+   },
+   "note": "^note$@2",
+   "linea": "^linea$@2",
+   "legend": {
+    "A": {},
+    "B": {},
+    "C": {},
+    "D": {
+     "scolastica": true
+    },
+    "E": {
+     "scolastica": true
+    },
+    "S": {
+     "scolastica": true
+    }
+   }
+  },
+  {
+   "id": "2U:andata",
+   "line": "linea2u",
+   "source": "2U",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "via_panella",
+    "uni",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminalbus",
+    "via_panella": "cencioni@2",
+    "uni": "universit@2",
+    "aquilone": "aquilone@2"
+   },
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "legend": {
+    "A": {},
+    "B": {},
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   },
+   "approx": {
+    "via_panella": "orario di via Cencioni"
+   }
+  },
+  {
+   "id": "2U:ritorno",
+   "line": "linea2u",
+   "source": "2U",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "aquilone",
+    "uni",
+    "via_panella",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone@1",
+    "uni": "universit@1",
+    "via_panella": "cencioni@1",
+    "terminal": "terminalbus"
+   },
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "legend": {
+    "A": {},
+    "B": {},
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   },
+   "approx": {
+    "via_panella": "orario di via Cencioni"
+   }
+  },
+  {
+   "id": "3:andata",
+   "line": "linea3",
+   "source": "3",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "via_strinella",
+    "fontana_luminosa",
+    "uni"
+   ],
+   "columns": {
+    "terminal": "terminalbus",
+    "via_strinella": "strinella",
+    "fontana_luminosa": "luminosa",
+    "uni": "universit"
+   },
+   "side": "ospedale",
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "scolastica": true
+   },
+   "legend": {
+    "S": {
+     "scolastica": true
+    }
+   }
+  },
+  {
+   "id": "3:ritorno",
+   "line": "linea3",
+   "source": "3",
+   "page": 2,
+   "table": 0,
+   "order": [
+    "uni",
+    "fontana_luminosa",
+    "via_strinella",
+    "terminal"
+   ],
+   "columns": {
+    "uni": "universit",
+    "fontana_luminosa": "luminosa",
+    "via_strinella": "strinella",
+    "terminal": "terminalbus"
+   },
+   "side": "ospedale",
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "legend": {
+    "A": {}
+   }
+  },
+  {
+   "id": "12:andata",
+   "line": "linea12",
+   "source": "12",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "terminal",
+    "uni",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminal@1",
+    "uni": "universit@1",
+    "aquilone": "aquilone@1"
+   },
+   "legend": {
+    "A": {},
+    "B": {},
+    "C": {},
+    "H": {},
+    "S": {
+     "scolastica": true
+    }
+   }
+  },
+  {
+   "id": "12:ritorno",
+   "line": "linea12",
+   "source": "12",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "aquilone",
+    "uni",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone@2",
+    "uni": "universit@2",
+    "terminal": "terminal@2"
+   },
+   "legend": {
+    "A": {},
+    "B": {},
+    "C": {},
+    "H": {},
+    "S": {
+     "scolastica": true
+    }
+   }
+  },
+  {
+   "id": "12A:andata",
+   "line": "linea12a",
+   "source": "12A",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminal@1",
+    "aquilone": "aquilone@1"
+   },
+   "legend": {
+    "A": {},
+    "B": {
+     "scolastica": true
+    },
+    "C": {
+     "scolastica": true
+    },
+    "D": {},
+    "F": {},
+    "G": {},
+    "N": {
+     "vacanze": true
+    },
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   }
+  },
+  {
+   "id": "12A:ritorno",
+   "line": "linea12a",
+   "source": "12A",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "aquilone",
+    "uni",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone@2",
+    "uni": "universit",
+    "terminal": "terminal@2"
+   },
+   "side": "ospedale",
+   "legend": {
+    "A": {},
+    "B": {
+     "scolastica": true
+    },
+    "C": {
+     "scolastica": true
+    },
+    "D": {},
+    "F": {},
+    "G": {},
+    "N": {
+     "vacanze": true
+    },
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   }
+  },
+  {
+   "id": "14D:andata",
+   "line": "linea14d",
+   "source": "14D",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "uni",
+    "aquilone"
+   ],
+   "columns": {
+    "uni": "universit",
+    "aquilone": "aquilone"
+   },
+   "legend": {
+    "A": {
+     "scolastica": true
+    },
+    "B": {
+     "scolastica": true
+    },
+    "C": {},
+    "Z": {
+     "scolastica": true
+    },
+    "J": {
+     "scolastica": true
+    },
+    "N": {
+     "vacanze": true
+    },
+    "S": {
+     "scolastica": true
+    }
+   }
+  },
+  {
+   "id": "15:andata",
+   "line": "linea15",
+   "source": "15",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "terminal",
+    "uni"
+   ],
+   "columns": {
+    "terminal": "terminal@1",
+    "uni": "universit@1"
+   },
+   "legend": {
+    "A": {},
+    "B": {},
+    "C": {},
+    "D": {},
+    "F": {},
+    "I": {},
+    "O": {},
+    "N": {
+     "vacanze": true
+    },
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   }
+  },
+  {
+   "id": "15:ritorno",
+   "line": "linea15",
+   "source": "15",
+   "page": 1,
+   "table": 0,
+   "order": [
+    "uni",
+    "terminal"
+   ],
+   "columns": {
+    "uni": "universit@2",
+    "terminal": "terminal@2"
+   },
+   "legend": {
+    "A": {},
+    "B": {},
+    "C": {},
+    "D": {},
+    "F": {},
+    "I": {},
+    "O": {},
+    "N": {
+     "vacanze": true
+    },
+    "S": {
+     "scolastica": true
+    },
+    "T": {}
+   }
+  },
+  {
+   "id": "2UF:andata",
+   "line": "linea2uf",
+   "source": "2UF",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "terminal",
+    "via_panella",
+    "fontana_luminosa",
+    "uni",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminal",
+    "via_panella": "cencioni",
+    "fontana_luminosa": "gran sasso",
+    "uni": "ospedale",
+    "aquilone": "aquilone"
+   },
+   "giorni": [
+    0
+   ],
+   "side": "ospedale",
+   "approx": {
+    "via_panella": "orario di via Cencioni",
+    "fontana_luminosa": "orario di Viale Gran Sasso",
+    "uni": "orario della fermata Ospedale"
+   },
+   "sezione": 1,
+   "legend": {
+    "T": {}
+   }
+  },
+  {
+   "id": "2UF:ritorno",
+   "line": "linea2uf",
+   "source": "2UF",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "aquilone",
+    "uni",
+    "fontana_luminosa",
+    "via_panella",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone",
+    "uni": "ospedale",
+    "fontana_luminosa": "gran sasso",
+    "via_panella": "cencioni",
+    "terminal": "terminal"
+   },
+   "giorni": [
+    0
+   ],
+   "side": "ospedale",
+   "approx": {
+    "via_panella": "orario di via Cencioni",
+    "fontana_luminosa": "orario di Viale Gran Sasso",
+    "uni": "orario della fermata Ospedale"
+   },
+   "sezione": 2,
+   "legend": {
+    "T": {}
+   }
+  },
+  {
+   "id": "M14F:andata",
+   "line": "lineaM14F",
+   "source": "M14F",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "terminal",
+    "uni",
+    "aquilone"
+   ],
+   "columns": {
+    "terminal": "terminalbus@1",
+    "uni": "ospedale@1",
+    "aquilone": "aquilone"
+   },
+   "giorni": [
+    0
+   ],
+   "side": "ospedale",
+   "approx": {
+    "uni": "orario della fermata Ospedale"
+   }
+  },
+  {
+   "id": "M14F:ritorno",
+   "line": "lineaM14F",
+   "source": "M14F",
+   "page": 1,
+   "table": 1,
+   "order": [
+    "aquilone",
+    "uni",
+    "terminal"
+   ],
+   "columns": {
+    "aquilone": "aquilone",
+    "uni": "ospedale@2",
+    "terminal": "terminalbus@2"
+   },
+   "giorni": [
+    0
+   ],
+   "side": "ospedale",
+   "approx": {
+    "uni": "orario della fermata Ospedale"
+   }
+  }
+ ]
 }

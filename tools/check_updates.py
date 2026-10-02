@@ -1,67 +1,68 @@
 #!/usr/bin/env python3
-"""Controlla se AMA ha ripubblicato i PDF degli orari.
+"""Dice se AMA ha pubblicato orari diversi da quelli usati per schedule.json.
 
-    tools/.venv/bin/python tools/check_updates.py
+    python3 tools/check_updates.py
 
-Gli orari attuali sono BOZZE (Rev 1) allegate al comunicato: le versioni
-definitive compariranno nella sezione "Linee e orari" del sito. Questo script
-confronta la data di modifica remota con quella registrata in pdf_state.json
-e segnala cosa e' cambiato, cosi' non serve ricontrollare a mano.
+Confronta la pagina «Elenco linee AMA» con pdf_state.json, che registra la revisione
+di ogni PDF usata nell'ultima estrazione. Non aggiorna niente: lo stato lo scrive
+`extract_schedule.py --download` quando i dati vengono davvero rigenerati, cosi'
+l'avviso resta finche' il lavoro non e' fatto.
 
-Quando segnala una modifica:
-    tools/.venv/bin/python tools/extract_schedule.py --download
-e poi si rilegge il report prima di pubblicare.
+La versione precedente sorvegliava gli URL delle bozze di settembre. AMA ha poi
+pubblicato gli orari ufficiali con URL nuovi, e il controllo ha continuato a dire
+"invariato" per due settimane. Ora le linee si cercano per etichetta.
+
+Esce con 1 se qualcosa e' cambiato, 0 altrimenti.
 """
 import json
 import sys
-import urllib.request
 from pathlib import Path
 
+from ama import elenco
+
 ROOT = Path(__file__).resolve().parent
-STATE = ROOT / "pdf_state.json"
-
-
-def remote_info(url):
-    req = urllib.request.Request(url, method="HEAD")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return {
-            "last_modified": r.headers.get("Last-Modified", ""),
-            "length": r.headers.get("Content-Length", ""),
-        }
 
 
 def main():
     cfg = json.loads((ROOT / "lines.json").read_text(encoding="utf-8"))
-    old = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    stato_f = ROOT / "pdf_state.json"
+    stato = json.loads(stato_f.read_text(encoding="utf-8")) if stato_f.exists() else {}
+    manuali_f = ROOT / "manuali.json"
+    manuali = ({d["source"] for d in json.loads(manuali_f.read_text(encoding="utf-8"))["directions"]}
+               if manuali_f.exists() else set())
 
-    new, changed = {}, []
-    for key, src in cfg["sources"].items():
-        try:
-            info = remote_info(src["url"])
-        except Exception as e:
-            print(f"  {src['file']}: errore — {e}")
-            new[key] = old.get(key, {})
+    pagina = elenco()
+    cambiate = []
+    print("linee usate dall'app:")
+    for chiave, src in cfg["sources"].items():
+        ora, prima = pagina.get(src["etichetta"]), stato.get(chiave, {})
+        if not ora:
+            print(f"  {chiave:<5} SPARITA dalla pagina AMA")
+            cambiate.append(chiave)
             continue
-        new[key] = info
-        was = old.get(key)
-        if was is None:
-            print(f"  {src['file']}: primo rilevamento — {info['last_modified']}")
-        elif was.get("last_modified") != info["last_modified"]:
-            print(f"  {src['file']}: MODIFICATO")
-            print(f"      prima : {was.get('last_modified')}  ({was.get('length')} byte)")
-            print(f"      adesso: {info['last_modified']}  ({info['length']} byte)")
-            changed.append(src["file"])
+        if ora["file"] != prima.get("file") or ora["aggiornata"] != prima.get("aggiornata"):
+            print(f"  {chiave:<5} AGGIORNATA: {prima.get('file', '—')} ({prima.get('aggiornata', '—')})")
+            print(f"  {'':<5}          -> {ora['file']} ({ora['aggiornata']})")
+            if chiave in manuali:
+                print(f"  {'':<5}          ha corse trascritte a mano in manuali.json: vanno ricontrollate")
+            cambiate.append(chiave)
         else:
-            print(f"  {src['file']}: invariato — {info['last_modified']}")
+            print(f"  {chiave:<5} invariata — {ora['file']} ({ora['aggiornata']})")
 
-    STATE.write_text(json.dumps(new, indent=1), encoding="utf-8")
+    note = set(stato.get("_pagina", []))
+    if note:
+        nuove, sparite = sorted(set(pagina) - note), sorted(note - set(pagina))
+        if nuove:
+            print("\nlinee comparse sulla pagina AMA:", ", ".join(nuove))
+        if sparite:
+            print("linee sparite dalla pagina AMA:", ", ".join(sparite))
 
-    if changed:
-        print("\nPDF aggiornati da AMA. Rigenerare gli orari con:")
-        print("    tools/.venv/bin/python tools/extract_schedule.py --download")
+    if cambiate:
+        print("\nPer rigenerare gli orari:")
+        print("  tools/.venv/bin/python tools/extract_schedule.py --download")
+        print("e rileggere il report a fianco dei PDF prima di pubblicare.")
         return 1
-    if cfg.get("draft"):
-        print("\nNota: gli orari in uso sono ancora BOZZE (Rev 1).")
+    print("\nnessuna novita'.")
     return 0
 
 

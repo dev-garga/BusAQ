@@ -5,7 +5,7 @@
 //
 // Il nome della cache lo scrive tools/rilascia.py dall'impronta dei file serviti:
 // cambia da se' quando cambia qualcosa e non cambia quando non e' cambiato niente.
-const CACHE = 'bus-aq-6ad33f2f3a';
+const CACHE = 'bus-aq-e9e73b6db1';
 
 // Cio' che cambia a ogni pubblicazione: si chiede prima alla rete, cosi' una versione
 // nuova si vede subito. Era questo il difetto — con la cache per prima, l'unico
@@ -46,7 +46,11 @@ async function retePrima(req) {
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), SCADENZA);
-    const res = await fetch(req, { signal: ctrl.signal });
+    // 'no-cache' obbliga a riconvalidare col server: senza, fetch() passa per la cache
+    // HTTP del browser, e "rete prima" restituiva la copia vecchia finche' la
+    // considerava fresca (10 minuti su GitHub Pages). Si chiede l'URL e non la
+    // richiesta originale, perche' a una navigazione non si possono cambiare opzioni.
+    const res = await fetch(req.url, { signal: ctrl.signal, cache: 'no-cache', credentials: 'same-origin' });
     clearTimeout(timer);
     if (res && res.ok) { cache.put(req, res.clone()); return res; }
     throw new Error('risposta non utilizzabile');

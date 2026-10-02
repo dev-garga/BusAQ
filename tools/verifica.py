@@ -129,24 +129,33 @@ def copertura(meta, dirs):
 
 
 def per_linea(dati):
-    """Corse, prima e ultima partenza, corse solo feriali — per linea."""
-    meta, out = dati["_meta"], defaultdict(lambda: {"corse": 0, "feriali": 0, "ore": []})
+    """Corse, prima e ultima partenza, corse solo lun-ven e festive — per linea."""
+    meta = dati["_meta"]
+    out = defaultdict(lambda: {"corse": 0, "feriali": 0, "festive": 0, "ore": []})
     for d in dati["directions"]:
         v = out[d["line"]]
         for r in d["runs"]:
             v["corse"] += 1
-            if len(r.get("days", meta["default_days"])) < len(meta["default_days"]):
+            giorni = r.get("days", meta["default_days"])
+            if giorni == [0]:
+                v["festive"] += 1
+            elif 6 not in giorni:
                 v["feriali"] += 1
             partenze = [x for x in r["t"] if x]
             if partenze:
                 v["ore"].append(partenze[0])
-    return {k: {"corse": v["corse"], "feriali": v["feriali"],
+    return {k: {"corse": v["corse"], "feriali": v["feriali"], "festive": v["festive"],
                 "prima": min(v["ore"], default="-"), "ultima": max(v["ore"], default="-")}
             for k, v in out.items()}
 
 
-def confronto(dati, percorso):
-    """Differenze rispetto alla versione gia' in git: una linea che perde corse va vista."""
+def confronto(dati, percorso, accetta=False):
+    """Differenze rispetto alla versione gia' in git: una linea che perde corse va vista.
+
+    Con accetta=True le perdite diventano avvisi: serve quando sono state rilette una
+    per una sul PDF e spiegate, come al passaggio dalle bozze agli orari ufficiali.
+    """
+    segnala = avv if accetta else err
     try:
         vecchio = subprocess.run(["git", "show", f"HEAD:{percorso}"], cwd=RADICE,
                                  capture_output=True, text=True, check=True).stdout
@@ -162,13 +171,13 @@ def confronto(dati, percorso):
         if a == b:
             continue
         if a and not b:
-            err(f"la linea '{l}' e' sparita del tutto ({a['corse']} corse)")
+            segnala(f"la linea '{l}' e' sparita del tutto ({a['corse']} corse)")
             continue
         if b and not a:
             righe.append(f"  + {l}: nuova, {b['corse']} corse")
             continue
         if b["corse"] < a["corse"]:
-            err(f"la linea '{l}' perde corse: {a['corse']} -> {b['corse']}")
+            segnala(f"la linea '{l}' perde corse: {a['corse']} -> {b['corse']}")
         else:
             righe.append(f"  ~ {l}: {a['corse']} -> {b['corse']} corse, "
                          f"{a['prima']}–{a['ultima']} -> {b['prima']}–{b['ultima']}")
@@ -179,14 +188,14 @@ def confronto(dati, percorso):
 
 def riepilogo(dati, coppie):
     meta = dati["_meta"]
-    print(f"\n{'linea':<10} {'corse':>6} {'feriali':>8} {'prima':>7} {'ultima':>8}")
-    print("-" * 43)
+    print(f"\n{'linea':<10} {'corse':>6} {'lun-ven':>8} {'festive':>8} {'prima':>7} {'ultima':>8}")
+    print("-" * 52)
     tot = 0
     for l, v in sorted(per_linea(dati).items()):
         etichetta = meta["lines"][l]["num"] + meta["lines"][l]["sub"] if l in meta["lines"] else l
-        print(f"{etichetta:<10} {v['corse']:>6} {v['feriali']:>8} {v['prima']:>7} {v['ultima']:>8}")
+        print(f"{etichetta:<10} {v['corse']:>6} {v['feriali']:>8} {v['festive']:>8} {v['prima']:>7} {v['ultima']:>8}")
         tot += v["corse"]
-    print("-" * 43)
+    print("-" * 52)
     print(f"{'TOTALE':<10} {tot:>6}   in {len(dati['directions'])} direzioni, "
           f"{len(coppie)} coppie servite")
 
@@ -196,6 +205,9 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--file", default="schedule.json")
     ap.add_argument("--senza-confronto", action="store_true")
+    ap.add_argument("--accetta-perdite", action="store_true",
+                    help="le linee che perdono corse rispetto a git diventano avvisi: "
+                         "solo dopo averle rilette sul PDF")
     args = ap.parse_args()
 
     percorso = args.file
@@ -210,7 +222,7 @@ def main():
         coerenza(meta, dirs)
         coppie = copertura(meta, dirs)
         if not args.senza_confronto:
-            confronto(dati, percorso)
+            confronto(dati, percorso, args.accetta_perdite)
         riepilogo(dati, coppie)
 
     for a in avvisi:

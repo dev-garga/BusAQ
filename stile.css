@@ -154,6 +154,7 @@ header { display: flex; align-items: center; gap: 10px; padding: 22px var(--pad)
          align-items: center; justify-content: center; gap: 2px;
          background: var(--surface2); border-radius: var(--r-sm); padding: 8px 4px; }
 .badge .num { font-size: 19px; font-weight: 750; color: var(--accent); line-height: 1; letter-spacing: -.02em; }
+.badge .num.lunga { font-size: 13px; letter-spacing: -.02em; }   /* M14F: quattro caratteri in 46 px */
 .badge .sub { font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: .05em; }
 
 .times { grid-column: 2; display: flex; align-items: baseline; gap: 6px; min-width: 0; }
