@@ -7,42 +7,36 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="stile.css">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<meta name="theme-color" content="#0f1115">
+<meta name="theme-color" content="#f28c1c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14110c" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <!-- 'black-translucent' e' la configurazione in cui iOS riporta davvero
-     env(safe-area-inset-top). Con la barra opaca l'inset torna a zero ma il sistema
-     continua a disegnare sopra la pagina, e il margine calcolato sull'inset sparisce:
-     e' il motivo per cui la sfocatura sbavava ancora sul titolo. Lo spazio sotto la
-     barra lo tiene il riempimento di body, in stile.css. -->
+     env(safe-area-inset-top). Lo spazio sotto la barra lo tiene il riempimento di body,
+     in stile.css. -->
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bus AQ">
 </head>
 <body>
 
-<header>
-  <svg class="logo" viewBox="0 0 100 100" aria-hidden="true">
-    <path d="M29.3 71.3 C 29.3 42 70.7 58.6 70.7 29.3" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="29.3" cy="71.3" r="7.5" fill="none" stroke="currentColor" stroke-width="3.8"/>
-    <circle cx="70.7" cy="29.3" r="7.5" fill="none" stroke="currentColor" stroke-width="3.8"/>
-  </svg>
-  <div class="title">Bus AQ</div>
+<header class="testata">
+  <img class="segno" src="logo.svg" alt="" width="38" height="38">
+  <h1>Bus AQ</h1>
   <div class="clock" id="clock">--:--</div>
 </header>
 
-<div class="route">
-  <div class="route-rail"><i class="from"></i><span></span><i></i></div>
-  <div class="route-fields">
-    <button class="field" id="f-origin"><span class="lab">Partenza</span><span class="val" id="v-origin">&mdash;</span></button>
-    <div class="route-sep"></div>
-    <button class="field" id="f-dest"><span class="lab">Arrivo</span><span class="val" id="v-dest">&mdash;</span></button>
+<section class="tratta">
+  <div class="campi">
+    <button class="campo" id="f-origin"><span class="lab">Da</span><span class="val" id="v-origin">&mdash;</span></button>
+    <button class="campo" id="f-dest"><span class="lab">A</span><span class="val" id="v-dest">&mdash;</span></button>
   </div>
   <button class="swap" id="swap" aria-label="Inverti partenza e arrivo">
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M7 4v15M7 19l-3.2-3.4M7 19l3.2-3.4M17 20V5M17 5l3.2 3.4M17 5l-3.2 3.4"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+      <path d="M7 3v17M7 20l-4-4M7 20l4-4M17 21V4M17 4l-4 4M17 4l4 4"/>
     </svg>
   </button>
-</div>
+</section>
 
 <div class="preferite" id="preferite"></div>
 
@@ -53,13 +47,13 @@
 
 <div class="banner" id="banner"><span id="banner-text"></span><button id="banner-btn">Tutte le corse</button></div>
 
-<div class="cards" id="cards"><div class="empty">Caricamento orari&hellip;</div></div>
-<div class="foot" id="foot"></div>
+<main class="cards" id="cards"><div class="empty">Caricamento orari&hellip;</div></main>
+<footer class="foot" id="foot"></footer>
 
 <div class="sheet-bg" id="sheet-bg">
   <div class="sheet">
     <div class="grip"></div>
-    <h3 id="sheet-title">Fermata</h3>
+    <h2 id="sheet-title">Fermata</h2>
     <div id="sheet-opts"></div>
   </div>
 </div>

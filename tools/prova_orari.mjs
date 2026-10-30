@@ -94,13 +94,15 @@ test('il sabato esclude le corse del solo lunedi-venerdi, salvo chiederle tutte'
   assert.ok(proprioTutte.some(t => !t.days.includes(SAB)));
 });
 
-test('le corse passate si fermano a un\'ora indietro', () => {
-  const { passate } = corse(idx, {
+test('le corse gia\' partite restano tutte, in ordine, per poterle sfogliare', () => {
+  const { passate, future } = corse(idx, {
     partenza: 'terminal', arrivo: 'uni', dow: MER, adesso: ore('12:00')
   });
-  for (const t of passate) {
-    assert.ok(t.diff < 0 && t.diff > -60, `${t.dep} e' fuori dalla finestra`);
-  }
+  assert.ok(passate.length > 5, 'la mattina intera dovrebbe esserci');
+  for (const t of passate) assert.ok(t.diff < -2, `${t.dep} non e' ancora partita`);
+  for (let i = 1; i < passate.length; i++) assert.ok(passate[i].depMin >= passate[i - 1].depMin);
+  assert.ok(passate[0].depMin < ore('07:00'), 'manca la prima corsa del mattino');
+  assert.ok(future[0].depMin >= ore('12:00') - 2);
 });
 
 test('caso reale: alle 8:00 da Collemaggio conviene la corsa dopo', () => {

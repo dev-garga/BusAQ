@@ -2,3 +2,4 @@ tools/.venv/
 tools/pdfcache/
 .claude/
 design/
+.impeccable/

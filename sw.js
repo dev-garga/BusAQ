@@ -5,7 +5,7 @@
 //
 // Il nome della cache lo scrive tools/rilascia.py dall'impronta dei file serviti:
 // cambia da se' quando cambia qualcosa e non cambia quando non e' cambiato niente.
-const CACHE = 'bus-aq-e9e73b6db1';
+const CACHE = 'bus-aq-d171c4998a';
 
 // Cio' che cambia a ogni pubblicazione: si chiede prima alla rete, cosi' una versione
 // nuova si vede subito. Era questo il difetto — con la cache per prima, l'unico
@@ -13,7 +13,7 @@ const CACHE = 'bus-aq-e9e73b6db1';
 const VIVI = ['./', './index.html', './stile.css', './app.js', './orari.js', './schedule.json'];
 
 // Cio' che non cambia mai: inutile pagarlo a ogni apertura.
-const FERMI = ['./manifest.json', './icon-180.png', './icon-192.png', './icon-512.png'];
+const FERMI = ['./manifest.json', './fonts/barlow-600.woff2', './fonts/barlow-800.woff2', './logo.svg', './segno.svg', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 const SCADENZA = 2000;   // oltre, si serve la cache: alla fermata la rete e' quel che e'
 

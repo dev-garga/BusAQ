@@ -1,0 +1,6 @@
+Barlow (Jeremy Tribby), sottoinsieme latino, pesi 600 e 800.
+Licenza: SIL Open Font License 1.1 (https://openfontlicense.org).
+Origine: Google Fonts, https://fonts.google.com/specimen/Barlow
+File scaricati da fonts.gstatic.com il 30 ottobre 2026 e serviti dal progetto: l'app funziona
+offline e non contatta nessun altro host. Barlow nasce dalla segnaletica stradale della
+California: e' il carattere della palina, non un ripiego di sistema.

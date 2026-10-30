@@ -188,7 +188,9 @@ export function corse(idx, { partenza, arrivo, dow, adesso = null, tutte = false
       viste.set(k, e);
 
       if (intera) out.future.push(e);
-      else if (e.diff < -2) { if (e.diff > -60) out.passate.push(e); }
+      // Le corse gia' partite restano tutte, non solo l'ultima ora: si sfogliano
+      // scorrendo la lista verso l'alto. Prima si tagliavano a 60 minuti.
+      else if (e.diff < -2) out.passate.push(e);
       else out.future.push(e);
     }
   }

@@ -18,8 +18,6 @@ const stato = {
   arrivo: null,
   giorno: 'oggi',      // 'oggi' | 'domani'
   tutte: false,        // mostra anche le corse che oggi non circolano
-  precedenti: false,   // elenco delle corse gia' passate
-  quante: 3,           // quante corse future in elenco
   preferite: []        // due scorciatoie fisse, slegate dalla selezione
 };
 
@@ -91,9 +89,11 @@ const adessoMin = () => { const n = new Date(); return n.getHours() * 60 + n.get
 
 function rigaMeta() {
   if (!idx) return '';
+  // Non e' un'app di AMA: gli orari vengono dai suoi PDF e si dichiara.
+  const fonte = 'App non ufficiale · orari dai PDF AMA, ';
   if (idx.meta.draft)
-    return 'Orari <span class="draft">provvisori</span>, in vigore dal ' + dataEstesa(idx.meta.effective);
-  return 'Orari ufficiali AMA, aggiornati al ' + dataEstesa(idx.meta.aggiornato || idx.meta.effective);
+    return fonte + '<span class="draft">provvisori</span>, in vigore dal ' + dataEstesa(idx.meta.effective);
+  return fonte + 'aggiornati al ' + dataEstesa(idx.meta.aggiornato || idx.meta.effective);
 }
 
 // ── Avvio ─────────────────────────────────────
@@ -122,7 +122,7 @@ function disegnaTratta() {
   $('preferite').innerHTML = stato.preferite.map((r, i) =>
     '<button class="scorciatoia' + (r[0] === stato.partenza && r[1] === stato.arrivo ? ' on' : '') +
       '" data-i="' + i + '"><i></i><span>' +
-      nome(r[0], true) + '<b>&rarr;</b>' + nome(r[1], true) + '</span></button>').join('');
+      nome(r[0], true) + FRECCIA + nome(r[1], true) + '</span></button>').join('');
 }
 
 function disegnaGiorni() {
@@ -150,63 +150,149 @@ function disegnaAvviso() {
   } else banner.style.display = 'none';
 }
 
+// Il carattere della freccia in Barlow non c'e': cadeva su un ripiego sottile accanto al peso 800.
+const FRECCIA = '<svg class="fr" viewBox="0 0 14 10" width="14" height="10" aria-hidden="true">' +
+  '<path d="M0 5h12M8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>';
+
 const imminente = t => t.diff !== null && t.diff >= -2 && t.diff <= 5;
 
-// `ord` e' la posizione fra le schede NUOVE: quelle gia' a schermo non rientrano,
-// altrimenti aggiungere tre corse in fondo farebbe ripartire l'intero elenco.
-function scheda(t, prima, passata, ord) {
-  const ln = idx.meta.lines[t.line] || { num: '?', sub: '' };
-  const [cd, cdClasse] = t.diff === null ? ['', ''] : etichettaAttesa(t.diff);
-  const sigla = ((t.variant && t.variant !== ln.num ? t.variant : ln.sub) || '').replace(/\s+/g, '');
+// ── Punti LED ─────────────────────────────────
+// Lo stesso alfabeto 5x7 del logo (tools/make_icon.py): il conto alla rovescia e il segno
+// dell'app sono fatti degli stessi punti. Sono dati, non un carattere tipografico: non
+// serve scaricare un font e funzionano offline.
+const GLIFI = {
+  '0': ['01110', '10001', '10011', '10101', '11001', '10001', '01110'],
+  '1': ['00100', '01100', '00100', '00100', '00100', '00100', '01110'],
+  '2': ['01110', '10001', '00001', '00110', '01000', '10000', '11111'],
+  '3': ['11110', '00001', '00001', '01110', '00001', '00001', '11110'],
+  '4': ['00010', '00110', '01010', '10010', '11111', '00010', '00010'],
+  '5': ['11111', '10000', '11110', '00001', '00001', '10001', '01110'],
+  '6': ['00110', '01000', '10000', '11110', '10001', '10001', '01110'],
+  '7': ['11111', '00001', '00010', '00100', '01000', '01000', '01000'],
+  '8': ['01110', '10001', '10001', '01110', '10001', '10001', '01110'],
+  '9': ['01110', '10001', '10001', '01111', '00001', '00010', '01100'],
+  ':': ['0', '0', '1', '0', '1', '0', '0'],
+  '′': ['001', '001', '010', '000', '000', '000', '000'],
+  'h': ['10000', '10000', '10110', '11001', '10001', '10001', '10001'],
+  'O': ['01110', '10001', '10001', '10001', '10001', '10001', '01110'],
+  'R': ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
+  'A': ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
+  ' ': ['00', '00', '00', '00', '00', '00', '00']
+};
 
+function punti(testo, altezzaMax, larghezzaMax) {
+  const gl = [...testo].map(c => GLIFI[c] || GLIFI[' ']);
+  const cols = gl.reduce((n, g) => n + g[0].length, 0) + (gl.length - 1);
+  const passo = Math.min(altezzaMax / 7, larghezzaMax / cols);
+  let x = 0, acceso = '', spento = '';
+  for (const g of gl) {
+    g.forEach((riga, r) => [...riga].forEach((v, c) => {
+      const cerchio = '<circle cx="' + (x + c + .5) + '" cy="' + (r + .5) + '" r="' + (v === '1' ? .4 : .17) + '"/>';
+      if (v === '1') acceso += cerchio; else spento += cerchio;
+    }));
+    x += g[0].length + 1;
+  }
+  return '<svg class="punti" viewBox="0 0 ' + cols + ' 7" width="' + (cols * passo).toFixed(1) + '" height="' + (7 * passo).toFixed(1) +
+    '" role="img" aria-label="' + testo + '"><g fill="#2a2111">' + spento + '</g><g fill="#ffb000">' + acceso + '</g></svg>';
+}
+
+// Cosa scrive il pannello: minuti ('5′'), ore e minuti ('1h25') oppure l'orario di partenza
+// quando non c'e' un adesso (domani).
+function testoLed(t) {
+  if (t.diff === null) return t.dep;
+  if (t.diff >= -2 && t.diff < 2) return 'ORA';
+  if (t.diff < 60) return t.diff + '′';
+  return Math.floor(t.diff / 60) + 'h' + String(t.diff % 60).padStart(2, '0');
+}
+
+function pezziDettaglio(t) {
   const pezzi = ['<b>' + t.dur + '′</b>'];
-  // 'arrivo lato ospedale' si leggeva come "ti lascia all'ospedale". Il lato e' quello
-  // della fermata di Coppito: il PDF la chiama "universita' coppito (lato ospedale)",
-  // perche' il campus confina col San Salvatore e ha due fermate distinte. Dirlo su
-  // una tratta che non tocca l'universita' confonderebbe invece di aiutare.
+  // Il lato e' quello della fermata di Coppito: il PDF la chiama «università coppito (lato
+  // ospedale)» perche' il campus confina col San Salvatore e ha due fermate distinte. Dirlo
+  // su una tratta che non tocca l'universita' confonderebbe invece di aiutare.
   if (t.side && stato.arrivo === 'uni')        pezzi.push('Arrivo a Coppito lato ' + t.side);
   else if (t.side && stato.partenza === 'uni') pezzi.push('Partenza da Coppito lato ' + t.side);
   if (t.approx) pezzi.push('<span class="est">Orario stimato</span>');
-
-  let tag = '';
-  // "Solo vacanze": la legenda AMA dice "si effettua solo nei periodi non scolastici".
-  // Senza il calendario scolastico non si puo' nascondere, ma va detto.
-  if (!t.oggi)           tag = '<span class="tag warn">solo ' + giorniLabel(t.days) + '</span>';
-  else if (t.ignota)     tag = '<span class="tag bad">nota ' + t.ignota + '</span>';
-  else if (t.vacanze)    tag = '<span class="tag warn">solo vacanze</span>';
-  else if (t.scolastica) tag = '<span class="tag">scolastica</span>';
-
-  return '<div class="card' + (prima ? ' next' : '') + (passata ? ' past' : '') +
-      (prima && imminente(t) ? ' imminente' : '') + '"' +
-      (ord >= 0 ? ' data-in style="--i:' + ord + '"' : '') + '>' +
-    '<div class="badge"><span class="num' + (ln.num.length > 3 ? ' lunga' : '') + '">' + ln.num + '</span>' +
-      (sigla ? '<span class="sub">' + sigla + '</span>' : '') + '</div>' +
-    '<div class="times"><span class="dep">' + t.dep + '</span><span class="arr">' + t.arr + '</span></div>' +
-    (t.diff === null ? '' : '<div class="cd ' + cdClasse + '">' + cd + '</div>') +
-    '<div class="detail">' + pezzi.join(' &middot; ') + '</div>' +
-    (t.guadagno ? '<div class="hint">' + (t.stessaPartenza ? 'Stessa partenza' : 'Parte dopo') +
-        ', ma arriva ' + t.guadagno + '′ prima</div>' : '') +
-    tag + '</div>';
+  return pezzi.join(' &middot; ');
 }
 
-// L'elenco si ricostruiva per intero ogni 30 secondi: azzerava scorrimento e
-// selezione e faceva ripartire ogni animazione. Ora il giro periodico tocca solo le
-// attese, e si ridisegna quando cambia davvero l'insieme delle corse mostrate.
-let chiaviDom = [], firmaDom = '';
+function etichetta(t) {
+  // «Solo vacanze»: la legenda AMA dice «si effettua solo nei periodi non scolastici».
+  // Senza il calendario scolastico non si puo' nascondere, ma va detto.
+  if (!t.oggi)           return '<span class="tag">solo ' + giorniLabel(t.days) + '</span>';
+  if (t.ignota)          return '<span class="tag bad">nota ' + t.ignota + '</span>';
+  if (t.vacanze)         return '<span class="tag">solo vacanze</span>';
+  if (t.scolastica)      return '<span class="tag">scolastica</span>';
+  return '';
+}
 
-function aggiornaAttese(elenco) {
-  const schede = $('cards').querySelectorAll('.card');
+const suggerimento = t => t.guadagno
+  ? '<div class="hint">' + (t.stessaPartenza ? 'Stessa partenza' : 'Parte dopo') + ', ma arriva ' + t.guadagno + '′ prima</div>' : '';
+
+function sigla(t) {
+  const ln = idx.meta.lines[t.line] || { num: '?', sub: '' };
+  return { ln, sub: ((t.variant && t.variant !== ln.num ? t.variant : ln.sub) || '').replace(/\s+/g, '') };
+}
+
+// `ord` e' la posizione fra le schede NUOVE che si animano: le altre, e quelle gia' a
+// schermo, non rientrano, altrimenti aggiungere corse farebbe ripartire l'intero elenco.
+const animaIn = ord => ord >= 0 ? ' data-in style="--i:' + ord + '"' : '';
+
+// La prossima corsa: il pannello LED.
+function pannello(t, ord) {
+  const { ln, sub } = sigla(t);
+  return '<div class="led' + (imminente(t) ? ' imminente' : '') + '"' + animaIn(ord) + '>' +
+    punti(testoLed(t), 96, 190) +
+    '<div class="info"><span class="linea">' + ln.num + (sub ? sub : '') + '</span>' +
+    '<div class="orari">' + t.dep + FRECCIA + t.arr + '</div>' +
+    '<div class="det">' + pezziDettaglio(t) + '</div></div>' +
+    suggerimento(t) + etichetta(t) + '</div>';
+}
+
+// Ogni altra corsa: una striscia, con la linea in un quadrato nero.
+function striscia(t, passata, ord) {
+  const { ln, sub } = sigla(t);
+  const [cd, cls] = t.diff === null ? ['', ''] : etichettaAttesa(t.diff);
+  return '<div class="card' + (passata ? ' past' : '') + '"' + animaIn(ord) + '>' +
+    '<div class="badge"><span class="num' + (ln.num.length > 3 ? ' lunga' : '') + '">' + ln.num + '</span>' +
+      (sub ? '<span class="sub">' + sub + '</span>' : '') + '</div>' +
+    '<div class="times"><span class="dep">' + t.dep + '</span><span class="arr">' + t.arr + '</span></div>' +
+    (t.diff === null ? '' : passata
+      ? '<div class="cd ' + cls + '">' + cd + '</div>'
+      : '<div class="cd mini">' + punti(testoLed(t), 26, 84) + '</div>') +
+    '<div class="detail">' + pezziDettaglio(t) + '</div>' +
+    suggerimento(t) + etichetta(t) + '</div>';
+}
+
+// L'elenco si ricostruiva per intero ogni 30 secondi: azzerava lo scorrimento e faceva
+// ripartire ogni animazione. Ora il giro periodico tocca solo le attese, e si ridisegna
+// quando cambia davvero l'insieme delle corse mostrate.
+let chiaviDom = [], firmaDom = '', contestoDom = '';
+
+function aggiornaAttese(elenco, iLed) {
+  const el = $('cards');
   elenco.forEach((t, i) => {
-    const el = schede[i];
-    if (!el || t.diff === null) return;
-    const cd = el.querySelector('.cd');
+    if (t.diff === null) return;
+    const nodo = el.children[i];
+    if (!nodo) return;
+    if (i === iLed) {
+      const nuovo = punti(testoLed(t), 96, 190), vecchio = nodo.querySelector('.punti');
+      if (vecchio && vecchio.getAttribute('aria-label') !== testoLed(t)) vecchio.outerHTML = nuovo;
+      nodo.classList.toggle('imminente', imminente(t));
+      return;
+    }
+    const cd = nodo.querySelector('.cd');
     if (!cd) return;
+    if (cd.classList.contains('mini')) {
+      const vecchio = cd.querySelector('.punti');
+      if (!vecchio || vecchio.getAttribute('aria-label') !== testoLed(t)) cd.innerHTML = punti(testoLed(t), 26, 84);
+      return;
+    }
     const [txt, cls] = etichettaAttesa(t.diff);
     const cambiato = cd.textContent !== txt;
     cd.textContent = txt;
     cd.className = 'cd ' + cls;
     if (cambiato) { void cd.offsetWidth; cd.classList.add('bump'); }
-    el.classList.toggle('imminente', el.classList.contains('next') && imminente(t));
   });
 }
 
@@ -229,64 +315,59 @@ function disegnaElenco() {
   const nessuna = () => '<div class="empty"><strong>Nessuna corsa ' + (domani ? 'domani' : 'oggi') +
     '</strong>Nessun bus va ' + verso + ' ' + quando + '.' + (domani ? '' : invito) + '</div>';
 
-  if (!future.length) {
-    if (domani) { svuota(nessuna()); piede.innerHTML = rigaMeta(); return; }
-    if (!passate.length) {
-      const giornata = corse(idx, { ...filtro, adesso: null }).future.length;
-      svuota(giornata ? finite('') : nessuna());
-      piede.innerHTML = rigaMeta(); return;
-    }
+  if (!future.length && !passate.length) {
+    const giornata = domani ? 0 : corse(idx, { ...filtro, adesso: null }).future.length;
+    svuota(giornata ? finite('') : nessuna());
+    piede.innerHTML = rigaMeta(); return;
   }
 
   // Il consiglio sull'arrivo piu' rapido confronta la mezz'ora dopo la prima partenza
   // utile. Domani quella finestra sarebbe l'alba, un ritaglio arbitrario: si tace.
-  const quante = domani ? future.length : arrivoPiuRapido(future, stato.quante);
+  if (!domani) arrivoPiuRapido(future, future.length);
 
-  // Domani non c'e' un "adesso" attorno a cui impaginare: si mostra la giornata
-  // intera e si scorre fino all'ora che interessa.
-  const elenco = stato.precedenti && !domani ? passate.slice(-3) : [];
-  const primaFutura = elenco.length;
-  elenco.push(...future.slice(0, quante));
-  const restano = future.length - quante;
+  // Tutta la giornata in una lista sola: le corse gia' partite sopra, attenuate; la prossima
+  // nel pannello LED; le successive sotto. Si sfoglia scorrendo, senza pulsanti.
+  const elenco = [...passate, ...future];
+  const iLed = passate.length;
 
-  const ultima = future[future.length - 1];
+  const ultima = future[future.length - 1] || passate[passate.length - 1];
   const coda = domani
-    ? (future.length ? future.length + ' corse, dalle ' + future[0].dep + ' alle ' + ultima.dep : '')
-    : !ultima ? ''
-    : restano > 1   ? 'Altre ' + restano + ' corse fino alle ' + ultima.dep
-    : restano === 1 ? 'Un’altra corsa alle ' + ultima.dep
-    :                 'Ultima corsa alle ' + ultima.dep;
+    ? future.length + ' corse, dalle ' + future[0].dep + ' alle ' + ultima.dep
+    : future.length ? 'Ultima corsa alle ' + ultima.dep : '';
   piede.innerHTML = (coda ? coda + '<br>' : '') + rigaMeta();
 
   const chiavi = elenco.map(t => t.line + t.dep + t.arr);
-  const firma = stato.giorno + '#' + chiavi.join('|') + '#' + passate.length + '#' + restano +
-                '#' + (stato.precedenti ? 1 : 0) + '#' + future.length;
-  if (firma === firmaDom) { aggiornaAttese(elenco); return; }
+  const firma = stato.giorno + '#' + chiavi.join('|') + '#' + future.length;
+  if (firma === firmaDom) { aggiornaAttese(elenco, iLed); return; }
 
-  let html = '';
-  if (passate.length && !domani) {
-    const n = Math.min(passate.length, 3);
-    html += '<button class="more past" data-act="past">' +
-      (stato.precedenti ? 'Nascondi le precedenti'
-        : n === 1 ? 'Mostra la corsa precedente' : 'Mostra le ' + n + ' corse precedenti') + '</button>';
-  }
+  // Si riposiziona sulla prossima corsa solo quando cambia il contesto (tratta, giorno,
+  // filtro): se e' solo partita una corsa, chi sta guardando le precedenti non va spostato.
+  const contesto = [stato.giorno, stato.partenza, stato.arrivo, stato.tutte].join('|');
+  const nuovoContesto = contesto !== contestoDom;
+  const scorrimento = cards.scrollTop;
 
-  let nuove = 0;
-  html += elenco.map((t, i) => {
-    const ord = chiaviDom.includes(chiavi[i]) ? -1 : nuove++;
-    return scheda(t, !domani && i === primaFutura && t.diff >= -2, t.diff < -2, ord);
+  // Si animano solo le corse nuove attorno al pannello: animare tutta la giornata
+  // farebbe durare l'entrata piu' di mezzo secondo.
+  let n = 0;
+  let html = elenco.map((t, i) => {
+    const nuova = !chiaviDom.includes(chiavi[i]);
+    const ord = nuova && i >= iLed - 1 && i <= iLed + 6 ? n++ : -1;
+    return i === iLed ? pannello(t, ord) : striscia(t, i < iLed, ord);
   }).join('');
+  if (!future.length) html += finite('L’ultima è partita alle ' + passate[passate.length - 1].dep + '.', true);
 
-  if (!future.length)
-    html += finite('L’ultima è partita alle ' + passate[passate.length - 1].dep + '.', true);
-
-  if (restano > 0) {
-    const n = Math.min(restano, 3);
-    html += '<button class="more" data-act="more">' +
-      (n === 1 ? 'Mostra un’altra corsa' : 'Mostra altre ' + n + ' corse') + '</button>';
-  }
+  cards.style.scrollBehavior = 'auto';
   cards.innerHTML = html;
-  chiaviDom = chiavi; firmaDom = firma;
+  if (nuovoContesto) {
+    const led = cards.querySelector('.led');
+    // Sopra il pannello resta l'ultima corsa gia' partita, intera: dice che sopra c'e' altro e
+    // non sembra un ritaglio.
+    const prima = led && led.previousElementSibling;
+    cards.scrollTop = led ? Math.max(0, (prima ? prima.offsetTop : led.offsetTop) - 6) : cards.scrollHeight;
+  } else cards.scrollTop = scorrimento;
+  cards.style.scrollBehavior = '';
+
+  chiaviDom = chiavi; firmaDom = firma; contestoDom = contesto;
 }
 
 function disegna() {
@@ -326,7 +407,7 @@ function apriSelettore(quale) {
 const chiudiSelettore = () => $('sheet-bg').classList.remove('open');
 
 // ── Eventi ────────────────────────────────────
-const cambiaTratta = (a, b) => aggiorna({ partenza: a, arrivo: b, quante: 3, precedenti: false });
+const cambiaTratta = (a, b) => aggiorna({ partenza: a, arrivo: b });
 
 $('f-origin').addEventListener('click', () => apriSelettore('origin'));
 $('f-dest').addEventListener('click', () => apriSelettore('dest'));
@@ -338,8 +419,7 @@ $('preferite').addEventListener('click', e => {
 
 $('days').addEventListener('click', e => {
   const b = e.target.closest('.day');
-  if (b && b.dataset.day !== stato.giorno)
-    aggiorna({ giorno: b.dataset.day, quante: 3, precedenti: false });
+  if (b && b.dataset.day !== stato.giorno) aggiorna({ giorno: b.dataset.day });
 });
 
 $('banner-btn').addEventListener('click', () => aggiorna({ tutte: !stato.tutte }));
@@ -347,9 +427,7 @@ $('banner-btn').addEventListener('click', () => aggiorna({ tutte: !stato.tutte }
 $('cards').addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
-  if (b.dataset.act === 'domani') aggiorna({ giorno: 'domani', quante: 3, precedenti: false });
-  else if (b.dataset.act === 'more') aggiorna({ quante: stato.quante + 3 });
-  else aggiorna({ precedenti: !stato.precedenti });
+  if (b.dataset.act === 'domani') aggiorna({ giorno: 'domani' });
 });
 
 // L'overlay si chiude su pointerdown, non su click: dopo un tocco iOS sintetizza un
@@ -400,6 +478,14 @@ $('swap').addEventListener('click', () => {
     const c = entra($('v-origin'), -20), d = entra($('v-dest'), 20);
     setTimeout(() => { c.cancel(); d.cancel(); }, 260);
   }, 140);
+});
+
+// Quando l'app torna in primo piano (la si riapre alla fermata) la lista riparte dalla
+// prossima corsa: dopo ore in tasca sarebbe ferma dov'era rimasta.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden || !idx) return;
+  contestoDom = ''; firmaDom = '';
+  disegna();
 });
 
 // ── Service worker ────────────────────────────
