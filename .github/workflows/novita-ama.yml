@@ -1,0 +1,74 @@
+# Una volta a settimana guarda se AMA ha pubblicato orari diversi da quelli usati dall'app.
+# Esiste perche' per due volte gli orari sono rimasti vecchi di settimane senza che nessuno lo notasse.
+#
+# Limiti da conoscere: GitHub disattiva i flussi programmati dopo 60 giorni senza attivita'
+# nel repository (si riattivano da Actions), e la segnalazione arriva per posta solo se le
+# notifiche del repository sono attive.
+name: Novità AMA
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"          # ogni lunedi' alle 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  controllo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Confronto con la pagina AMA
+        id: ama
+        run: |
+          set +e
+          python3 tools/check_updates.py > "$RUNNER_TEMP/novita.txt" 2>&1
+          echo "codice=$?" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/novita.txt"
+
+      - name: Segnalazione se ci sono revisioni nuove
+        if: steps.ama.outputs.codice == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          titolo="Nuove revisioni AMA"
+          {
+            echo "Il controllo settimanale ha trovato orari diversi da quelli usati dall'app."
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/novita.txt"
+            echo '```'
+            echo
+            echo "Per aggiornarli: README, sezione «Aggiornare gli orari»."
+          } > "$RUNNER_TEMP/corpo.md"
+          # Una sola segnalazione aperta: se esiste si aggiorna, non se ne apre un'altra ogni lunedi'.
+          n=$(gh issue list --state open --search "\"$titolo\" in:title" --json number --jq '.[0].number')
+          if [ -n "$n" ]; then
+            gh issue edit "$n" --body-file "$RUNNER_TEMP/corpo.md"
+          else
+            gh issue create --title "$titolo" --body-file "$RUNNER_TEMP/corpo.md"
+          fi
+
+      - name: Chiude la segnalazione quando e' tutto aggiornato
+        if: steps.ama.outputs.codice == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          titolo="Nuove revisioni AMA"
+          n=$(gh issue list --state open --search "\"$titolo\" in:title" --json number --jq '.[0].number')
+          if [ -n "$n" ]; then
+            gh issue close "$n" --comment "Gli orari sono di nuovo allineati alla pagina AMA."
+          fi
+
+      - name: Controllo non riuscito
+        if: steps.ama.outputs.codice == '2'
+        run: |
+          echo "::error::il controllo non e' riuscito (rete assente o pagina AMA cambiata): vedi il log sopra"
+          exit 1

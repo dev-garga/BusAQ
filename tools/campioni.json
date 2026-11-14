@@ -1,0 +1,823 @@
+{
+ "_comment": [
+  "Corse di controllo, per direzione, legate al NOME del PDF da cui sono state lette.",
+  "verifica.py richiede che l'estrazione le riproduca; se il PDF cambia nome (AMA ripubblica la",
+  "linea) risultano SCADUTE e vanno ricontrollate: valgono per quella revisione, non per la successiva.",
+  "come = «occhi»: guardata sul PDF con i nomi delle colonne. come = «testo»: solo confermata dal testo",
+  "del PDF (tools/controlla_campioni.py), che coglie orari sbagliati o mancanti ma non una colonna",
+  "assegnata alla fermata sbagliata. Nuove proposte: python3 tools/controlla_campioni.py --proponi."
+ ],
+ "direzioni": {
+  "12:andata": {
+   "fonte": "Orario-12_21092026-1.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "08:05",
+      "08:20",
+      "08:25"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:30",
+      "12:50",
+      "12:58"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "19:30",
+      "19:40",
+      "19:42"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "12:ritorno": {
+   "fonte": "Orario-12_21092026-1.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:25",
+      null,
+      "07:50"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:20",
+      null,
+      "12:40"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "17:46",
+      null,
+      "18:25"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "12A:andata": {
+   "fonte": "Orario-12A_28092026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:35",
+      "07:50"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:40",
+      "12:52"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:15",
+      "20:23"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "12A:ritorno": {
+   "fonte": "Orario-12A_28092026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:30",
+      null,
+      "08:10"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "10:40",
+      "10:45",
+      "11:10"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "19:00",
+      null,
+      "19:15"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "13:andata": {
+   "fonte": "Orario-13-M13A_05102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "13:05",
+      "13:15"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "13:ritorno": {
+   "fonte": "Orario-13-M13A_05102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:10",
+      "07:40"
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      "07:20",
+      "08:10"
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      "07:15",
+      "07:40"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "14D:andata": {
+   "fonte": "Orario-14D_21062026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:45",
+      "08:10"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "11:50",
+      "12:00"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "19:50",
+      "20:00"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "15:andata": {
+   "fonte": "Orario-15_19102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "06:35",
+      "06:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:40",
+      "12:50"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "18:35",
+      "18:45"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "15:ritorno": {
+   "fonte": "Orario-15_19102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:32",
+      "08:10"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:48",
+      "13:15"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "18:02",
+      "18:25"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "1:andata": {
+   "fonte": "Orario-1_22102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "05:55",
+      "05:57",
+      "05:58",
+      null,
+      null
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:15",
+      "12:17",
+      "12:18",
+      "12:50",
+      "13:05"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:20",
+      "20:22",
+      "20:23",
+      "20:53",
+      null
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "07:40",
+      "07:42",
+      "07:43",
+      "08:07",
+      null
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      null,
+      null,
+      "08:05",
+      "08:29",
+      "08:40"
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      null,
+      null,
+      null,
+      "09:08",
+      "09:15"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "1:ritorno": {
+   "fonte": "Orario-1_22102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      null,
+      "07:02",
+      "07:40",
+      "07:42",
+      "07:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      null,
+      null,
+      "12:35",
+      "12:37",
+      "12:40"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      null,
+      null,
+      "22:30",
+      "22:32",
+      "22:35"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "14:45",
+      "14:50",
+      "15:25",
+      "15:27",
+      "15:35"
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      null,
+      null,
+      "15:35",
+      "15:37",
+      "15:40"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "2:andata": {
+   "fonte": "orario2_28102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:47",
+      "08:20"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:00",
+      "12:35"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "21:10",
+      "21:40"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "2:ritorno": {
+   "fonte": "orario2_28102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "08:35",
+      "09:10"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:35",
+      "13:10"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:50",
+      "21:10"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "2U:andata": {
+   "fonte": "orario2U_02112026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "06:00",
+      "06:01",
+      "06:12",
+      null
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      null,
+      null,
+      "11:40",
+      "11:55"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "2U:ritorno": {
+   "fonte": "orario2U_02112026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "12:50",
+      "12:55",
+      "13:20",
+      "13:30"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "19:15",
+      "19:20",
+      "19:45",
+      "19:55"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "2UF:andata": {
+   "fonte": "Orario-2UF-M2UF_01102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "08:05",
+      "08:07",
+      "08:09",
+      "08:25",
+      "08:30"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "11:40",
+      "11:42",
+      "11:44",
+      "12:00",
+      "12:05"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "21:30",
+      "21:32",
+      "21:34",
+      "21:50",
+      "21:55"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "2UF:ritorno": {
+   "fonte": "Orario-2UF-M2UF_01102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "08:30",
+      "08:37",
+      "08:50",
+      "08:53",
+      "08:55"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:05",
+      "12:12",
+      "12:25",
+      "12:28",
+      "12:30"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "21:55",
+      "22:02",
+      "22:15",
+      "22:18",
+      "22:20"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "3:andata": {
+   "fonte": "Orario-3_15102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:15",
+      "07:17",
+      "07:20",
+      "07:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:20",
+      "12:24",
+      "12:27",
+      "13:00"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:00",
+      "20:04",
+      "20:07",
+      "20:40"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "13:05",
+      "13:09",
+      "13:12",
+      "13:45"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "3:ritorno": {
+   "fonte": "Orario-3_15102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "06:10",
+      "06:30",
+      "06:35",
+      "06:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:40",
+      "13:05",
+      "13:10",
+      "13:20"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:10",
+      "20:35",
+      "20:40",
+      "20:50"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "08:00",
+      "08:25",
+      "08:30",
+      "08:40"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "A:andata": {
+   "fonte": "Orario-A_08102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "06:30",
+      "06:33",
+      null,
+      null,
+      "06:50"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:20",
+      "12:23",
+      "12:25",
+      "12:25",
+      "12:50"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:40",
+      "20:43",
+      "20:45",
+      "20:45",
+      "21:10"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "A:ritorno": {
+   "fonte": "Orario-A_08102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "06:50",
+      "07:00"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:50",
+      "13:30"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:20",
+      "21:00"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "B:andata": {
+   "fonte": "Orario-B_15102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "07:40",
+      "08:10"
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      "12:45",
+      "13:15"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:15",
+      "20:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "08:35",
+      "09:05"
+     ],
+     "come": "occhi"
+    }
+   ]
+  },
+  "B:ritorno": {
+   "fonte": "Orario-B_15102026.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "08:10",
+      "08:30",
+      "08:30",
+      "08:35",
+      "08:50"
+     ],
+     "come": "occhi"
+    },
+    {
+     "t": [
+      "12:25",
+      "12:45",
+      "12:45",
+      "12:50",
+      "13:05"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "19:55",
+      "20:15",
+      "20:15",
+      "20:20",
+      "20:35"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "M14F:andata": {
+   "fonte": "orario-M14F.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      "09:10",
+      "09:40",
+      "09:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:10",
+      "12:40",
+      "12:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "20:40",
+      "21:10",
+      "21:15"
+     ],
+     "come": "testo"
+    }
+   ]
+  },
+  "M14F:ritorno": {
+   "fonte": "orario-M14F.pdf",
+   "letti": "2026-11-14",
+   "corse": [
+    {
+     "t": [
+      null,
+      "07:10",
+      "07:35"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "12:45",
+      "13:20",
+      "13:45"
+     ],
+     "come": "testo"
+    },
+    {
+     "t": [
+      "18:45",
+      "19:20",
+      "19:45"
+     ],
+     "come": "testo"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,70 @@
+# Controlli a ogni push. Non pubblicano niente: GitHub Pages pubblica da solo il ramo main.
+# Servono a due cose che finora dipendevano dalla memoria di chi pubblica: il timbro del
+# service worker, e il fatto che schedule.json sia davvero quello che esce dai PDF.
+name: Controlli
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  controlli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # serve la versione precedente di schedule.json per il confronto
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+
+      - run: pip install -r tools/requirements.txt
+
+      - name: Logica degli orari
+        run: node --test tools/prova_orari.mjs
+
+      - name: Regole di lettura dei PDF
+        run: python3 tools/prova_estrazione.py
+
+      - name: Dati e campioni, con confronto col commit precedente
+        run: |
+          base="${{ github.event.before }}"
+          if ! git rev-parse --verify --quiet "${base}^{commit}" >/dev/null; then base=HEAD~1; fi
+          # Una linea che perde corse e' stampata, non blocca: in CI non si puo' sapere se la perdita
+          # e' stata riletta sul PDF. Gli errori veri (struttura, campioni) bloccano.
+          python3 tools/verifica.py --base "$base" --accetta-perdite --tutto
+
+      - name: Campioni nel testo dei PDF
+        run: python3 tools/controlla_campioni.py
+
+      - name: Timbro del service worker aggiornato
+        # Fallisce se un file servito e' cambiato senza rigenerare il nome della cache: in quel caso
+        # i telefoni non riceverebbero l'aggiornamento. Si corregge con tools/rilascia.py.
+        run: python3 tools/rilascia.py --controlla --salta-verifica
+
+      - name: schedule.json riproducibile dai PDF in fonti/
+        run: |
+          python3 tools/extract_schedule.py --out "$RUNNER_TEMP/schedule.json" >/dev/null
+          if cmp -s "$RUNNER_TEMP/schedule.json" schedule.json; then
+            echo "schedule.json e' identico a quello rigenerato dai PDF"
+          else
+            echo "::error::schedule.json non coincide con l'estrazione dai PDF in fonti/ e da tools/lines.json"
+            python3 - <<'PY'
+          import json, os
+          a = json.load(open("schedule.json")); b = json.load(open(os.environ["RUNNER_TEMP"] + "/schedule.json"))
+          for d in a["directions"]:
+              n = next((x for x in b["directions"] if x["id"] == d["id"]), None)
+              if n != d:
+                  print("  direzione diversa:", d["id"])
+          PY
+            exit 1
+          fi

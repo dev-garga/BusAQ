@@ -26,6 +26,8 @@ from collections import defaultdict
 from pathlib import Path
 
 RADICE = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fonti import fonti_correnti  # noqa: E402
 ORA = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 
 errori, avvisi = [], []
@@ -132,6 +134,46 @@ def copertura(meta, dirs):
         if not any(s in c for c in coppie):
             err(f"fermata '{s}': nessuna tratta utilizzabile, ne' in partenza ne' in arrivo")
     return coppie
+
+
+def controlla_campioni(dati):
+    """Le corse lette a mano sul PDF devono essere ancora nell'estrazione.
+
+    Un campione e' legato al NOME del file da cui e' stato letto. Se il file e' lo stesso,
+    l'estrazione deve riprodurlo (altrimenti e' un errore: e' cambiato il codice o la
+    configurazione, non il PDF). Se il file e' cambiato i campioni sono SCADUTI: valevano per
+    la revisione precedente, e vanno riletti (tools/controlla_campioni.py --proponi).
+    """
+    f = RADICE / "tools" / "campioni.json"
+    if not f.exists():
+        avv("tools/campioni.json non esiste: nessuna corsa di controllo")
+        return
+    campioni = json.loads(f.read_text(encoding="utf-8"))["direzioni"]
+    fonte = fonti_correnti(RADICE)
+    corse = {d["id"]: {tuple(r["t"]) for r in d["runs"]} for d in dati["directions"]}
+    scadute, ok, senza = [], 0, []
+    for did in corse:
+        c = campioni.get(did)
+        if not c:
+            senza.append(did); continue
+        if c["fonte"] != fonte.get(did):
+            scadute.append(f"{did} (letti su {c['fonte']}, ora {fonte.get(did)})"); continue
+        for s in c["corse"]:
+            if tuple(s["t"]) in corse[did]:
+                ok += 1
+            else:
+                err(f"campione non riprodotto: {did} {s['t']} [{c['fonte']}, letto a "
+                    f"{'occhi' if s.get('come') == 'occhi' else 'testo'}]")
+    for did in campioni:
+        if did not in corse:
+            err(f"campioni per la direzione «{did}», che non esiste piu'")
+    if scadute:
+        avv("campioni SCADUTI, da rileggere sul PDF nuovo: " + "; ".join(scadute))
+    if senza:
+        avv("direzioni senza campioni: " + ", ".join(senza))
+    print(f"\ncampioni: {ok} riprodotti"
+          + (f", {len(scadute)} direzioni con campioni scaduti" if scadute else "")
+          + (f", {len(senza)} senza campioni" if senza else ""))
 
 
 def per_linea(dati):
@@ -317,6 +359,7 @@ def main():
     if dirs:
         coerenza(meta, dirs)
         coppie = copertura(meta, dirs)
+        controlla_campioni(dati)
         if not args.senza_confronto:
             confronto(dati, percorso, args.accetta_perdite, args.base, args.tutto)
         riepilogo(dati, coppie)

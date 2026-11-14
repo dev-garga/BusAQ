@@ -36,6 +36,8 @@ python3 tools/verifica.py              # struttura, coerenza e confronto di sche
 
 `verifica.py` fallisce se una linea perde corse rispetto all'ultima versione in git, e stampa **quali corse** sono state aggiunte, tolte o cambiate di calendario, direzione per direzione: è la lista da spuntare sul PDF. Se la perdita è voluta e l'hai riletta, `--accetta-perdite` la declassa ad avviso (l'elenco si stampa lo stesso). `--base <riferimento>` confronta con un'altra versione, `--tutto` non taglia l'elenco.
 
+**Campioni.** `tools/campioni.json` tiene, per ogni direzione, alcune corse lette sul PDF (prima, una di mezzogiorno, ultima, più quelle guardate a occhio), **legate al nome del file da cui sono state lette**. `verifica.py` richiede che l'estrazione le riproduca: se non lo fa è cambiato il codice o la configurazione, non il PDF. Quando AMA ripubblica una linea il file cambia nome e i campioni di quella direzione risultano **scaduti**: valevano per la revisione precedente e vanno riletti. `python3 tools/controlla_campioni.py` li confronta col *testo* dei PDF (indipendente dal lettore di tabelle: coglie orari sbagliati, troncati o mancanti, **non** una colonna assegnata alla fermata sbagliata); `--proponi` ne suggerisce di nuovi per le direzioni scadute, `--scrivi` li aggiunge dopo che li hai letti. Il campo `come` dice se una corsa è stata guardata sul PDF (`occhi`) o solo confermata dal testo (`testo`).
+
 Catture dello schermo, a viewport mobile vero e con l'orologio fissato (di sera non c'è una prossima corsa e il pannello LED non compare):
 
 ```bash
@@ -44,6 +46,13 @@ node tools/catture.mjs --ora 2026-10-11T10:00:00    # una domenica
 ```
 
 Le immagini vanno in `catture/` (non tracciata).
+
+## Controlli automatici (GitHub Actions)
+
+- **A ogni push** (`.github/workflows/controllo.yml`): collaudi, verifica dei dati con confronto col commit precedente, campioni, **timbro del service worker aggiornato** (fallisce se un file servito è cambiato senza rigenerarlo: i telefoni non riceverebbero l'aggiornamento) e **`schedule.json` riproducibile** dai PDF in `fonti/`. Non pubblica niente: lo fa Pages.
+- **Ogni lunedì** (`.github/workflows/novita-ama.yml`): guarda se AMA ha pubblicato orari diversi. Se sì apre, o aggiorna, **una sola** segnalazione «Nuove revisioni AMA» con l'elenco; quando tutto è di nuovo allineato la chiude. Se il controllo non riesce (rete, pagina AMA cambiata) il lavoro fallisce.
+
+Due limiti: GitHub **disattiva i flussi programmati dopo 60 giorni senza attività** nel repository (si riattivano dalla scheda Actions), e la segnalazione arriva per posta solo se le notifiche del repository sono attive.
 
 ## Pubblicare
 
@@ -86,6 +95,8 @@ I PDF da cui nasce `schedule.json` stanno **nel repository**, in `fonti/`: AMA t
 | `tools/manuali.json` | corse trascritte a mano (linea 13, il cui PDF non si può leggere in modo affidabile) |
 | `tools/ama.py` | trova il PDF corrente di ogni linea per **etichetta** sulla pagina AMA |
 | `tools/extract_schedule.py` | PDF → `schedule.json` |
+| `tools/campioni.json`, `tools/controlla_campioni.py` | corse di controllo legate alla revisione del PDF |
+| `fonti/` | i PDF AMA da cui nasce `schedule.json` (nel repository, una revisione per linea) |
 | `tools/make_icon.py` | logo e icone, da dati (le lettere sono punti 5×7) |
 | `orari.js` | logica pura, senza DOM: coppie servite, corse, festivi, consiglio sull'arrivo più rapido |
 | `app.js` | stato, disegno ed eventi |
