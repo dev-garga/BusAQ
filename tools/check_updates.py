@@ -59,7 +59,7 @@ def main():
 
     if cambiate:
         print("\nPer rigenerare gli orari:")
-        print("  tools/.venv/bin/python tools/extract_schedule.py --download")
+        print("  python3 tools/extract_schedule.py --download")
         print("e rileggere il report a fianco dei PDF prima di pubblicare.")
         return 1
     print("\nnessuna novita'.")

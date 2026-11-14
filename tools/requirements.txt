@@ -1,0 +1,7 @@
+# Dipendenze della pipeline di estrazione (tools/extract_schedule.py, inspect_pdf.py,
+# make_icon.py). L'app in se' e il collaudo (node --test) non ne hanno nessuna;
+# check_updates.py, ama.py e verifica.py usano solo la libreria standard.
+# Versioni con cui gli orari di ottobre 2026 sono stati estratti e controllati: pdfplumber
+# cambia il modo di leggere le tabelle fra una versione e l'altra, quindi non si lasciano libere.
+pdfplumber==0.11.10
+pillow>=12.0

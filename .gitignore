@@ -3,3 +3,6 @@ tools/pdfcache/
 .claude/
 design/
 .impeccable/
+.DS_Store
+__pycache__/
+catture/

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Genera schedule.json dai PDF ufficiali AMA secondo la mappatura in lines.json.
 
-    tools/.venv/bin/python tools/extract_schedule.py --download  # scarica le revisioni correnti
-    tools/.venv/bin/python tools/extract_schedule.py             # scrive schedule.json
-    tools/.venv/bin/python tools/extract_schedule.py --dry-run   # stampa solo il report
+    python3 tools/extract_schedule.py --download  # scarica le revisioni correnti
+    python3 tools/extract_schedule.py             # scrive schedule.json
+    python3 tools/extract_schedule.py --dry-run   # stampa solo il report
 
 Modello: una voce per DIREZIONE (un senso di marcia su un pannello di PDF) con l'elenco
 ordinato delle fermate, e una riga per CORSA con gli orari allineati a quell'elenco.
