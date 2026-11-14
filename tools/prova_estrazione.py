@@ -121,6 +121,52 @@ class Spuri(unittest.TestCase):
         self.assertEqual(tempi, ["07:25", None, "07:25"])
 
 
+class RigheGrigie(unittest.TestCase):
+    """Le righe grigie si riconoscono dalla posizione, mai dagli orari scritti."""
+
+    # tre righe di dati da 20 pt, sotto un'intestazione da 40 pt
+    RIGHE = [(0, 40), (40, 60), (60, 80), (80, 100)]
+
+    def test_una_riga_per_rettangolo(self):
+        grigie, anomalie = E.assegna_righe_grigie([{"top": 61, "bottom": 79}], self.RIGHE, 1)
+        self.assertEqual(grigie, {2})
+        self.assertEqual(anomalie, [])
+
+    def test_righe_vicine_non_si_contagiano(self):
+        # B: la corsa grigia delle 07:40 e quella normale delle 08:35 hanno orari scritti in
+        # comune (08:35, 08:50). Per posizione, la seconda non e' grigia.
+        grigie, _ = E.assegna_righe_grigie([{"top": 41, "bottom": 59}], self.RIGHE, 1)
+        self.assertEqual(grigie, {1})
+        self.assertNotIn(2, grigie)
+
+    def test_blocco_alto_contiene_piu_righe(self):
+        # il pomeriggio della 2U: un solo rettangolo grigio su molte corse
+        grigie, anomalie = E.assegna_righe_grigie([{"top": 41, "bottom": 99}], self.RIGHE, 1)
+        self.assertEqual(grigie, {1, 2, 3})
+        self.assertEqual(anomalie, [])
+
+    def test_rettangolo_di_una_riga_a_cavallo_di_due_si_segnala(self):
+        # alto come una riga ma con i centri di DUE righe dentro: la geometria non e' quella attesa
+        _, anomalie = E.assegna_righe_grigie([{"top": 50, "bottom": 70}], self.RIGHE, 1)
+        self.assertEqual(len(anomalie), 1)
+        self.assertIn("contiene 2 righe", anomalie[0])
+
+    def test_rettangolo_di_una_riga_che_non_contiene_centri_si_segnala(self):
+        # dentro la tabella ma sotto il centro di ogni riga: non copre nessuna corsa
+        _, anomalie = E.assegna_righe_grigie([{"top": 61, "bottom": 68}], self.RIGHE, 1)
+        self.assertEqual(len(anomalie), 1)
+        self.assertIn("contiene 0 righe", anomalie[0])
+
+    def test_rettangolo_fuori_dalla_tabella_si_ignora(self):
+        # la riga grigia della legenda sotto la tabella non e' una corsa
+        grigie, anomalie = E.assegna_righe_grigie([{"top": 130, "bottom": 142}], self.RIGHE, 1)
+        self.assertEqual(grigie, set())
+        self.assertEqual(anomalie, [])
+
+    def test_nessuna_riga_di_dati(self):
+        self.assertEqual(E.assegna_righe_grigie([{"top": 0, "bottom": 10}], [(0, 40)], 1), (set(), []))
+
+
 class PaginaAma(unittest.TestCase):
     """tools/ama.py: la pagina «Elenco linee AMA» letta con espressioni regolari.
 
@@ -204,6 +250,13 @@ class DiffCorse(unittest.TestCase):
         n = self.sch({"t": ["07:00", "07:40"]}, stops=("uni", "terminal"))
         (_, righe), = self.d(v, n)
         self.assertTrue(righe[0].startswith("! fermate cambiate"))
+
+    def test_corse_con_orari_vuoti_si_ordinano(self):
+        # Quasi tutte le corse reali saltano qualche fermata (None): l'ordinamento non deve cadere.
+        v = self.sch({"t": ["07:00", None]}, {"t": [None, "08:00"]}, {"t": ["06:00", "06:30"]})
+        n = self.sch()
+        (_, righe), = self.d(v, n)
+        self.assertEqual(len(righe), 3)
 
     def test_corsa_festiva_si_riconosce(self):
         v = self.sch()

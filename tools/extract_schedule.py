@@ -121,25 +121,42 @@ def is_grey(color):
     return False
 
 
-def grey_bands(page):
-    """Insiemi di orari coperti da ciascuna fascia grigia.
+def assegna_righe_grigie(rects, bbox_righe, inizio):
+    """Quali righe di tabella stanno dentro i rettangoli grigi: -> (indici, anomalie).
 
-    Si usa la geometria delle parole e non le righe di find_tables(), che sono
-    disallineate rispetto ai rettangoli.
+    Una riga e' grigia se il suo centro cade dentro un rettangolo. Prima si confrontavano gli
+    ORARI scritti: la corsa grigia delle 07:40 di B e quella normale delle 08:35 condividono
+    delle stringhe (08:35, 08:50), e la seconda risultava «solo lun-ven e scolastica» senza che
+    il PDF lo dica. Gli orari uguali in righe diverse sono la norma, la posizione no.
+
+    Un rettangolo alto come una riga deve contenere esattamente una riga: se ne contiene zero
+    o due la geometria non e' quella attesa e si ferma, invece di marcare righe a caso. I
+    rettangoli alti (blocchi di piu' corse, come il pomeriggio della 2U) possono contenerne
+    quante serve.
     """
+    righe = [(i, (t + b) / 2, b - t) for i, (t, b) in enumerate(bbox_righe) if i >= inizio]
+    if not righe:
+        return set(), []
+    alt = sorted(h for _, _, h in righe)[len(righe) // 2]       # altezza tipica di una riga
+    alto, basso = min(bbox_righe[i][0] for i, _, _ in righe), max(bbox_righe[i][1] for i, _, _ in righe)
+    grigie, anomalie = set(), []
+    for r in rects:
+        # I rettangoli fuori dalle righe di dati sono altro (la riga grigia della legenda in
+        # fondo alla 2U, una testata): non sono corse, e non vanno ne' marcati ne' contati.
+        if r["bottom"] < alto - 1 or r["top"] > basso + 1:
+            continue
+        dentro = [i for i, c, _ in righe if r["top"] - 1 <= c <= r["bottom"] + 1]
+        grigie.update(dentro)
+        if (r["bottom"] - r["top"]) < 1.6 * alt and len(dentro) != 1:
+            anomalie.append(f"rettangolo grigio a y={r['top']:.0f}-{r['bottom']:.0f}: contiene "
+                            f"{len(dentro)} righe di tabella (ne attendo una)")
+    return grigie, anomalie
+
+
+def righe_grigie(page, tab, inizio):
     rects = [r for r in page.rects
              if is_grey(r.get("non_stroking_color")) and (r["x1"] - r["x0"]) > 0.40 * page.width]
-    if not rects:
-        return []
-    words = [w for w in page.extract_words() if TIME_RE.fullmatch(w["text"].strip())]
-    bands = []
-    for r in rects:
-        times = {norm_time(w["text"]) for w in words
-                 if r["top"] - 1 <= w["top"] <= r["bottom"] + 1}
-        times.discard(None)
-        if times:
-            bands.append(times)
-    return bands
+    return assegna_righe_grigie(rects, [(r.bbox[1], r.bbox[3]) for r in tab.rows], inizio)
 
 
 # ── Colonne per nome ──────────────────────────
@@ -413,12 +430,15 @@ def extract(cfg, download=False):
         line_col = colonna(d.get("linea", r"^linea$"), nomi, dove, facoltativa=True)
 
         grigio = regola_grigio(d.get("grey"))
-        bands = grey_bands(page) if grigio else []
+        grigie, anomalie = righe_grigie(page, tab, inizio) if grigio else (set(), [])
+        if anomalie:
+            sys.exit(f"\n{dove}: " + "; ".join(anomalie) + ".\nLa geometria del PDF non e' quella attesa: "
+                     "guardare la pagina prima di fidarsi delle righe grigie.")
         legend = d.get("legend", {})
         base_days = d.get("giorni", default_days)
         runs, spuri = [], 0
 
-        for row in righe[inizio:]:
+        for ri, row in enumerate(righe[inizio:], inizio):
             tutti = [parse_time(c) for c in row]
             spuri += togli_spuri(tutti, row, nomi)
             times = [tutti[cols[s]] if cols[s] < len(tutti) else None for s in order]
@@ -432,9 +452,8 @@ def extract(cfg, download=False):
             if any(c and re.search(r"corsa\s+scolastica", c, re.I) for c in row):
                 scolastica = True
 
-            # Fascia grigia: la corsa e' evidenziata se vi cadono almeno due dei suoi orari.
-            present = {t for t in tutti if t}
-            if grigio and any(len(present & band) >= 2 for band in bands):
+            # Riga grigia: il calendario della legenda (lun-ven, scolastica...) si aggiunge alle lettere.
+            if grigio and ri in grigie:
                 days, scolastica, vacanze = applica_regola(grigio, days, scolastica, vacanze)
 
             run = {"t": times}

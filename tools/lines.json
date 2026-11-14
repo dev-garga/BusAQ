@@ -229,7 +229,17 @@
     "terminal": "terminalbus@1",
     "uni": "universit"
    },
-   "side": "ospedale"
+   "side": "ospedale",
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "scolastica": true
+   }
   },
   {
    "id": "B:ritorno",
@@ -254,6 +264,16 @@
    "side": "ospedale",
    "approx": {
     "via_panella": "orario di Fontana Luminosa"
+   },
+   "grey": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "scolastica": true
    }
   },
   {
@@ -272,7 +292,7 @@
    "columns": {
     "terminal": "terminalbus",
     "via_panella": "cencioni",
-    "fontana_luminosa": "gran sasso",
+    "fontana_luminosa": "fontana luminosa",
     "uni": "universit",
     "aquilone": "aquilone"
    },
@@ -296,8 +316,7 @@
     }
    },
    "approx": {
-    "via_panella": "orario di via Cencioni",
-    "fontana_luminosa": "orario di Viale Gran Sasso"
+    "via_panella": "orario di via Cencioni"
    }
   },
   {
@@ -316,7 +335,7 @@
    "columns": {
     "aquilone": "aquilone",
     "uni": "universit",
-    "fontana_luminosa": "gran sasso",
+    "fontana_luminosa": "fontana luminosa",
     "via_panella": "cencioni",
     "terminal": "terminalbus"
    },
@@ -349,8 +368,7 @@
     "T": {}
    },
    "approx": {
-    "via_panella": "orario di via Cencioni",
-    "fontana_luminosa": "orario di Viale Gran Sasso"
+    "via_panella": "orario di via Cencioni"
    }
   },
   {
@@ -381,6 +399,12 @@
     },
     "S": {
      "scolastica": true
+    },
+    "F": {
+     "scolastica": true
+    },
+    "N": {
+     "vacanze": true
     }
    }
   },
@@ -412,6 +436,12 @@
     },
     "S": {
      "scolastica": true
+    },
+    "F": {
+     "scolastica": true
+    },
+    "N": {
+     "vacanze": true
     }
    }
   },

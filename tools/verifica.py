@@ -184,6 +184,11 @@ def etichetta_corsa(stops, sig, nomi):
     return testo + (f"  [{cal}]" if cal else "")
 
 
+def per_orario(sig):
+    """Chiave d'ordine: le corse hanno orari vuoti (None), che non si confrontano con le stringhe."""
+    return tuple(x or "" for x in sig[0]), sig[1:]
+
+
 def differenze_corse(prima, dopo):
     """Per direzione, le corse aggiunte (+), tolte (-) e cambiate di calendario (~).
 
@@ -218,8 +223,8 @@ def differenze_corse(prima, dopo):
                 tolte.remove(k); aggiunte.remove(m)
                 righe.append("~ " + etichetta_corsa(b["stops"], m, nomi)
                              + f"   (era: {calendario(k) or 'calendario consueto'})")
-        righe += ["- " + etichetta_corsa(a["stops"], k, nomi) for k in sorted(tolte)]
-        righe += ["+ " + etichetta_corsa(b["stops"], k, nomi) for k in sorted(aggiunte)]
+        righe += ["- " + etichetta_corsa(a["stops"], k, nomi) for k in sorted(tolte, key=per_orario)]
+        righe += ["+ " + etichetta_corsa(b["stops"], k, nomi) for k in sorted(aggiunte, key=per_orario)]
         if righe:
             out.append((did, righe))
     return out

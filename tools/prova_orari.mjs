@@ -175,8 +175,9 @@ test('le descrizioni delle fermate', () => {
     'Linee 1, 2U, 2UF: orario di via Cencioni',
     'Linee A, B: orario di Fontana Luminosa',
   ]);
-  // Fontana: la A e la 3 pubblicano l'orario vero, quindi la nota non puo' essere generica.
-  assert.deepEqual(notaApprossimazione(idx, 'fontana_luminosa'), ['Linee 1, 2UF: orario di Viale Gran Sasso']);
+  // Fontana: dalla revisione del 22 ottobre la linea 1 pubblica l'orario vero di Fontana Luminosa
+  // (prima c'era solo Viale Gran Sasso, accettato come approssimazione). Resta stimata la 2UF.
+  assert.deepEqual(notaApprossimazione(idx, 'fontana_luminosa'), ['Linea 2UF: orario di Viale Gran Sasso']);
   assert.deepEqual(notaApprossimazione(idx, 'uni'), ['Linee 2UF, M14F: orario della fermata Ospedale']);
   assert.deepEqual(notaApprossimazione(idx, 'terminal'), []);
 });
