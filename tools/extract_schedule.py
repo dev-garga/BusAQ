@@ -20,13 +20,15 @@ import json
 import re
 import sys
 from collections import Counter
-from datetime import date
 from pathlib import Path
 
 import pdfplumber
 
 ROOT = Path(__file__).resolve().parent
-CACHE = ROOT / "pdfcache"
+# I PDF da cui nasce schedule.json stanno NEL repository (fonti/): una revisione AMA sparisce
+# dal sito quando ne esce un'altra, e senza il file non si potrebbe piu' rigenerare e
+# verificare gli orari pubblicati, ne' da un'altra macchina ne' da un controllo automatico.
+CACHE = ROOT.parent / "fonti"
 STATO = ROOT / "pdf_state.json"
 MANUALI = ROOT / "manuali.json"
 
@@ -214,22 +216,35 @@ def nomi_colonne(page, tab, inizio, y_da=None):
 
 
 def colonna(spec, nomi, dove, facoltativa=False):
-    """'regex' o 'regex@n' -> indice della n-esima colonna il cui nome corrisponde.
+    """'regex' o 'regex@n' -> indice della colonna il cui nome corrisponde.
 
+    Senza '@n' la specifica deve corrispondere a UNA sola colonna: se ne trova due si ferma
+    invece di prendere la prima. E' il caso che l'identificazione per nome doveva evitare:
+    se AMA aggiunge una seconda colonna "universita'", scegliere la prima in silenzio fa
+    scivolare gli orari sulla fermata sbagliata senza nessun errore visibile. Con '@n' si
+    sceglie l'n-esima di proposito (i giri completi, con la stessa fermata due volte).
     Un numero resta un indice: serve solo dove le intestazioni non sono leggibili.
     """
     if spec is None:
         return None
     if isinstance(spec, int):
         return spec
-    modello, _, n = spec.partition("@")
-    n = int(n or 1)
+    modello, esplicito, n = spec.partition("@")
     trovate = [i for i, nome in enumerate(nomi) if nome and re.search(modello, nome, re.I)]
-    if len(trovate) >= n:
-        return trovate[n - 1]
+    elenco = " | ".join(f"{i}:{x}" for i, x in enumerate(nomi) if x)
+
+    if esplicito:
+        if len(trovate) >= int(n):
+            return trovate[int(n) - 1]
+    elif len(trovate) == 1:
+        return trovate[0]
+    elif len(trovate) > 1:
+        sys.exit(f"\n{dove}: «{spec}» corrisponde a {len(trovate)} colonne "
+                 f"({', '.join(str(i) for i in trovate)}): ambigua.\n"
+                 f"Colonne lette: {elenco}\n"
+                 f"Indicare quale con «{spec}@1», «{spec}@2»… in lines.json.")
     if facoltativa:
         return None
-    elenco = " | ".join(f"{i}:{x}" for i, x in enumerate(nomi) if x)
     sys.exit(f"\n{dove}: nessuna colonna «{spec}» (ne trovo {len(trovate)}).\n"
              f"Colonne lette: {elenco}\n"
              "AMA ha probabilmente cambiato l'impaginazione: aggiornare lines.json.")
@@ -319,7 +334,13 @@ def leggi_stato():
 
 
 def scarica_fonti(cfg):
-    """Risolve ogni fonte sulla pagina AMA e scarica la revisione corrente."""
+    """Risolve ogni fonte sulla pagina AMA e scarica la revisione corrente.
+
+    NON scrive pdf_state.json: lo stato dice quale revisione e' dietro schedule.json, e si
+    aggiorna solo quando schedule.json e' stato scritto davvero (main). Scriverlo qui
+    spegneva l'avviso di check_updates.py anche se l'estrazione poi si fermava, con gli
+    orari vecchi ancora pubblicati.
+    """
     from ama import elenco, scarica
     pagina = elenco()
     stato = leggi_stato()
@@ -337,8 +358,20 @@ def scarica_fonti(cfg):
     # L'elenco completo delle etichette serve a check_updates.py per accorgersi delle
     # linee che compaiono o spariscono dalla pagina.
     stato["_pagina"] = sorted(pagina)
-    STATO.write_text(json.dumps(stato, indent=1, ensure_ascii=False), encoding="utf-8")
     return stato
+
+
+def salva_stato(stato):
+    STATO.write_text(json.dumps(stato, indent=1, ensure_ascii=False), encoding="utf-8")
+
+
+def ripulisci_fonti(stato):
+    """Toglie da fonti/ le revisioni superate: restano nella storia di git, non nella cartella."""
+    in_uso = {v["file"] for k, v in stato.items() if not k.startswith("_") and isinstance(v, dict) and v.get("file")}
+    for f in sorted(CACHE.glob("*.pdf")):
+        if f.name not in in_uso:
+            f.unlink()
+            print(f"  tolto da fonti/: {f.name} (superato)")
 
 
 # ── Estrazione ────────────────────────────────
@@ -441,8 +474,9 @@ def extract(cfg, download=False):
     aggiornate = [data_iso(stato.get(k, {}).get("aggiornata")) for k in cfg["sources"]]
     schedule = {
         "_meta": {
-            "generated": date.today().isoformat(),
             "effective": cfg["effective"],
+            # Niente data di generazione: cambierebbe a ogni estrazione anche con dati identici, e
+            # un'estrazione non si potrebbe piu' confrontare byte per byte col file pubblicato.
             "aggiornato": max((a for a in aggiornate if a), default=None),
             "draft": cfg.get("draft", False),
             "default_days": default_days,
@@ -451,7 +485,7 @@ def extract(cfg, download=False):
         },
         "directions": out,
     }
-    return schedule, report
+    return schedule, report, stato
 
 
 def riga_report(did, runs, default_days, approx, spuri):
@@ -494,7 +528,7 @@ def main():
     args = ap.parse_args()
 
     cfg = json.loads((ROOT / "lines.json").read_text(encoding="utf-8"))
-    schedule, report = extract(cfg, download=args.download)
+    schedule, report, stato = extract(cfg, download=args.download)
     print_report(report, schedule)
 
     if args.dry_run:
@@ -504,6 +538,10 @@ def main():
                               encoding="utf-8")
     kb = Path(args.out).stat().st_size / 1024
     print(f"\nscritto {args.out}  ({kb:.0f} KB)")
+    # Solo ora lo stato dice la verita': schedule.json deriva da queste revisioni.
+    if Path(args.out).resolve() == (ROOT.parent / "schedule.json").resolve():
+        salva_stato(stato)
+        ripulisci_fonti(stato)
 
     # La verifica gira subito: un'estrazione sbagliata va vista adesso, non fra tre
     # settimane alla fermata. Non cancella il file — lo si vuole poter ispezionare —
@@ -511,8 +549,13 @@ def main():
     verifica = ROOT / "verifica.py"
     if verifica.exists():
         import subprocess
-        rel = Path(args.out).resolve().relative_to(ROOT.parent)
-        return subprocess.call([sys.executable, str(verifica), "--file", str(rel)])
+        fuori = Path(args.out).resolve()
+        try:
+            rel = str(fuori.relative_to(ROOT.parent))
+            extra = []
+        except ValueError:                 # file di prova fuori dal repository: niente confronto con git
+            rel, extra = str(fuori), ["--senza-confronto"]
+        return subprocess.call([sys.executable, str(verifica), "--file", rel, *extra])
     return 0
 
 

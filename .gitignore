@@ -1,4 +1,5 @@
 tools/.venv/
+# vecchia cache locale (le bozze di settembre): i PDF in uso stanno in fonti/
 tools/pdfcache/
 .claude/
 design/

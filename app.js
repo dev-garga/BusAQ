@@ -342,7 +342,9 @@ function disegnaElenco() {
 
   // Si riposiziona sulla prossima corsa solo quando cambia il contesto (tratta, giorno,
   // filtro): se e' solo partita una corsa, chi sta guardando le precedenti non va spostato.
-  const contesto = [stato.giorno, stato.partenza, stato.arrivo, stato.tutte].join('|');
+  // La data entra nel contesto: un telefono lasciato aperto oltre la mezzanotte deve ripartire
+  // dalla prima corsa del giorno nuovo, non restare dov'era la lista di ieri.
+  const contesto = [dataMostrata().toDateString(), stato.giorno, stato.partenza, stato.arrivo, stato.tutte].join('|');
   const nuovoContesto = contesto !== contestoDom;
   const scorrimento = cards.scrollTop;
 

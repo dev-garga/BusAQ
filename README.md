@@ -30,10 +30,11 @@ Il service worker mette in cache i file e durante lo sviluppo una modifica può 
 
 ```bash
 node --test tools/prova_orari.mjs      # la logica di orari.js, sugli orari veri
+python3 tools/prova_estrazione.py      # le regole di lettura dei PDF e il confronto fra estrazioni
 python3 tools/verifica.py              # struttura, coerenza e confronto di schedule.json con git
 ```
 
-`verifica.py` fallisce se una linea perde corse rispetto all'ultima versione in git. Se la perdita è voluta e l'hai riletta sul PDF, `--accetta-perdite` la declassa ad avviso.
+`verifica.py` fallisce se una linea perde corse rispetto all'ultima versione in git, e stampa **quali corse** sono state aggiunte, tolte o cambiate di calendario, direzione per direzione: è la lista da spuntare sul PDF. Se la perdita è voluta e l'hai riletta, `--accetta-perdite` la declassa ad avviso (l'elenco si stampa lo stesso). `--base <riferimento>` confronta con un'altra versione, `--tutto` non taglia l'elenco.
 
 Catture dello schermo, a viewport mobile vero e con l'orologio fissato (di sera non c'è una prossima corsa e il pannello LED non compare):
 
@@ -66,7 +67,7 @@ tools/.venv/bin/pip install -r tools/requirements.txt     # Windows: tools\.venv
    ```bash
    python3 tools/check_updates.py
    ```
-   Confronta la pagina AMA con la revisione usata l'ultima volta (`tools/pdf_state.json`). Segnala anche linee comparse o sparite, e avvisa se un PDF con corse trascritte a mano è cambiato.
+   Confronta la pagina AMA con la revisione usata l'ultima volta (`tools/pdf_state.json`). Segnala anche linee comparse o sparite, e avvisa se un PDF con corse trascritte a mano è cambiato. Esce con 0 (nessuna novità), 1 (revisioni nuove) o 2 (controllo non riuscito: rete assente o pagina AMA cambiata).
 2. **Scaricare e rigenerare.**
    ```bash
    tools/.venv/bin/python tools/extract_schedule.py --download
@@ -75,7 +76,7 @@ tools/.venv/bin/pip install -r tools/requirements.txt     # Windows: tools\.venv
 3. **Se l'estrazione si ferma** dicendo che non trova una colonna, AMA ha cambiato l'impaginazione. `tools/inspect_pdf.py <file.pdf> [pagina]` mostra la struttura, e si aggiorna `tools/lines.json`, non il codice.
 4. **Collaudi e pubblicazione**: `node --test tools/prova_orari.mjs`, poi come sopra. I valori fissati nei collaudi (numero di coppie servite, un caso reale di «conviene la corsa dopo») cambiano con i dati: si ricontrollano sul PDF uno per uno, non si copia l'uscita.
 
-I PDF scaricati stanno in `tools/pdfcache/`, **che non è nel repository**: si riscaricano, ma solo nella revisione corrente.
+I PDF da cui nasce `schedule.json` stanno **nel repository**, in `fonti/`: AMA toglie dal sito una revisione quando ne pubblica un'altra, e senza il file non si potrebbero più rigenerare né verificare gli orari pubblicati. `--download` scarica le revisioni correnti e, a estrazione riuscita, toglie da `fonti/` quelle superate (restano nella storia di git). `tools/pdf_state.json` si aggiorna solo allora: finché l'estrazione non è andata a buon fine, `check_updates.py` continua a segnalare la novità.
 
 ### Dove sta cosa
 

@@ -12,7 +12,11 @@ La versione precedente sorvegliava gli URL delle bozze di settembre. AMA ha poi
 pubblicato gli orari ufficiali con URL nuovi, e il controllo ha continuato a dire
 "invariato" per due settimane. Ora le linee si cercano per etichetta.
 
-Esce con 1 se qualcosa e' cambiato, 0 altrimenti.
+Codici di uscita — distinti apposta, perche' un controllo automatico deve poter dire «ci sono
+novita'» e «non sono riuscito a guardare» come due cose diverse:
+    0  nessuna novita'
+    1  AMA ha pubblicato revisioni nuove (o linee comparse/sparite)
+    2  controllo non riuscito: rete assente, o la pagina AMA non ha piu' la forma attesa
 """
 import json
 import sys
@@ -21,6 +25,7 @@ from pathlib import Path
 from ama import elenco
 
 ROOT = Path(__file__).resolve().parent
+LINEE_MINIME = 20          # la pagina ne elenca una quarantina
 
 
 def main():
@@ -31,7 +36,18 @@ def main():
     manuali = ({d["source"] for d in json.loads(manuali_f.read_text(encoding="utf-8"))["directions"]}
                if manuali_f.exists() else set())
 
-    pagina = elenco()
+    try:
+        pagina = elenco()
+    except Exception as e:                       # rete assente, HTTP 5xx, timeout…
+        print(f"controllo non riuscito: {e.__class__.__name__}: {e}", file=sys.stderr)
+        return 2
+    # Una pagina con pochissime linee non e' «tutte le linee sono sparite»: e' la struttura
+    # del sito che e' cambiata e l'estrazione dei blocchi non trova piu' niente.
+    if len(pagina) < LINEE_MINIME:
+        print(f"controllo non riuscito: sulla pagina AMA trovo {len(pagina)} linee (ne attendo almeno "
+              f"{LINEE_MINIME}): la struttura della pagina e' probabilmente cambiata, vedi tools/ama.py.",
+              file=sys.stderr)
+        return 2
     cambiate = []
     print("linee usate dall'app:")
     for chiave, src in cfg["sources"].items():
