@@ -15,13 +15,13 @@ import { dirname, join } from 'node:path';
 import {
   indicizza, corse, arrivoPiuRapido, servita, linee, notaApprossimazione,
   attesa, etichettaAttesa, giorniLabel, dataEstesa, minuti,
-  pasqua, festivita, giornoServizio
+  pasqua, festivita, giornoServizio, modelloElenco
 } from '../orari.js';
 
 const RADICE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const idx = indicizza(JSON.parse(readFileSync(join(RADICE, 'schedule.json'), 'utf8')));
 
-const MER = 3, SAB = 6, DOM = 0;
+const MER = 3, GIO = 4, SAB = 6, DOM = 0;
 const linea = t => idx.meta.lines[t.line].num + idx.meta.lines[t.line].sub;
 const ore = t => minuti(t);
 
@@ -232,4 +232,71 @@ test('formattazione', () => {
   assert.equal(giorniLabel([1, 2, 3, 4, 5]), 'lun–ven');
   assert.equal(giorniLabel([1, 5]), 'lun e ven');
   assert.equal(dataEstesa('2026-09-16'), '16 settembre 2026');
+});
+
+// ── Cosa mostra l'elenco ──────────────────────
+const FONTANA_UNI = { partenza: 'fontana_luminosa', arrivo: 'uni' };
+
+test('di giorno: le gia\' partite sopra, la prossima nel pannello, le altre sotto', () => {
+  const m = modelloElenco(idx, { ...FONTANA_UNI, dow: MER, adesso: ore('12:07') });
+  assert.equal(m.tipo, 'elenco');
+  assert.ok(m.iLed > 0 && m.iLed < m.elenco.length);
+  assert.ok(m.elenco.slice(0, m.iLed).every(t => t.diff < -2), 'sopra il pannello solo corse partite');
+  assert.ok(m.elenco.slice(m.iLed).every(t => t.diff >= -2), 'dal pannello in giu\' solo corse da prendere');
+  // La prossima e' la prima corsa che non e' ancora partita: nessuna prima di lei lo e'.
+  assert.ok(m.elenco[m.iLed].depMin >= ore('12:07') - 2);
+  assert.ok(m.elenco[m.iLed - 1].depMin < ore('12:07') - 2);
+  assert.match(m.coda, /^Ultima corsa alle \d\d:\d\d$/);
+  assert.equal(m.fineGiornata, null);
+  assert.equal(m.verso, 'da Fontana Luminosa a Università Coppito');
+});
+
+test('di sera: non resta niente da prendere, e l\'elenco dice quando e\' partita l\'ultima', () => {
+  const m = modelloElenco(idx, { ...FONTANA_UNI, dow: MER, adesso: ore('23:30') });
+  assert.equal(m.tipo, 'elenco');
+  assert.equal(m.iLed, m.elenco.length, 'nessuna prossima corsa');
+  assert.equal(m.coda, '');
+  assert.equal(m.fineGiornata, m.elenco[m.elenco.length - 1].dep);
+});
+
+test('domani: la giornata intera, senza passate ne\' consiglio', () => {
+  const m = modelloElenco(idx, { ...FONTANA_UNI, dow: GIO, adesso: null });
+  assert.equal(m.iLed, 0);
+  assert.ok(m.elenco.length > 30);
+  assert.match(m.coda, /^\d+ corse, dalle \d\d:\d\d alle \d\d:\d\d$/);
+  assert.ok(m.elenco.every(t => t.diff === null && !t.guadagno));
+});
+
+test('domenica: solo le corse festive, anche con la tratta di tutti i giorni', () => {
+  const m = modelloElenco(idx, { ...FONTANA_UNI, dow: DOM, adesso: ore('10:00') });
+  assert.equal(m.tipo, 'elenco');
+  assert.ok(m.elenco.every(t => t.days.length === 1 && t.days[0] === DOM));
+});
+
+test('una tratta senza servizio quel giorno: «nessuna», col motivo', () => {
+  // Strinella -> Coppito ha le linee 3 e A in settimana, ma nessuna corsa festiva.
+  const festivo = modelloElenco(idx, { partenza: 'via_strinella', arrivo: 'uni', dow: DOM, adesso: ore('10:00') });
+  assert.equal(festivo.tipo, 'nessuna');
+  assert.equal(festivo.quando, 'nei giorni festivi');
+  assert.equal(festivo.verso, 'da Via Strinella a Università Coppito');
+  const feriale = modelloElenco(idx, { partenza: 'via_strinella', arrivo: 'uni', dow: MER, adesso: ore('10:00') });
+  assert.equal(feriale.tipo, 'elenco');
+});
+
+test('il giorno e\' scritto per esteso nel motivo', () => {
+  const m = modelloElenco(idx, { partenza: 'via_strinella', arrivo: 'uni', dow: DOM, adesso: null });
+  assert.equal(m.tipo, 'nessuna');
+  assert.equal(modelloElenco(idx, { partenza: 'aquilone', arrivo: 'via_strinella', dow: MER, adesso: null }).quando, 'di mercoledì');
+});
+
+test('«tutte le corse» vale solo il sabato', () => {
+  const sab = (tutte) => modelloElenco(idx, { partenza: 'terminal', arrivo: 'uni', dow: SAB, adesso: null, tutte }).elenco.length;
+  assert.ok(sab(true) > sab(false), 'il sabato la scelta aggiunge corse');
+  const mer = (tutte) => modelloElenco(idx, { partenza: 'terminal', arrivo: 'uni', dow: MER, adesso: null, tutte }).elenco.length;
+  assert.equal(mer(true), mer(false), 'un altro giorno la scelta non cambia niente');
+});
+
+test('il consiglio sull\'arrivo piu\' rapido sta nell\'elenco di giorno', () => {
+  const m = modelloElenco(idx, { partenza: 'terminal', arrivo: 'uni', dow: MER, adesso: ore('08:00') });
+  assert.ok(m.elenco.some(t => t.guadagno));
 });

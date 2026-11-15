@@ -1,9 +1,9 @@
 // Stato, disegno ed eventi. Il calcolo degli orari sta in orari.js e non conosce
 // il DOM: qui non si decide mai quali corse esistono, solo come si mostrano.
 import {
-  indicizza, corse, arrivoPiuRapido, servita, linee, notaApprossimazione,
-  etichettaAttesa, giorniLabel, giornoBreve, giornoLungo, dataEstesa, chiave,
-  festivita, giornoServizio
+  indicizza, servita, linee, notaApprossimazione,
+  etichettaAttesa, giorniLabel, giornoBreve, dataEstesa, chiave,
+  festivita, giornoServizio, modelloElenco, nomeFermata
 } from './orari.js';
 
 const $ = id => document.getElementById(id);
@@ -72,10 +72,7 @@ function ripristina() {
 }
 
 // ── Etichette ─────────────────────────────────
-const nome = (id, breve) => {
-  const s = idx && idx.meta.stops[id];
-  return s ? (breve && s.short ? s.short : s.label) : id;
-};
+const nome = (id, breve) => (idx ? nomeFermata(idx, id, breve) : id);
 
 // La data di cui si stanno guardando gli orari, e il giorno secondo cui circolano:
 // nei festivi vale come una domenica.
@@ -299,45 +296,23 @@ function aggiornaAttese(elenco, iLed) {
 function disegnaElenco() {
   const dow = dowMostrato(), domani = stato.giorno === 'domani';
   const cards = $('cards'), piede = $('foot');
-  const svuota = html => { cards.innerHTML = html; chiaviDom = []; firmaDom = ''; };
 
-  // Il pulsante "Tutte le corse" esiste solo il sabato: altrove la scelta non vale.
-  const filtro = { partenza: stato.partenza, arrivo: stato.arrivo, dow, tutte: stato.tutte && dow === 6 };
-  const { passate, future } = corse(idx, { ...filtro, adesso: domani ? null : adessoMin() });
-
-  const verso = 'da ' + nome(stato.partenza) + ' a ' + nome(stato.arrivo);
-  const quando = dow === 0 ? 'nei giorni festivi' : 'di ' + giornoLungo(dow);
+  const m = modelloElenco(idx, { partenza: stato.partenza, arrivo: stato.arrivo, dow,
+                                 adesso: domani ? null : adessoMin(), tutte: stato.tutte });
   const invito = '<button class="vedi-domani" data-act="domani">Vedi le corse di domani</button>';
-  const finite = (coda, dentro) =>
-    '<div class="empty' + (dentro ? ' inline' : '') + '"><strong>Nessun’altra corsa oggi</strong>' +
-    (coda || 'L’ultima ' + verso + ' è già passata.') + invito + '</div>';
-  // Diverso da "sono finite": su questa tratta, in questo tipo di giorno, non ne passa nessuna.
-  const nessuna = () => '<div class="empty"><strong>Nessuna corsa ' + (domani ? 'domani' : 'oggi') +
-    '</strong>Nessun bus va ' + verso + ' ' + quando + '.' + (domani ? '' : invito) + '</div>';
 
-  if (!future.length && !passate.length) {
-    const giornata = domani ? 0 : corse(idx, { ...filtro, adesso: null }).future.length;
-    svuota(giornata ? finite('') : nessuna());
+  if (m.tipo === 'nessuna') {
+    cards.innerHTML = '<div class="empty"><strong>Nessuna corsa ' + (domani ? 'domani' : 'oggi') +
+      '</strong>Nessun bus va ' + m.verso + ' ' + m.quando + '.' + (domani ? '' : invito) + '</div>';
+    chiaviDom = []; firmaDom = '';
     piede.innerHTML = rigaMeta(); return;
   }
 
-  // Il consiglio sull'arrivo piu' rapido confronta la mezz'ora dopo la prima partenza
-  // utile. Domani quella finestra sarebbe l'alba, un ritaglio arbitrario: si tace.
-  if (!domani) arrivoPiuRapido(future, future.length);
-
-  // Tutta la giornata in una lista sola: le corse gia' partite sopra, attenuate; la prossima
-  // nel pannello LED; le successive sotto. Si sfoglia scorrendo, senza pulsanti.
-  const elenco = [...passate, ...future];
-  const iLed = passate.length;
-
-  const ultima = future[future.length - 1] || passate[passate.length - 1];
-  const coda = domani
-    ? future.length + ' corse, dalle ' + future[0].dep + ' alle ' + ultima.dep
-    : future.length ? 'Ultima corsa alle ' + ultima.dep : '';
-  piede.innerHTML = (coda ? coda + '<br>' : '') + rigaMeta();
+  const { elenco, iLed } = m;
+  piede.innerHTML = (m.coda ? m.coda + '<br>' : '') + rigaMeta();
 
   const chiavi = elenco.map(t => t.line + t.dep + t.arr);
-  const firma = stato.giorno + '#' + chiavi.join('|') + '#' + future.length;
+  const firma = stato.giorno + '#' + chiavi.join('|') + '#' + iLed;
   if (firma === firmaDom) { aggiornaAttese(elenco, iLed); return; }
 
   // Si riposiziona sulla prossima corsa solo quando cambia il contesto (tratta, giorno,
@@ -356,7 +331,9 @@ function disegnaElenco() {
     const ord = nuova && i >= iLed - 1 && i <= iLed + 6 ? n++ : -1;
     return i === iLed ? pannello(t, ord) : striscia(t, i < iLed, ord);
   }).join('');
-  if (!future.length) html += finite('L’ultima è partita alle ' + passate[passate.length - 1].dep + '.', true);
+  // Fine giornata: non resta niente da prendere oggi, e domani e' a un tocco.
+  if (m.fineGiornata) html += '<div class="empty inline"><strong>Nessun’altra corsa oggi</strong>' +
+    'L’ultima è partita alle ' + m.fineGiornata + '.' + invito + '</div>';
 
   cards.style.scrollBehavior = 'auto';
   cards.innerHTML = html;

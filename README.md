@@ -12,7 +12,7 @@ Cosa c'è dentro, in breve: una PWA statica (nessun compilatore, nessuna dipende
 |---|---|
 | guardare l'app, collaudare la logica | **Node 22+** e Python 3 per un server statico |
 | rigenerare gli orari dai PDF | **Python 3.10+** e `tools/requirements.txt` |
-| fare catture dello schermo | Chrome o Chromium |
+| provare la pagina, fare catture dello schermo | Node 22+ e Chrome o Chromium (`CHROME="/percorso"` se non lo trova) |
 
 Tutto gira su macOS, Linux e Windows. Nei comandi sotto `python3` su Windows è `py`.
 
@@ -30,6 +30,7 @@ Il service worker mette in cache i file e durante lo sviluppo una modifica può 
 
 ```bash
 node --test tools/prova_orari.mjs      # la logica di orari.js, sugli orari veri
+node --test tools/prova_pagina.mjs     # la pagina in Chrome, con l'orologio fissato
 python3 tools/prova_estrazione.py      # le regole di lettura dei PDF e il confronto fra estrazioni
 python3 tools/verifica.py              # struttura, coerenza e confronto di schedule.json con git
 ```
@@ -37,6 +38,8 @@ python3 tools/verifica.py              # struttura, coerenza e confronto di sche
 `verifica.py` fallisce se una linea perde corse rispetto all'ultima versione in git, e stampa **quali corse** sono state aggiunte, tolte o cambiate di calendario, direzione per direzione: è la lista da spuntare sul PDF. Se la perdita è voluta e l'hai riletta, `--accetta-perdite` la declassa ad avviso (l'elenco si stampa lo stesso). `--base <riferimento>` confronta con un'altra versione, `--tutto` non taglia l'elenco.
 
 **Campioni.** `tools/campioni.json` tiene, per ogni direzione, alcune corse lette sul PDF (prima, una di mezzogiorno, ultima, più quelle guardate a occhio), **legate al nome del file da cui sono state lette**. `verifica.py` richiede che l'estrazione le riproduca: se non lo fa è cambiato il codice o la configurazione, non il PDF. Quando AMA ripubblica una linea il file cambia nome e i campioni di quella direzione risultano **scaduti**: valevano per la revisione precedente e vanno riletti. `python3 tools/controlla_campioni.py` li confronta col *testo* dei PDF (indipendente dal lettore di tabelle: coglie orari sbagliati, troncati o mancanti, **non** una colonna assegnata alla fermata sbagliata); `--proponi` ne suggerisce di nuovi per le direzioni scadute, `--scrivi` li aggiunge dopo che li hai letti. Il campo `come` dice se una corsa è stata guardata sul PDF (`occhi`) o solo confermata dal testo (`testo`).
+
+`prova_pagina.mjs` copre ciò che la logica non vede: pagina senza errori, scorciatoie ferme al cambio tratta, tratta invertita, selettore con le fermate spente, domani senza conto alla rovescia, sera, domenica e festivi. Quello che l'elenco *mostra* (pannello, corse passate, testo del piè di pagina, stati vuoti) è deciso da `modelloElenco()` in `orari.js`, collaudato nella logica; `app.js` lo disegna soltanto. Il codice di Chrome (server statico, orologio fissato, viewport) sta in `tools/chrome.mjs`.
 
 Catture dello schermo, a viewport mobile vero e con l'orologio fissato (di sera non c'è una prossima corsa e il pannello LED non compare):
 
@@ -98,8 +101,9 @@ I PDF da cui nasce `schedule.json` stanno **nel repository**, in `fonti/`: AMA t
 | `tools/campioni.json`, `tools/controlla_campioni.py` | corse di controllo legate alla revisione del PDF |
 | `fonti/` | i PDF AMA da cui nasce `schedule.json` (nel repository, una revisione per linea) |
 | `tools/make_icon.py` | logo e icone, da dati (le lettere sono punti 5×7) |
-| `orari.js` | logica pura, senza DOM: coppie servite, corse, festivi, consiglio sull'arrivo più rapido |
+| `orari.js` | logica pura, senza DOM: coppie servite, corse, festivi, consiglio sull'arrivo più rapido, `modelloElenco()` (cosa mostrare) |
 | `app.js` | stato, disegno ed eventi |
+| `tools/chrome.mjs`, `tools/prova_pagina.mjs`, `tools/catture.mjs` | Chrome pilotato da Node: prova della pagina e catture |
 
 ## Cose da sapere sui dati
 

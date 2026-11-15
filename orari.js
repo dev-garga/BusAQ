@@ -219,3 +219,42 @@ export function arrivoPiuRapido(future, quante) {
   best.stessaPartenza = best.depMin === vicine[0].depMin;
   return Math.max(quante, future.indexOf(best) + 1);
 }
+
+// ── Cosa mostrare ─────────────────────────────
+export const nomeFermata = (idx, id, breve) => {
+  const f = idx.meta.stops[id];
+  return f ? (breve && f.short ? f.short : f.label) : id;
+};
+
+// La decisione su cosa c'e' da mostrare, senza DOM: l'elenco, dove sta la prossima corsa, il testo
+// del piede. app.js lo disegna e basta; cosi' sera, domenica, festivo, domani e «nessuna corsa» si
+// collaudano come il resto della logica invece che solo aprendo un browser.
+//
+// `adesso: null` e' la giornata intera (domani). Il pulsante «Tutte le corse» vale solo il sabato.
+//
+//   { tipo: 'nessuna', verso, quando }
+//       su questa tratta, in questo tipo di giorno, non passa nessun bus
+//   { tipo: 'elenco', verso, quando, elenco, iLed, coda, fineGiornata }
+//       elenco = corse gia' partite + prossime, in ordine; iLed = indice della prossima (uguale a
+//       elenco.length se non ce ne sono piu'); coda = riga del piede; fineGiornata = ora dell'ultima
+//       partenza quando non resta nulla da prendere, altrimenti null
+export function modelloElenco(idx, { partenza, arrivo, dow, adesso, tutte = false }) {
+  const verso = 'da ' + nomeFermata(idx, partenza) + ' a ' + nomeFermata(idx, arrivo);
+  const quando = dow === 0 ? 'nei giorni festivi' : 'di ' + giornoLungo(dow);
+  const { passate, future } = corse(idx, { partenza, arrivo, dow, adesso, tutte: tutte && dow === 6 });
+
+  // Le corse gia' partite non si tagliano piu' a un'ora: se non c'e' ne' passato ne' futuro, quel giorno
+  // la tratta non ha servizio. Non esiste il caso «ce n'erano ma sono finite e non resta niente».
+  if (!passate.length && !future.length) return { tipo: 'nessuna', verso, quando };
+
+  // Il consiglio sull'arrivo piu' rapido confronta la mezz'ora dopo la prima partenza utile.
+  // Domani quella finestra sarebbe l'alba, un ritaglio arbitrario: si tace.
+  if (adesso !== null) arrivoPiuRapido(future, future.length);
+
+  const elenco = [...passate, ...future];
+  const ultima = elenco[elenco.length - 1];
+  const coda = adesso === null ? future.length + ' corse, dalle ' + future[0].dep + ' alle ' + ultima.dep
+             : future.length ? 'Ultima corsa alle ' + ultima.dep : '';
+  return { tipo: 'elenco', verso, quando, elenco, iLed: passate.length, coda,
+           fineGiornata: future.length ? null : ultima.dep };
+}

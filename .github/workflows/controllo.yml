@@ -32,6 +32,9 @@ jobs:
       - name: Logica degli orari
         run: node --test tools/prova_orari.mjs
 
+      - name: La pagina in un browser vero (Chrome dei runner, orologio fissato)
+        run: node --test tools/prova_pagina.mjs
+
       - name: Regole di lettura dei PDF
         run: python3 tools/prova_estrazione.py
 
